@@ -12,7 +12,7 @@ function App() {
     const dispatch = useDispatch()
     useEffect(() => {
         const getProducts = async() => {
-            const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}/product`)
+            const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}product`)
             const dataRes = await fetchData.json()
             console.log(dataRes)
             dispatch(setDataProduct(dataRes))
