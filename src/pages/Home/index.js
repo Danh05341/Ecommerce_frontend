@@ -219,9 +219,9 @@ const Home = () => {
 							</div>
 							{/* right section */}
 							<div className='w-[888px] flex flex-col justify-between'>
-								<div className="flex flex-wrap  px-[15px] gap-[15px] ">
+								<div className="flex flex-wrap  px-[15px] gap-[15px] flex-1">
 									<ProductCard />
-									
+										
 								</div>
 								<div className='flex mt-[15px]'>
 									<a className='text-white m-auto inline-block cursor-pointer px-[25px] w-[124px]  h-[35px] bg-[#ff2d37]'>
