@@ -9,7 +9,8 @@ import Slider from '../../components/Slider';
 import slider1 from '../../assets/images/slider_1.webp'
 import Category from './Category';
 import { BsChevronRight } from "react-icons/bs";
-
+import { useDispatch, useSelector } from 'react-redux';
+import { setDataProduct } from '../../redux/productSlice';
 
 import banner1 from '../../assets/images/banner_project_1.webp'
 import banner2 from '../../assets/images/banner_project_2.webp'
@@ -18,8 +19,21 @@ import sneaker from '../../assets/images/sneaker_section.webp'
 import slipon from '../../assets/images/slipon_section.webp'
 import category from '../../assets/images/category_section.webp'
 import SideBar from '../../components/SideBar';
+import { useEffect } from 'react';
 
 const Home = () => {
+	const dispatch = useDispatch()
+    useEffect(() => {
+        const getProducts = async() => {
+            const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}product`)
+            const dataRes = await fetchData.json()
+            console.log(dataRes)
+            dispatch(setDataProduct(dataRes))
+        }
+        getProducts()
+    }, [])
+    const dataProduct = useSelector(state => state.product.data)
+    console.log(dataProduct)
 	// const productData = useSelector((state) => state.product.data);
 	// const homeProductCartList = productData.slice(1, 5);
 	// const homeProductCartListVegetables = productData.filter(
@@ -131,7 +145,7 @@ const Home = () => {
 		// </div>
 		<div>
 			<Slider slider={slider1} />
-			{/* Category Banner */}
+			{/*Section Category Banner */}
 			<Category />
 			{/* Sản phẩm bán chạy */}
 			<section className='flex w-full '>
