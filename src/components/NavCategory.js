@@ -5,7 +5,7 @@ const NavCategory = () => {
     const [categories, setCategories] = useState([])
     useEffect(() => {
         const fetchApi = async () => {
-            const fetchData = await fetch(`http://localhost:8080/category`)
+            const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}category`)
             const dataRes = await fetchData.json()
             setCategories(dataRes)
         }
