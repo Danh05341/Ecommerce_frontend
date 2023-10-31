@@ -19,21 +19,21 @@ import sneaker from '../../assets/images/sneaker_section.webp'
 import slipon from '../../assets/images/slipon_section.webp'
 import category from '../../assets/images/category_section.webp'
 import SideBar from '../../components/SideBar';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const Home = () => {
 	const dispatch = useDispatch()
+	const [hotProduct, setHotProduct] = useState()
     useEffect(() => {
-        const getProducts = async() => {
-            const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}product`)
+        const getProductsHot = async() => {
+            const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}product`)
             const dataRes = await fetchData.json()
-            console.log(dataRes)
+			setHotProduct(dataRes)
             dispatch(setDataProduct(dataRes))
         }
-        getProducts()
+        getProductsHot()
     }, [])
-    const dataProduct = useSelector(state => state.product.data)
-    console.log(dataProduct)
+    // const dataProduct = useSelector(state => state.product.data)
 	// const productData = useSelector((state) => state.product.data);
 	// const homeProductCartList = productData.slice(1, 5);
 	// const homeProductCartListVegetables = productData.filter(
@@ -155,7 +155,7 @@ const Home = () => {
 							<span className="text-[28px] text-[#282828] uppercase font-[400] cursor-pointer hover:text-[#ff2d37]">Sản phẩm bán chạy</span>
 						</div>
 						<div className="flex px-[15px] gap-[15px] pb-[30px]">
-							<ProductCard />
+							<ProductCard products={hotProduct?.data.filter((product)=>product.category !== "Sneaker nổi bật" && product.category !== "Slip-on nổi bật")}/>
 						</div>
 					</div>
 				</div>
@@ -164,12 +164,12 @@ const Home = () => {
 			<section className='flex w-full mt-[40px] '>
 				<div className="w-[1200px] m-auto ">
 					<div className="mx-[15px] bg-white flex flex-col shadow-lg">
-						{/* top-seaction */}
+						{/* top-section */}
 						<div className='flex'>
 							<img src={sneaker} alt='sneaker' className='max-w-[470px]'></img>
 							<div className='pl-[70px] pt-[28px] pr-[40px]'>
 								<div className='w-full mb-[27px]'>
-									<span className="text-[28px] text-[#282828] uppercase font-[400] cursor-pointer hover:text-[#ff2d37]">Sản phẩm bán chạy</span>
+									<span className="text-[28px] text-[#282828] uppercase font-[400] cursor-pointer hover:text-[#ff2d37]">Sneaker năng động</span>
 								</div>
 								<p className='text-[14px] text-[#282828] leading-[24px]'>
 									Sneaker đã trở thành một biểu tượng của xã hội, là một sản phẩm của thời đại với những thiết kế cổ điển và những điều đó đều nằm trong những đôi giày Sneaker Delta Shoes. Không lỗi thời với thời gian, mang dấu ấn cá tính khác biệt và tạo mọi sự lôi cuốn từ chính đôi giày Sneaker. Tự tạo cuộc chơi, tự tạo phong cách, đó là Delta Shoes
@@ -182,7 +182,7 @@ const Home = () => {
 						</div>
 						{/* bot-section */}
 						<div className="flex px-[15px] gap-[15px] pb-[30px] mt-[15px]">
-							<ProductCard />
+							<ProductCard products={hotProduct?.data.filter((product)=>product.category === "Sneaker nổi bật")}/>
 						</div>
 					</div>
 				</div>
@@ -195,10 +195,10 @@ const Home = () => {
 						<div className='flex'>
 							<div className='pr-[70px] pt-[28px] pl-[40px]'>
 								<div className='w-full mb-[27px]'>
-									<span className="text-[28px] text-[#282828] uppercase font-[400] cursor-pointer hover:text-[#ff2d37]">Sản phẩm bán chạy</span>
+									<span className="text-[28px] text-[#282828] uppercase font-[400] cursor-pointer hover:text-[#ff2d37]">SLIP-ON THANH LỊCH</span>
 								</div>
 								<p className='text-[14px] text-[#282828] leading-[24px]'>
-									Sneaker đã trở thành một biểu tượng của xã hội, là một sản phẩm của thời đại với những thiết kế cổ điển và những điều đó đều nằm trong những đôi giày Sneaker Delta Shoes. Không lỗi thời với thời gian, mang dấu ấn cá tính khác biệt và tạo mọi sự lôi cuốn từ chính đôi giày Sneaker. Tự tạo cuộc chơi, tự tạo phong cách, đó là Delta Shoes
+									Ra đời từ thế kỉ XX, từ sự tiện dụng cho đến biểu tượng của phong cách casual. Giày lười Delta Shoes là một trong những đại diện của sự chững chạc trong thời trang, là xu hướng của thế giới thời trang tối giản. Đồng hành cùng Delta Shoes là đồng hành với chuẩn mực của chính bạn.
 								</p>
 								<div className='inline-block uppercase text-[20px] mt-[15px] cursor-pointer hover:text-[#ff2d37] '>
 									<span className=''>Xem tất cả</span>
@@ -210,7 +210,7 @@ const Home = () => {
 						</div>
 						{/* bot-section */}
 						<div className="flex px-[15px] gap-[15px] pb-[30px] mt-[15px]">
-							<ProductCard />
+							<ProductCard products={hotProduct?.data.filter((product)=>product.category === "Slip-on nổi bật")}/>
 						</div>
 					</div>
 				</div>
@@ -234,7 +234,7 @@ const Home = () => {
 							{/* right section */}
 							<div className='w-[888px] flex flex-col justify-between'>
 								<div className="flex flex-wrap  px-[15px] gap-[15px] flex-1">
-									<ProductCard />
+									<ProductCard products={hotProduct?.data}/>
 										
 								</div>
 								<div className='flex mt-[15px]'>
