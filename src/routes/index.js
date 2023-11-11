@@ -5,7 +5,8 @@ import Contact from "../pages/Contact"
 import Login from "../pages/Login"
 import NewProduct from "../pages/NewProduct"
 import Signup from "../pages/Signup"
-
+import ProductList from "../pages/ProductList"
+import ProductDetail from "../pages/ProductDetail"
 
 
 const publicRoutes = [
@@ -16,6 +17,8 @@ const publicRoutes = [
     { path: '/login', page: Login},
     { path: '/newproduct', page: NewProduct},
     { path: '/signup', page: Signup},
+    { path: '/search', page: ProductList},
+    { path: '/:slug', page: ProductDetail},
 
 ]
 
