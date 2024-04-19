@@ -1,14 +1,14 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import RequireAuth from './components/RequireAuth';
 
-
-import { publicRoutes } from './routes';
+import { publicRoutes, privateRoutes } from './routes';
 import { Fragment, useEffect } from 'react';
 import { DefaultLayout } from './components/Layouts';
 
 
 function App() {
-    
+
     return (
         <Router>
             <Routes>
@@ -16,7 +16,7 @@ function App() {
                     publicRoutes.map((route, index) => {
                         const Page = route.page
                         let Layout = route.layout || DefaultLayout
-                        if(route.layout === null) {
+                        if (route.layout === null) {
                             Layout = Fragment
                         }
                         return (
@@ -25,10 +25,31 @@ function App() {
                                 path={route.path}
                                 element={
                                     <Layout>
-                                        <Page/>
+                                        <Page />
                                     </Layout>
                                 }
                             />
+                        )
+                    })
+                }
+                {
+                    privateRoutes.map((route, index) => {
+                        const Page = route.page
+                        const Layout = route.layout || DefaultLayout
+                        if (route.layout === null) {
+                            Layout = Fragment
+                        }
+                        return (
+                            <Route key={index} element={<RequireAuth />}>
+                                <Route
+                                    path={route.path}
+                                    element={
+                                        <Layout>
+                                            <Page />
+                                        </Layout>
+                                    }
+                                />
+                            </Route>
                         )
                     })
                 }

@@ -11,7 +11,7 @@ const NavCategory = (props) => {
                             return (
                                 <div key={index} className="max-w-[200px] flex-1 mx-auto">
 
-                                    <Link to={"/" + slugify(category.name, { locale: 'vi' })}>
+                                    <Link to={"/product/" + slugify(category.name, { locale: 'vi' })}>
                                         <div className="cursor-pointer hover:text-[#ff2d37] font-bold border-b pb-[10px]  mt-[10px] border-dashed border-[#ebebeb] text-[12px] text-[#282828]  ">
                                             {category.name}
                                         </div>
@@ -20,7 +20,7 @@ const NavCategory = (props) => {
                                         {
                                             category.children.map((children, index) => {
                                                 return (
-                                                    <Link to={"/" + slugify(children.name, { locale: 'vi' })}>
+                                                    <Link key={index} to={"/product/" + slugify(children.name, { locale: 'vi' })}>
                                                         <span key={index} className="text-[13px] text-[#282828] normal-case font-normal  cursor-pointer hover:text-[#ff2d37]">{children.name}</span>
                                                     </Link>
                                                 )

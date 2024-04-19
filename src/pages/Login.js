@@ -1,11 +1,16 @@
 import { BiShow, BiHide } from 'react-icons/bi'
 import loginSignupImage from '../assets/images/login-animation.gif'
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { loginRedux } from '../redux/userSlice.js'
+import { toast } from 'react-toastify'
+import { LoginAPI } from '../apis/index.js'
 
 const Login = () => {
+    const location = useLocation()
+    console.log('location Login: ', location)
+
     const [showPassword, setShowPassword] = useState(false)
     const [dataForm, setDataForm] = useState({
         email: '',
@@ -24,34 +29,27 @@ const Login = () => {
             }
         })
     }
-    const handleSubmit = async(e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
         const { email, password } = dataForm
         if (email && password) {
-            const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}/users/login`, {
-                method: 'POST',
-                headers: {
-                    "content-type": "application/json"
-                },  
-                body: JSON.stringify(dataForm)
-            })
-            const dataRes = await fetchData.json()
-            if(dataRes.data) {
-                alert("successful")
+            const dataRes = await LoginAPI(email, password)
+            console.log(dataRes)
+            if (dataRes.data) {
+                toast.success('Login successfully')
+                localStorage.setItem('access_token', dataRes.data.token.accessToken)
+                localStorage.setItem('refresh_token', dataRes.data.token.refreshToken)
+                localStorage.setItem('user_image', dataRes.data.image)
+                localStorage.setItem('user_role', dataRes.data.role)
                 dispatch(loginRedux(dataRes))
-                setTimeout(() => {
-                    navigate('/')
-                }, 1000)
+                navigate('/')
             }
-            else{
-                //Có lưu ý gì khi sử dụng, Xem lại f8 thử
-                setTimeout(() => {
-                    alert(dataRes.message)
-                }, 1000)
+            else {
+                toast.error(dataRes.message)
             }
         }
         else {
-            alert("Please enter required fields")
+            toast.error("Please enter required fields")
         }
     }
     const handleShowPassword = () => {

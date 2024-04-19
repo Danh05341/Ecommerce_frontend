@@ -21,11 +21,11 @@ const Banner = () => {
                 banners ? (
                     banners.map((banner, index) => {
                         return (
-                            <div key={index} className="h-[271px] relative flex justify-center">
-                                <img src={banner.image_url} alt='banner' className='h-full overflow-hidden ' />
-                                <div className='absolute text-white bottom-[50px] font-bold'>
-                                    <span className='text-[30px] hover:text-[#ff2d37] cursor-pointer'>{banner.name}</span>
-                                    <p className='text-[16px] text-center normal-case font-[400]'>8 Sản phẩm</p>
+                            <div key={index} className="h-[271px] overflow-hidden relative flex justify-center   group/banner">
+                                <img src={banner.image_url} alt='banner' className='h-full transition ease-in-out duration-[300ms] group-hover/banner:scale-[1.12]' />
+                                <div className='absolute text-white bottom-[35px] font-bold'>
+                                    <span className='text-[30px] hover:text-[#ff2d37] inline-block cursor-pointer translate-y-[5px] transition duration-[400ms] group-hover/banner:translate-y-0'>{banner.name}</span>
+                                    <p className='text-[16px] text-center normal-case font-[400] transition ease-in-out duration-[400ms] translate-y-[50px] opacity-0 group-hover/banner:translate-y-0 group-hover/banner:opacity-100'>8 Sản phẩm</p>
                                 </div>
                             </div>
                         )

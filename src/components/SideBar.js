@@ -65,7 +65,7 @@ const SideBar = () => {
             </Link>
             <li className="list-none text-[14px] ">
                 <span className="hover:text-[#ff2d37] cursor-pointer flex items-center justify-between">
-                    <div className="flex-1"><Link to='/all-product'>Sản phẩm</Link></div>
+                    <div className="flex-1"><Link to='/product/all'><div>Sản phẩm</div></Link></div>
                     {
                         categories && (
                             <BsChevronRight className='text-[10px] font-bold w-[30px] h-[10px]' data-name="Sản phẩm" onClick={handleActive} />
@@ -78,7 +78,7 @@ const SideBar = () => {
                             {
                                 categories?.map((category, index) => {
                                     return (
-                                        <Link to={"/" + slugify(category.name, { locale: 'vi' })}>
+                                        <Link to={"/product/" + slugify(category.name, { locale: 'vi' })}>
                                             <li key={index} className="list-none text-[14px] hover:text-[#ff2d37] cursor-pointer">
                                                 {category.name}
                                             </li>
@@ -92,7 +92,7 @@ const SideBar = () => {
             </li>
             <li className="list-none text-[14px]">
                 <span className="hover:text-[#ff2d37] cursor-pointer flex items-center justify-between">
-                    <div className="flex-1"><Link to='/giay-the-thao'>Giày thể thao</Link></div>
+                    <div className="flex-1"><Link to='/product/Giay-the-thao'><div>Giày thể thao</div></Link></div>
                     {
                         sportShoes && (
                             <BsChevronRight className='text-[10px] font-bold w-[30px] h-[10px]' data-name={sportShoes[0]?.name} onClick={handleActive} />
@@ -109,11 +109,11 @@ const SideBar = () => {
                                             {
                                                 category.children ? (
 
-                                                    <li key={index} className="list-none text-[14px] ">
+                                                    <li  className="list-none text-[14px] ">
                                                         <span className="hover:text-[#ff2d37] cursor-pointer flex items-center justify-between">
 
                                                             <div className="flex-1">
-                                                                <Link className="block " to={"/" + slugify(category.name, { locale: 'vi' })}>
+                                                                <Link className="block " to={"/product/" + slugify(category.name, { locale: 'vi' })}>
                                                                     {category?.name}
                                                                 </Link>
 
@@ -126,7 +126,7 @@ const SideBar = () => {
                                                                     {
                                                                         category?.children?.map((category, index) => {
                                                                             return (
-                                                                                <Link to={"/" + slugify(category.name, { locale: 'vi' })}>
+                                                                                <Link to={"/product/" + slugify(category.name, { locale: 'vi' })}>
                                                                                     <li key={index} className="list-none text-[14px] hover:text-[#ff2d37] cursor-pointer">
                                                                                         {category?.name}
                                                                                     </li>
@@ -140,7 +140,7 @@ const SideBar = () => {
                                                     </li>
 
                                                 ) : (
-                                                    <Link to={"/" + slugify(category.name, { locale: 'vi' })}>
+                                                    <Link to={"/product/" + slugify(category.name, { locale: 'vi' })}>
                                                         <li key={index} className="list-none text-[14px] hover:text-[#ff2d37] cursor-pointer">
                                                             {category.name}
                                                         </li>

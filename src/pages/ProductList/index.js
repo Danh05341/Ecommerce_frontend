@@ -1,32 +1,30 @@
 import { BsChevronRight, BsCheck } from "react-icons/bs";
 
-import { Link, useLocation, useParams  } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import SideBar from "../../components/SideBar";
 import { useEffect, useState } from "react";
 import ProductCard from "../Home/ProductCard";
+import { fetchBrandAPI, fetchProductAPI, getCategoryBySlugAPI } from "../../apis";
 
 
 const ProductList = () => {
     const [brand, setBrand] = useState()
     const [product, setProduct] = useState()
-    const  slug  = useParams();
+    const [category, setCategory] = useState()
+    const slug = useParams();
     const location = useLocation()
     useEffect(() => {
-
-    })
+        getCategoryBySlugAPI(slug.id).then((dataRes) => {
+            setCategory(dataRes.data)
+        })
+    }, [slug])
     useEffect(() => {
-        const fetchApi = async () => {
-            const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}brand`)
-            const dataRes = await fetchData.json()
+        fetchBrandAPI().then((dataRes) => {
             setBrand(dataRes.data)
-        }
-        const getProduct = async () => {
-            const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}product`)
-            const dataRes = await fetchData.json()
+        })
+        fetchProductAPI().then((dataRes) => {
             setProduct(dataRes.data)
-        }
-        fetchApi()
-        getProduct()
+        })
     }, [])
     return (
         <div className="w-full h-[100vh] bg-white flex">
@@ -44,10 +42,18 @@ const ProductList = () => {
                         <BsChevronRight className='text-[10px] font-bold w-[30px] h-[10px] inline' />
                         <li className="list-none inline cursor-text text-[#ff2d37] text-[14px]">Tất cả sản phẩm</li>
                     </div>
+                    {
+                        slug.id === 'all' ? (
+                            <div className="text-[24px] font-bold text-[#ff2d37] leading-[38px] text-center mt-[8px]">
+                                Tất cả sản phẩm
+                            </div>
+                        ) : (
+                            <div className="text-[24px] font-bold text-[#ff2d37] leading-[38px] text-center mt-[8px]">
+                                {category?.name}
+                            </div>
+                        )
+                    }
 
-                    <div className="text-[24px] font-bold text-[#ff2d37] leading-[38px] text-center mt-[8px]">
-                        Tất cả sản phẩm
-                    </div>
 
                     <div className="flex mt-[20px] ">
                         <div className="w-[300px] px-[15px] h-[10000px]">
@@ -65,7 +71,7 @@ const ProductList = () => {
                                                 <div key={index} className="flex items-center relative flex-1 ">
                                                     <input type="checkbox" id={data.name} name={data.name} className=" w-[15px] h-[15px] " />
                                                     {/* <BsCheck className="absolute top-0 left-[-3px] w-[20px] h-[20px] text-[#ff2d37] " /> */}
-                                                    <label for={data.name} className="text-[14px] ml-[8px]">{data.name}</label>
+                                                    <label htmlFor={data.name} className="text-[14px] ml-[8px]">{data.name}</label>
                                                 </div>
                                             )
                                         })
@@ -79,32 +85,32 @@ const ProductList = () => {
                                     <div className="flex items-center relative flex-1 ">
                                         <input type="checkbox" id=" name=" className=" w-[15px] h-[15px] " />
                                         {/* <BsCheck className="absolute top-0 left-[-3px] w-[20px] h-[20px] text-[#ff2d37] " /> */}
-                                        <label for="Hura" className="text-[14px] ml-[8px]">Giá dưới 100.000đ</label>
+                                        <label htmlFor="Hura" className="text-[14px] ml-[8px]">Giá dưới 100.000đ</label>
                                     </div>
                                     <div className="flex items-center relative flex-1 ">
                                         <input type="checkbox" id=" name=" className=" w-[15px] h-[15px] " />
                                         {/* <BsCheck className="absolute top-0 left-[-3px] w-[20px] h-[20px] text-[#ff2d37] " /> */}
-                                        <label for="Hura" className="text-[14px] ml-[8px]">100.000đ - 200.000đ</label>
+                                        <label htmlFor="Hura" className="text-[14px] ml-[8px]">100.000đ - 200.000đ</label>
                                     </div>
                                     <div className="flex items-center relative flex-1 ">
                                         <input type="checkbox" id=" name=" className=" w-[15px] h-[15px] " />
                                         {/* <BsCheck className="absolute top-0 left-[-3px] w-[20px] h-[20px] text-[#ff2d37] " /> */}
-                                        <label for="Hura" className="text-[14px] ml-[8px]">200.000đ - 300.000đ</label>
+                                        <label htmlFor="Hura" className="text-[14px] ml-[8px]">200.000đ - 300.000đ</label>
                                     </div>
                                     <div className="flex items-center relative flex-1 ">
                                         <input type="checkbox" id=" name=" className=" w-[15px] h-[15px] " />
                                         {/* <BsCheck className="absolute top-0 left-[-3px] w-[20px] h-[20px] text-[#ff2d37] " /> */}
-                                        <label for="Hura" className="text-[14px] ml-[8px]">300.000đ - 500.000đ</label>
+                                        <label htmlFor="Hura" className="text-[14px] ml-[8px]">300.000đ - 500.000đ</label>
                                     </div>
                                     <div className="flex items-center relative flex-1 ">
                                         <input type="checkbox" id=" name=" className=" w-[15px] h-[15px] " />
                                         {/* <BsCheck className="absolute top-0 left-[-3px] w-[20px] h-[20px] text-[#ff2d37] " /> */}
-                                        <label for="Hura" className="text-[14px] ml-[8px]">500.000đ - 1.000.000đ</label>
+                                        <label htmlFor="Hura" className="text-[14px] ml-[8px]">500.000đ - 1.000.000đ</label>
                                     </div>
                                     <div className="flex items-center relative flex-1 ">
                                         <input type="checkbox" id=" name=" className=" w-[15px] h-[15px] " />
                                         {/* <BsCheck className="absolute top-0 left-[-3px] w-[20px] h-[20px] text-[#ff2d37] " /> */}
-                                        <label for="Hura" className="text-[14px] ml-[8px]">Giá trên 1.000.000đ</label>
+                                        <label htmlFor="Hura" className="text-[14px] ml-[8px]">Giá trên 1.000.000đ</label>
                                     </div>
                                 </div>
                             </div>
@@ -114,23 +120,23 @@ const ProductList = () => {
                             <div className="flex flex-wrap gap-x-[20px] gap-y-[10px] px-[15px] pb-[15px] pt-[6px] border border-solid border-[#ebebeb] ">
                                 <div className="flex items-center relative ">
                                     <input type="checkbox" id="" name="" className=" w-[15px] h-[15px] " />
-                                    <label for="Hura" className="text-[14px] ml-[8px]">38</label>
+                                    <label htmlFor="Hura" className="text-[14px] ml-[8px]">38</label>
                                 </div>
                                 <div className="flex items-center relative ">
                                     <input type="checkbox" id="" name="" className=" w-[15px] h-[15px] " />
-                                    <label for="Hura" className="text-[14px] ml-[8px]">39</label>
+                                    <label htmlFor="Hura" className="text-[14px] ml-[8px]">39</label>
                                 </div>
                                 <div className="flex items-center relative ">
                                     <input type="checkbox" id="" name="" className=" w-[15px] h-[15px] " />
-                                    <label for="Hura" className="text-[14px] ml-[8px]">40</label>
+                                    <label htmlFor="Hura" className="text-[14px] ml-[8px]">40</label>
                                 </div>
                                 <div className="flex items-center relative ">
                                     <input type="checkbox" id="" name="" className=" w-[15px] h-[15px] " />
-                                    <label for="Hura" className="text-[14px] ml-[8px]">41</label>
+                                    <label htmlFor="Hura" className="text-[14px] ml-[8px]">41</label>
                                 </div>
                                 <div className="flex items-center relative ">
                                     <input type="checkbox" id="" name="" className=" w-[15px] h-[15px] " />
-                                    <label for="Hura" className="text-[14px] ml-[8px]">42</label>
+                                    <label htmlFor="Hura" className="text-[14px] ml-[8px]">42</label>
                                 </div>
                             </div>
 
@@ -141,16 +147,16 @@ const ProductList = () => {
                                 <div className="ml-[30px] inline-block">
                                     <div className="inline-flex ml-[20px] items-center hover:text-[#ff2d37] ">
                                         <input type="checkbox" className="w-[14px] h-[14px] cursor-pointer" name="increase" id="increase" />
-                                        <label for="increase" className="ml-[6px] cursor-pointer">Giá tăng dần</label>
+                                        <label htmlFor="increase" className="ml-[6px] cursor-pointer">Giá tăng dần</label>
                                     </div>
                                     <div className="inline-flex ml-[20px] items-center hover:text-[#ff2d37] ">
                                         <input type="checkbox" className="w-[14px] h-[14px] cursor-pointer" name="decrease" id="decrease" />
-                                        <label for="decrease" className="ml-[6px] cursor-pointer">Giá giảm dần</label>
+                                        <label htmlFor="decrease" className="ml-[6px] cursor-pointer">Giá giảm dần</label>
                                     </div>
                                 </div>
                             </div>
                             <div className="flex flex-wrap gap-x-[15px] gap-y-[20px]  w-[870px] mt-[20px]">
-                                <ProductCard products={product}/>
+                                <ProductCard products={product} />
                             </div>
                         </div>
                     </div>

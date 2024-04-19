@@ -1,5 +1,5 @@
 import product1 from '../../assets/images/product_1.webp'
-
+import { Link } from 'react-router-dom'
 const ProductCard = (props) => {
     return (
         <>
@@ -9,11 +9,14 @@ const ProductCard = (props) => {
                     props.products.map((product, index) => {
                         return (
                             <div key={index} className="flex flex-col justify-between relative  gap-x-[15px] min-w-[203px] flex-1 max-w-[216px] h-[318px] border border-dashed border-[#ebebeb]">
-                                <div className=''>
-                                    <img src={product.image} alt='product' className='w-[216px] h-[216px]overflow-hidden cursor-pointer' />
-
-                                </div>
-                                <span className='text-[14px] flex-1 inline-block  text-[#282828] text-center cursor-pointer hover:text-[#ff2d37] '>{product.name}</span>
+                                <Link to={"/" + product._id}>
+                                    <div className=''>
+                                        <img src={product.image[0]} alt='product' className='w-[216px] h-[216px]overflow-hidden cursor-pointer' />
+                                    </div>
+                                </Link>
+                                <Link to={"/" + product._id} className='flex-1 text-center inline-block'>
+                                    <span className='text-[14px] flex-1 inline-block  text-[#282828]  cursor-pointer hover:text-[#ff2d37] '>{product.name}</span>
+                                </Link>
                                 <div className='flex  justify-between items-center h-[45px] px-[10px] border-t border-dashed border-[#ebebeb]'>
                                     <div className="flex flex-col relative">
                                         <span className="text-[#ff2d37] text-[14px] font-[700] top-[5px]">{product.price}₫</span>

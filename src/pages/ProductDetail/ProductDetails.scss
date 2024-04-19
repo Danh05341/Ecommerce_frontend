@@ -62,7 +62,6 @@
     width: 900px;
     overflow: hidden;
     display: flex;
-    height: 1000px;
 
     .product-image {
         z-index: 10;
@@ -161,39 +160,7 @@
                 position: relative;
                 color: #282828;
 
-                .minus-btn,
-                .plus-btn {
-                    float: left;
-                    border: solid 1px #ddd;
-                    display: inline-block;
-                    width: 35px;
-                    height: 35px;
-                    background-color: #fff;
-                    text-align: center;
-                    margin-top: 5px;
-                    color: #282828;
-
-                    &:hover {
-                        cursor: pointer;
-                    }
-
-                }
-
-                input {
-                    float: left;
-                    font-size: 14px;
-                    margin-top: 5px;
-                    display: block;
-                    color: #282828;
-                    height: 35px;
-                    border: 1px solid #ddd;
-                    border-right: none;
-                    border-left: none;
-                    width: 45px;
-                    min-height: unset;
-                    text-align: center;
-                    outline: none;
-                }
+                
             }
         }
 
@@ -216,7 +183,12 @@
                 background: #ff2d37;
                 border: 2px solid #ffc6c9;
                 float: left;
-                margin-right: 15px
+                margin-right: 15px;
+                border: 2px solid  #ff2d37;
+                &:hover {
+                    color: #ff2d37;
+                    background-color: white;
+                }
             }
 
             .product-contact {
@@ -232,6 +204,11 @@
                 border-bottom-left-radius: 45px;
                 border-right: 0px;
                 position: relative;
+
+                &:hover {
+                    color: white;
+                    background-color: #ffc6c9;
+                }
 
                 &::before {
                     content: "";
@@ -261,8 +238,16 @@
                     font-weight: 700;
                 }
             }
+            
         }
     }
+
+}
+.product-des .active{
+    background-color: #ff2d37;
+    color: white;
+}
+.product-des .active {
 
 }
 

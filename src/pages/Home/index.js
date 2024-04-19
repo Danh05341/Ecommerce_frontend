@@ -3,7 +3,7 @@ import slider1 from '../../assets/images/slider_1.webp'
 import Category from './Category';
 import { BsChevronRight } from "react-icons/bs";
 import { useDispatch, useSelector } from 'react-redux';
-import { setDataProduct } from '../../redux/productSlice';
+// import { setDataProduct } from '../../redux/productSlice';
 
 import banner1 from '../../assets/images/banner_project_1.webp'
 import banner2 from '../../assets/images/banner_project_2.webp'
@@ -15,7 +15,7 @@ import SideBar from '../../components/SideBar';
 import { useEffect, useState } from 'react';
 
 const Home = () => {
-	const dispatch = useDispatch()
+	// const dispatch = useDispatch()
 	const [hotProduct, setHotProduct] = useState()
 	
     useEffect(() => {
@@ -23,7 +23,7 @@ const Home = () => {
             const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}product`)
             const dataRes = await fetchData.json()
 			setHotProduct(dataRes)
-            dispatch(setDataProduct(dataRes))
+            // dispatch(setDataProduct(dataRes))
         }
         getProductsHot()
     }, [])

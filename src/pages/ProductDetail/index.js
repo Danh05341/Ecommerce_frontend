@@ -1,66 +1,92 @@
-import { Link } from "react-router-dom"
-import { BsChevronRight, BsCheck } from "react-icons/bs";
-
-
-// const ProductDetail = () => {
-//     return (
-//         <div className="w-full h-full bg-white flex">
-//             <div className="m-auto w-[1200px] h-[2000px] flex">
-//                 <div className="mx-[15px]  w-full h-[1000px] ">
-
-//                     {/* Breakcumb */}
-//                     <div className='w-full px-[15px] mt-[24px] ml-[20px]'>
-//                         <Link to='/'>
-//                             <li className="list-none inline cursor-pointer  text-[14px] hover:text-[#ff2d37]">Trang chủ</li>
-//                         </Link>
-//                         <BsChevronRight className='text-[10px] font-bold w-[30px] h-[10px] inline' />
-//                         <Link to='/'>
-//                             <li className="list-none inline cursor-pointer  text-[14px] hover:text-[#ff2d37]">Sneaker nổi bật</li>
-//                         </Link>
-//                         <BsChevronRight className='text-[10px] font-bold w-[30px] h-[10px] inline' />
-//                         <li className="list-none inline cursor-text text-[#ff2d37] text-[14px]">Tất cả sản phẩm</li>
-//                     </div>
-//                     <div className="text-[24px] font-bold text-[#ff2d37] leading-[38px] text-center mt-[8px]">
-//                         Giày nam
-//                     </div>
-
-
-//                 </div>
-//             </div>
-//         </div>
-//     )
-// }
-
-// export default ProductDetail
-
-import { BiChevronRight } from "react-icons/bi";
-import { BsFillTelephoneFill } from "react-icons/bs";
+import { useEffect, useRef, useState } from "react";
+import { Link, useLocation, useParams } from "react-router-dom";
+import clsx from "clsx";
+import { BsFillTelephoneFill, BsCheck, BsChevronRight } from "react-icons/bs";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
+import { GiBeachBag } from "react-icons/gi";
+import { FiScissors } from "react-icons/fi";
 
-import './ProductDetails.scss'
+import "./ProductDetails.scss";
 import WrapperModel from "./WrapperModel";
 import WrapperImage from "./WrapperImage";
-import { useState } from "react";
-function ProductDetail() {
-    const [currentImage, setCurrentImage] = useState(0)
-    const handleActiveImageItem = (index) => {
-        setCurrentImage(index)
-    }
+import { useDispatch, useSelector } from "react-redux";
+import { addProduct, productSlice } from "../../redux/productSlice";
 
-    const productModels = [
-        {
-            img: 'https://bizweb.dktcdn.net/thumb/grande/100/342/645/products/bd30ea8934835dfbad4dca4072b1ba3b.jpg?v=1545572480550%22'
-        },
-        {
-            img: "https://bizweb.dktcdn.net/thumb/grande/100/342/645/products/1788475-l.jpg?v=1545572481460"
-        },
-        {
-            img: "https://bizweb.dktcdn.net/thumb/grande/100/342/645/products/0c6ae505cd0029d8918b8a6bebc82fe2.jpg?v=1545572483250"
-        },
-        {
-            img: "https://bizweb.dktcdn.net/100/342/645/products/giay-da-bong-fg-nguoi-lon-den-trang.jpg?v=1545572483563"
+function ProductDetail() {
+    const dispatch = useDispatch()
+    const userData = useSelector(state => state.user.data)
+    const products = useSelector(state => state.product.data)
+    //số lượng sp trong cart
+    const [productCount, setProductCount] = useState(() => {
+        const count =  products.reduce((count, product) => {
+            return count += product.quantity
+        }, 0)
+        return count
+    })
+    const [currentImage, setCurrentImage] = useState(0);
+    const handleActiveImageItem = (index) => {
+        setCurrentImage(index);
+    };
+    // số lượng
+    const [value, setValue] = useState(1);
+    const [isActive, setIsActive] = useState("Mô tả");
+    const [modalIsActive, setModalIsActive] = useState(false);
+    const [product, setProduct] = useState();
+
+    const { slug } = useParams();
+    useEffect(() => {
+        const getProduct = async () => {
+            const fetchData = await fetch(
+                `${process.env.REACT_APP_SERVER_LOCAL}product/${slug}`
+            );
+            const dataRes = await fetchData.json();
+            setProduct(dataRes.data);
+        };
+        getProduct();
+    }, [slug]);
+
+    const handleMinus = () => {
+        setValue((prev) => {
+            if (prev > 1) {
+                return setValue(prev - 1);
+            } else {
+                return setValue(1);
+            }
+        });
+    };
+    const handlePlus = () => {
+        setValue((prev) => prev + 1);
+    };
+
+    const handeActive = (e) => {
+        const name = e.target.dataset.name;
+        setIsActive(name);
+    };
+    const handleClickBuy = (e) => {
+        setModalIsActive((prev) => !prev);
+        if (modalIsActive) {
+            dispatch(addProduct(product))
+            if(userData.cart_id) {
+                fetch(`${process.env.REACT_APP_SERVER_LOCAL}cart/${userData.cart_id}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        // 'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: JSON.stringify(product)
+                }).then(respone => respone.json())
+                .then(respone => {
+                    console.log(respone)
+                })
+                .catch(err => console.log(err))
+            }
         }
-    ]
+        
+
+    };
+    const handleStopPropag = (e) => {
+        e.stopPropagation();
+    };
 
     return (
         <div className="product-detail">
@@ -85,84 +111,105 @@ function ProductDetail() {
 
                 </div> */}
                 {/* Breakcumb */}
-                <div className='w-full px-[15px] mt-[24px] ml-[20px]'>
-                    <Link to='/'>
-                        <li className="list-none inline cursor-pointer  text-[14px] hover:text-[#ff2d37]">Trang chủ</li>
+                <div className="w-full px-[15px] mt-[24px] ml-[20px]">
+                    <Link to="/">
+                        <li className="list-none inline cursor-pointer  text-[14px] hover:text-[#ff2d37]">
+                            Trang chủ
+                        </li>
                     </Link>
-                    <BsChevronRight className='text-[10px] font-bold w-[30px] h-[10px] inline' />
-                    <Link to='/'>
-                        <li className="list-none inline cursor-pointer  text-[14px] hover:text-[#ff2d37]">Sneaker nổi bật</li>
+                    <BsChevronRight className="text-[10px] font-bold w-[30px] h-[10px] inline" />
+                    <Link to="/">
+                        <li className="list-none inline cursor-pointer  text-[14px] hover:text-[#ff2d37]">
+                            Sneaker nổi bật
+                        </li>
                     </Link>
-                    <BsChevronRight className='text-[10px] font-bold w-[30px] h-[10px] inline' />
-                    <li className="list-none inline cursor-text text-[#ff2d37] text-[14px]">Tất cả sản phẩm</li>
+                    <BsChevronRight className="text-[10px] font-bold w-[30px] h-[10px] inline" />
+                    <li className="list-none inline cursor-text text-[#ff2d37] text-[14px]">
+                        Tất cả sản phẩm
+                    </li>
                 </div>
                 <div className="text-[24px] font-bold text-[#ff2d37] leading-[38px] text-center mt-[8px]">
-                    Giày nam
+                    {product?.category}
                 </div>
                 <div className="product-info">
                     <div className="product-image">
                         <WrapperImage
-                            src={productModels[currentImage].img} alt='Product'>
-                        </WrapperImage>
+                            src={product?.image[currentImage]}
+                            alt="Product"
+                        ></WrapperImage>
                     </div>
                     <div className="product-option">
-                        <div className="product-color">
-                            {
-                                productModels.map((item, index) => {
-                                    return (
-                                        <WrapperModel
-                                            key={index}
-                                            index={index}
-                                            currentImage={currentImage}
-                                            onClick={handleActiveImageItem}
-                                        >
-                                            <img className='product-img' src={item.img} alt={`Product ${index}`} ></img>
-                                        </WrapperModel>
-                                    )
-                                })
-                            }
+                        <div className="product-color relative">
+                            {product?.image?.map((item, index) => {
+                                return (
+                                    <WrapperModel
+                                        key={index}
+                                        index={index}
+                                        currentImage={currentImage}
+                                        onClick={handleActiveImageItem}
+                                    >
+                                        <img
+                                            className="product-img"
+                                            src={item}
+                                            alt={`Product ${index}`}
+                                        ></img>
+                                    </WrapperModel>
+                                );
+                            })}
+                            <FiScissors className="absolute bottom-[-8px] left-[-15px] text-[#ff2d37]"></FiScissors>
                         </div>
-                        <div className="product-bot">
-                            <div className="product-name">
-                                Giày đá bóng sân cỏ nhân tạo
-                            </div>
-                            <div className="product-group-status">
+                        <div className="product-bot mt-[10px]">
+                            <div className="product-name">{product?.name}</div>
+                            <div className="product-group-status flex items-center mt-[10px]">
                                 <span className="lable-name">
-                                    Thương hiệu: <span className="">Nike</span>
+                                    Thương hiệu:{" "}
+                                    <span className="text-[#ff2d37]">{product?.brand_id?.name}</span>
                                 </span>
+                                <div className="border-l border-solid border-black inline mx-[10px] py-[7px] h-[10px]"></div>
                                 <span className="lable-name">
-                                    Kho: <span className="status-name">Còn hàng</span>
+                                    Kho: {
+                                        product?.status && (
+                                            <span className="status-name">Còn hàng</span>
+                                        )
+                                    }
                                 </span>
                             </div>
                             <div className="product-guild-size">
-                                <span>
-                                    Hướng dẫn chọn size
-                                </span>
+                                <span>Hướng dẫn chọn size</span>
                             </div>
                             <div className="product-price">
-                                <span className="special-price">
-                                    1.200.000₫
-                                </span>
-                                <span className="old-price">
-                                    1.500.000₫
-                                </span>
+                                <span className="special-price">{product?.price}</span>
+                                <span className="old-price">{product?.sale_price}</span>
                             </div>
                             <div className="product-quantity">
-                                <div className="lable-name">
-                                    Số lượng:
-                                </div>
-                                <div className="custom-quantity">
-                                    <button className="minus-btn">
-                                        <AiOutlineMinus></AiOutlineMinus>
+                                <div className="lable-name">Số lượng:</div>
+                                <div className="custom-quantity flex items-center">
+                                    <button
+                                        onClick={handleMinus}
+                                        className="minus-btn  border border-solid border-[#ebebeb] flex items-center justify-center w-[35px] h-[35px]"
+                                    >
+                                        <AiOutlineMinus className=""></AiOutlineMinus>
                                     </button>
-                                    <input className="input-quantity" value='1'></input>
-                                    <button className="plus-btn">
+                                    <input
+                                        readOnly
+                                        className="w-[45px] h-[35px] border border-solid border-[#ebebeb] flex items-center justify-center text-center outline-none"
+                                        value={value}
+                                    ></input>
+                                    <button
+                                        onClick={handlePlus}
+                                        className="plus-btn border border-solid border-[#ebebeb] flex items-center justify-center w-[35px] h-[35px]"
+                                    >
                                         <AiOutlinePlus></AiOutlinePlus>
                                     </button>
                                 </div>
                             </div>
                             <div className="product-action">
-                                <button className="product-order">MUA NGAY</button>
+                                <button
+                                    onClick={handleClickBuy}
+                                    className="product-order font-bold flex justify-center items-center hover:text-[#ff2d37] hover:bg-white"
+                                >
+                                    MUA NGAY
+                                </button>
                                 <button className="product-contact">
                                     <BsFillTelephoneFill className="product-contact-icon"></BsFillTelephoneFill>
                                     <p>Mua số lượng lớn</p>
@@ -171,11 +218,128 @@ function ProductDetail() {
                             </div>
                         </div>
                     </div>
-
+                </div>
+                {/* mô tả sản phẩm */}
+                <div className="product-des mt-[124px]">
+                    <div onClick={handeActive} className="inline-block">
+                        <span
+                            data-name={"Mô tả"}
+                            className={clsx(
+                                "px-[25px] py-[10px] rounded-t-[4px] text-black text-[18px] cursor-pointer",
+                                {
+                                    active: isActive === "Mô tả",
+                                }
+                            )}
+                        >
+                            Mô tả sản phẩm
+                        </span>
+                    </div>
+                    <div onClick={handeActive} className="inline-block">
+                        <span
+                            data-name={"Đánh giá"}
+                            className={clsx(
+                                "px-[25px] py-[10px] rounded-t-[4px] text-black text-[18px] cursor-pointer",
+                                {
+                                    active: isActive === "Đánh giá",
+                                }
+                            )}
+                        >
+                            Đánh giá
+                        </span>
+                    </div>
+                    {isActive === "Mô tả" && (
+                        <div className=" border border-solid border-[#ebebeb] mt-[8px] py-[25px] px-[15px]">
+                            <p className="text-[#9d9c9c]  text-[14px]">
+                                Giày Đá Bóng Sân Cỏ cho độ bám sàn tốt cũng như có độ bền cùng
+                                độ dẻo dai cao, là chọn lựa lý tưởng của những bạn nam yêu thích
+                                thể thao. Thân giày đá bóng cỏ tự nhiên được làm từ da PU cao
+                                cấp Giày Đá Bóng Sân Cỏ cho độ bám sàn tốt cũng như có độ bền
+                                cùng độ dẻo dai cao, là chọn lựa lý tưởng của những bạn nam yêu
+                                thích thể thao. Thân giày đá bóng cỏ tự nhiên được làm từ da PU
+                                cao cấp, bề mặt bóng chống bám bẩn, chống thấm nước. Bên cạnh
+                                đó, lớp da của phần upper được tráng một lớp firm mỏng giúp bảo
+                                vệ phần da giày tốt hơn. Đế giày được may toàn bộ quanh mũi giày
+                                và gót nên rất chắc chắn, thích ứng với sân cỏ nhân tạo. Giày
+                                thiết kế dành riêng cho bề mặt sân cỏ tự nhiên với các khối đinh
+                                lớn hình tam giác có độ cao vừa phải, tránh trơn trượt ngay cả
+                                khi bạn chạy trên sân cỏ tự nhiên; đồng thời hỗ trợ tuyệt vời
+                                cho những pha xử lý bóng bằng gầm giày, những cú ngoặt bóng siêu
+                                nhanh. Phần lõi trong đôi giày đá banh tự nhiên là lớp vải mềm
+                                giúp thấm hút mồ hôi và tạo sự thông thoáng cho đôi chân, không
+                                gây mùi khó chịu khi sử dụng. Chất liệu cao su thiên nhiên tạo
+                                sự đàn hồi nhất định cho đôi giày, mang đến cảm giác êm ái,
+                                thoải mái khi sử dụng sản phẩm. Form giày đá bóng chuẩn ôm sát
+                                chân tạo cảm giác bóng tốt, làm tăng khả năng xử lý bóng, đồng
+                                thời giúp cho việc kiểm soát bóng của bạn trở nên dễ dàng hơn.
+                            </p>
+                        </div>
+                    )}
+                    {isActive === "Đánh giá" && (
+                        <div className=" border border-solid border-[#ebebeb] mt-[8px] py-[25px] px-[15px]"></div>
+                    )}
                 </div>
             </div>
+            {/* modal */}
+            {modalIsActive && (
+                <div
+                    onClick={handleClickBuy}
+                    className="modal w-full h-full flex justify-center fixed top-0 left-0 right-0 bottom-0  bg-[rgba(0,0,0,0.4)] z-50"
+                >
+                    {/* ngừng nổi bọt */}
+                    <div
+                        onClick={handleStopPropag}
+                        className=" w-[750px] h-[240px] flex absolute top-[30px] bg-white"
+                    >
+                        <div className="flex-col w-[375px] h-[240px] p-[30px]  flex border-r border-solid border-[#ebebeb]">
+                            <div className="">
+                                <BsCheck className="text-[#ff2d37] text-[24px] inline-block"></BsCheck>
+                                <span className="text-[#ff2d37] text-[14px] italic">
+                                    Sản phẩm vừa được thêm vào giỏ hàng
+                                </span>
+                                <div className=" border-b border-solid border-[#ebebeb] mt-[12px]"></div>
+                            </div>
+                            <div className="flex  mt-[20px] gap-[20px]">
+                                <img
+                                    className="w-[100px] h-[100px]"
+                                    src={product?.image[currentImage]}
+                                />
+                                <div className="flex flex-col">
+                                    <span className="font-bold text-[14px]">{product?.name}</span>
+                                    <span className="text-[#ff2d37] text-[18px]">
+                                        {product.price}đ
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="w-[360px]">
+                            <div className="flex-col w-[375px] h-[240px] p-[30px]  flex border-r border-solid border-[#ebebeb]">
+                                <div className="">
+                                    <GiBeachBag className="text-[#ff2d37] text-[20px] inline align-text-top"></GiBeachBag>
+                                    <span className="ml-[4px] text-[#898989] text-[16px] cursor-pointer hover:text-[#ff2d37]">
+                                        Giỏ hàng ({productCount})
+                                    </span>
+                                    <div className=" border-b border-solid border-[#ebebeb] mt-[12px]"></div>
+                                </div>
+                                <div className="flex flex-col mt-[20px] gap-[20px]">
+                                    <div className="flex items-center">
+                                        <span className="font-bold text-[14px]">Tổng tiền:</span>
+                                        <span className="ml-[12px] text-[#ff2d37] text-[18px] font-[500]">
+                                            18.700.000đ
+                                        </span>
+                                    </div>
+                                    <Link to={"/checkout"}>
+                                        <div className="h-[45px] w-[293px] px-[15px] rounded-full uppercase bg-[#ff2d37] flex items-center justify-center text-white cursor-pointer text-[16px] font-[500] active:shadow-md">
+                                            Tiến hành thanh toán
+                                        </div>
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
-    )
+    );
 }
 
-export default ProductDetail
+export default ProductDetail;
