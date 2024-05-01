@@ -15,7 +15,7 @@ const publicRoutes = [
     { path: '/lien-he', page: Contact},
     { path: '/gioi-thieu', page: About},
     { path: '/tin-tuc', page: News},
-    { path: '/product/:id', page: ProductList},
+    { path: '/product/:name', page: ProductList},
     { path: '/login', page: Login},
     { path: '/newproduct', page: NewProduct},
     { path: '/signup', page: Signup},

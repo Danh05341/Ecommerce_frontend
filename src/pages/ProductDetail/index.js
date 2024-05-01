@@ -32,7 +32,7 @@ function ProductDetail() {
     const [isActive, setIsActive] = useState("Mô tả");
     const [modalIsActive, setModalIsActive] = useState(false);
     const [product, setProduct] = useState();
-
+    console.log('product: ', product);
     const { slug } = useParams();
     useEffect(() => {
         const getProduct = async () => {
@@ -134,7 +134,7 @@ function ProductDetail() {
                 <div className="product-info">
                     <div className="product-image">
                         <WrapperImage
-                            src={product?.image[currentImage]}
+                            src={product?.image?.[currentImage]}
                             alt="Product"
                         ></WrapperImage>
                     </div>

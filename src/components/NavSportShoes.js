@@ -16,11 +16,11 @@ const NavSportShoes = (props) => {
                                     category?.children ? (
                                         // Parent
                                         <Link key={index} to={"/product/" + slugify(category.name, { locale: 'vi' })}>
-                                            <div className="relavtive px-[10px] flex justify-between items-center h-[38px] leading-[38px] text-[#282828] normal-case border-b border-solid border-[#ebebeb] hover:text-[#ff2d37] cursor-pointer group/sportShoesParent">
+                                            <div onClick={props?.handleClick} className="relavtive px-[10px] flex justify-between items-center h-[38px] leading-[38px] text-[#282828] normal-case border-b border-solid border-[#ebebeb] hover:text-[#ff2d37] cursor-pointer group/sportShoesParent">
                                                 {category.name}
                                                 <BsChevronRight className="text-[10px] font-bold w-[10px] h-[10px] inline" />
                                                 {/* children */}
-                                                <div className="absolute top-0 left-[100%] hidden z-50 cursor-default min-w-[200px]  bg-white shadow-md group-hover/sportShoesParent:block font-normal ">
+                                                <div onClick={props?.handleClick} className="absolute top-0 left-[100%] hidden z-50 cursor-default min-w-[200px]  bg-white shadow-md group-hover/sportShoesParent:block font-normal ">
                                                     {
                                                         category?.children?.map((category, index) => {
                                                             return (
@@ -36,8 +36,8 @@ const NavSportShoes = (props) => {
                                             </div>
                                         </Link>
                                     ) : (
-                                        <Link key={index} to={"/product/" + slugify(category.name, { locale: 'vi' })}>
-                                            <div className="h-[38px]  px-[10px] leading-[38px] text-[#282828] normal-case border-b border-solid border-[#ebebeb] hover:text-[#ff2d37] cursor-pointer">
+                                        <Link  key={index} to={"/product/" + slugify(category.name, { locale: 'vi' })}>
+                                            <div onClick={props?.handleClick}  className="h-[38px]  px-[10px] leading-[38px] text-[#282828] normal-case border-b border-solid border-[#ebebeb] hover:text-[#ff2d37] cursor-pointer">
                                                 {category.name}
                                             </div>
                                         </Link>

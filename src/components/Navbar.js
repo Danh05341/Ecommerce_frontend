@@ -9,6 +9,22 @@ import { fetchCategoryAPI } from "../apis"
 const Navbar = () => {
     const [categories, setCategories] = useState([])
     const [sportShoes, setsportShoes] = useState([])
+    const [open, setOpen] = useState(false)
+    const [open2, setOpen2] = useState(false)
+
+    const handleOnMouse2 = () => {
+        setOpen2(true)
+    }
+    const handleClick2 = () => {
+        setOpen2(false)
+    }
+
+    const handleOnMouse = () => {
+        setOpen(true)
+    }
+    const handleClick = () => {
+        setOpen(false)
+    }
 
     useEffect(() => {
         fetchCategoryAPI().then((dataRes) => {
@@ -33,15 +49,19 @@ const Navbar = () => {
             <div className="">
                 <Link to='/' className="leading-[44px] inline-block">Trang chủ</Link>
             </div>
-            <div className="group/navCategory">
+            <div onMouseEnter={handleOnMouse} onMouseLeave={handleClick} onClick={handleClick} className="group/navCategory">
                 <Link to='/product/all' className="inline-block leading-[44px]">Sản phẩm</Link>
                 <BsChevronDown className="ml-[8px] text-[12px] inline-block " />
-                <NavCategory data={categories} />
+                {
+                    open ? (<NavCategory data={categories} handleClick={handleClick} />) : <></>
+                }
             </div>
-            <div className="group/sportShoes relative">
+            <div onMouseEnter={handleOnMouse2} onMouseLeave={handleClick2} onClick={handleClick2} className="group/sportShoes relative">
                 <Link to={`/product/${slugify("Giày thể thao", { locale: 'vi' })}`} className="inline-block leading-[44px]">Giày thể thao</Link>
                 <BsChevronDown className="ml-[8px] text-[12px] inline-block " />
-                <NavSportShoes data={sportShoes} />
+                {
+                    open2 ? (<NavSportShoes data={sportShoes} handleClick={handleClick2} />) : <></>
+                }
             </div>
             <div className="">
                 <Link to={`/${slugify("Liên hệ", { locale: 'vi' })}`} className="inline-block leading-[44px]">Liên hệ</Link>

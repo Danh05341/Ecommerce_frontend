@@ -10,8 +10,8 @@ export const fetchBrandAPI = async () => {
     return dataRes
 }
 
-export const fetchProductAPI = async () => {
-    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}product`)
+export const fetchProductAPI = async (slug) => {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}product/${slug}`)
     const dataRes = await fetchData.json()
     return dataRes
 }
@@ -33,6 +33,7 @@ export const LoginAPI = async (email, password) => {
     const dataRes = await fetchData.json()
     return dataRes
 }
+
 export const checkTokenAPI = async (token) => {
     const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}users/checkToken`, {
         method: 'POST',

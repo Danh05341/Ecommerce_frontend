@@ -9,12 +9,12 @@ const ProductCard = (props) => {
                     props.products.map((product, index) => {
                         return (
                             <div key={index} className="flex flex-col justify-between relative  gap-x-[15px] min-w-[203px] flex-1 max-w-[216px] h-[318px] border border-dashed border-[#ebebeb]">
-                                <Link to={"/" + product._id}>
+                                <Link to={"/" + product.slug}>
                                     <div className=''>
                                         <img src={product.image[0]} alt='product' className='w-[216px] h-[216px]overflow-hidden cursor-pointer' />
                                     </div>
                                 </Link>
-                                <Link to={"/" + product._id} className='flex-1 text-center inline-block'>
+                                <Link to={"/" + product.slug} className='flex-1 text-center inline-block'>
                                     <span className='text-[14px] flex-1 inline-block  text-[#282828]  cursor-pointer hover:text-[#ff2d37] '>{product.name}</span>
                                 </Link>
                                 <div className='flex  justify-between items-center h-[45px] px-[10px] border-t border-dashed border-[#ebebeb]'>

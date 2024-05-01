@@ -5,6 +5,7 @@ import SideBar from "../../components/SideBar";
 import { useEffect, useState } from "react";
 import ProductCard from "../Home/ProductCard";
 import { fetchBrandAPI, fetchProductAPI, getCategoryBySlugAPI } from "../../apis";
+import PaginationRounded from "../../components/Pagination";
 
 
 const ProductList = () => {
@@ -12,20 +13,20 @@ const ProductList = () => {
     const [product, setProduct] = useState()
     const [category, setCategory] = useState()
     const slug = useParams();
-    const location = useLocation()
     useEffect(() => {
-        getCategoryBySlugAPI(slug.id).then((dataRes) => {
+        getCategoryBySlugAPI(slug.name).then((dataRes) => {
             setCategory(dataRes.data)
         })
-    }, [slug])
-    useEffect(() => {
         fetchBrandAPI().then((dataRes) => {
             setBrand(dataRes.data)
         })
-        fetchProductAPI().then((dataRes) => {
+        fetchProductAPI(slug.name).then((dataRes) => {
             setProduct(dataRes.data)
         })
-    }, [])
+    }, [slug])
+    // useEffect(() => {
+        
+    // }, [])
     return (
         <div className="w-full h-[100vh] bg-white flex">
             <div className="w-[1200px]  m-auto">
@@ -43,7 +44,7 @@ const ProductList = () => {
                         <li className="list-none inline cursor-text text-[#ff2d37] text-[14px]">Tất cả sản phẩm</li>
                     </div>
                     {
-                        slug.id === 'all' ? (
+                        slug.name === 'all' ? (
                             <div className="text-[24px] font-bold text-[#ff2d37] leading-[38px] text-center mt-[8px]">
                                 Tất cả sản phẩm
                             </div>
@@ -158,6 +159,7 @@ const ProductList = () => {
                             <div className="flex flex-wrap gap-x-[15px] gap-y-[20px]  w-[870px] mt-[20px]">
                                 <ProductCard products={product} />
                             </div>
+                            <PaginationRounded productCount={product?.length}/>
                         </div>
                     </div>
                 </div>
