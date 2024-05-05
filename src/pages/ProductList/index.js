@@ -1,18 +1,22 @@
 import { BsChevronRight, BsCheck } from "react-icons/bs";
 
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import SideBar from "../../components/SideBar";
 import { useEffect, useState } from "react";
 import ProductCard from "../Home/ProductCard";
 import { fetchBrandAPI, fetchProductAPI, getCategoryBySlugAPI } from "../../apis";
 import PaginationRounded from "../../components/Pagination";
-
+import queryString from "query-string";
 
 const ProductList = () => {
     const [brand, setBrand] = useState()
     const [product, setProduct] = useState()
     const [category, setCategory] = useState()
+    const [pageNumbers, setPageNumbers] = useState(0)
+    const navigate = useNavigate()
     const slug = useParams();
+    const location = useLocation();
+    
     useEffect(() => {
         getCategoryBySlugAPI(slug.name).then((dataRes) => {
             setCategory(dataRes.data)
@@ -20,13 +24,21 @@ const ProductList = () => {
         fetchBrandAPI().then((dataRes) => {
             setBrand(dataRes.data)
         })
-        fetchProductAPI(slug.name).then((dataRes) => {
+        fetchProductAPI(slug.name, location.search).then((dataRes) => {
             setProduct(dataRes.data)
+            setPageNumbers(dataRes.totalPage)
         })
     }, [slug])
-    // useEffect(() => {
-        
-    // }, [])
+
+    const handleChangePage = (e, page) => {
+
+        const query = queryString.parse(location.search) 
+        query.page = page
+        // console.log('location: ', location.search)
+        // console.log('query: ', query)
+        navigate(`/product/${slug.name}?${queryString.stringify(query)}`)
+    }
+
     return (
         <div className="w-full h-[100vh] bg-white flex">
             <div className="w-[1200px]  m-auto">
@@ -159,7 +171,7 @@ const ProductList = () => {
                             <div className="flex flex-wrap gap-x-[15px] gap-y-[20px]  w-[870px] mt-[20px]">
                                 <ProductCard products={product} />
                             </div>
-                            <PaginationRounded productCount={product?.length}/>
+                            <PaginationRounded pageNumbers={pageNumbers} handleChangePage={handleChangePage}/>
                         </div>
                     </div>
                 </div>

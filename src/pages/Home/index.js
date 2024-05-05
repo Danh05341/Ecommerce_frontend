@@ -42,7 +42,7 @@ const Home = () => {
 							<span className="text-[28px] text-[#282828] uppercase font-[400] cursor-pointer hover:text-[#ff2d37]">Sản phẩm bán chạy</span>
 						</div>
 						<div className="flex px-[15px] gap-[15px] pb-[30px]  overflow-auto">
-							<ProductCard products={hotProduct?.data.filter((product)=>product.category !== "Sneaker nổi bật" && product.category !== "Slip-on nổi bật")}/>
+							<ProductCard products={hotProduct?.data?.filter((product)=>product.category !== "Sneaker nổi bật" && product.category !== "Slip-on nổi bật")}/>
 						</div>
 					</div>
 				</div>
@@ -69,7 +69,7 @@ const Home = () => {
 						</div>
 						{/* bot-section */}
 						<div className="flex px-[15px] gap-[15px] pb-[30px] mt-[15px]">
-							<ProductCard products={hotProduct?.data.filter((product)=>product.category === "Sneaker nổi bật")}/>
+							<ProductCard products={hotProduct?.data?.filter((product)=>product.category === "Sneaker nổi bật")}/>
 						</div>
 					</div>
 				</div>
@@ -97,7 +97,7 @@ const Home = () => {
 						</div>
 						{/* bot-section */}
 						<div className="flex px-[15px] gap-[15px] pb-[30px] mt-[15px]">
-							<ProductCard products={hotProduct?.data.filter((product)=>product.category === "Slip-on nổi bật")}/>
+							<ProductCard products={hotProduct?.data?.filter((product)=>product.category === "Slip-on nổi bật")}/>
 						</div>
 					</div>
 				</div>
