@@ -15,10 +15,10 @@ const ProductList = () => {
     const [product, setProduct] = useState()
     const [category, setCategory] = useState()
     const [pageNumbers, setPageNumbers] = useState(0)
+    const [defaultPage, setDefaultPage] = useState(1)
     const navigate = useNavigate()
     const slug = useParams();
     const location = useLocation();
-
 
     useEffect(() => {
         getCategoryBySlugAPI(slug.name).then((dataRes) => {
@@ -49,10 +49,17 @@ const ProductList = () => {
     // brandAPI
     useEffect(() => {
         const query = queryString.parse(location.search)
+
         console.log('query: ', query)
 
-        if (brandAPI.length > 0) query.brands = brandAPI.join(',')
-        else delete query.brands
+        if (brandAPI.length > 0) {
+            query.brands = brandAPI.join(',')
+            query.page = 1
+        }
+        else{
+            delete query.brands
+            delete query.page
+        }
         // console.log('brandAPI: ', brandAPI)
         // console.log('query: ', queryString.stringify(query))
         // console.log('slug.name: ', slug.name)
@@ -230,7 +237,7 @@ const ProductList = () => {
                             <div className="flex flex-wrap gap-x-[15px] gap-y-[20px]  w-[870px] mt-[20px]">
                                 <ProductCard products={product} />
                             </div>
-                            <PaginationRounded pageNumbers={pageNumbers} handleChangePage={handleChangePage} />
+                            <PaginationRounded defaultPage={defaultPage} pageNumbers={pageNumbers} handleChangePage={handleChangePage} />
                         </div>
                     </div>
                 </div>
