@@ -11,6 +11,7 @@ export const fetchBrandAPI = async () => {
 }
 
 export const fetchProductAPI = async (slug, location) => {
+    console.log('slug + location: ',slug + location)
     const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}product/${slug + location}`)
     const dataRes = await fetchData.json()
     return dataRes

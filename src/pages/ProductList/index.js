@@ -7,35 +7,94 @@ import ProductCard from "../Home/ProductCard";
 import { fetchBrandAPI, fetchProductAPI, getCategoryBySlugAPI } from "../../apis";
 import PaginationRounded from "../../components/Pagination";
 import queryString from "query-string";
+import CheckBox from '../../components/Checkbox'
 
 const ProductList = () => {
     const [brand, setBrand] = useState()
+    const [brandAPI, setBrandAPI] = useState([])
     const [product, setProduct] = useState()
     const [category, setCategory] = useState()
     const [pageNumbers, setPageNumbers] = useState(0)
     const navigate = useNavigate()
     const slug = useParams();
     const location = useLocation();
-    
+
+
     useEffect(() => {
         getCategoryBySlugAPI(slug.name).then((dataRes) => {
             setCategory(dataRes.data)
         })
         fetchBrandAPI().then((dataRes) => {
-            setBrand(dataRes.data)
+            const brandList = dataRes.data.map(brand => ({ ...brand, checked: false }))
+            console.log('dataRes: ', brandList)
+            setBrand(brandList)
         })
         fetchProductAPI(slug.name, location.search).then((dataRes) => {
             setProduct(dataRes.data)
             setPageNumbers(dataRes.totalPage)
+            // setBrand(dataRes.brandName)
         })
-    }, [slug])
+    }, [slug.name])
+    // console.log('slug: ', slug)
+    // console.log('location: ', location)
+    // console.log('brand: ', brand)
+    useEffect(() => {
+        fetchProductAPI(slug.name, location.search).then((dataRes) => {
+            console.log('dataRes: ', dataRes.data)
+            setProduct(dataRes.data)
+            setPageNumbers(dataRes.totalPage)
+        })
+    }, [location.search])
+
+    // brandAPI
+    useEffect(() => {
+        const query = queryString.parse(location.search)
+        console.log('query: ', query)
+
+        if (brandAPI.length > 0) query.brands = brandAPI.join(',')
+        else delete query.brands
+        // console.log('brandAPI: ', brandAPI)
+        // console.log('query: ', queryString.stringify(query))
+        // console.log('slug.name: ', slug.name)
+        // console.log('query: ', queryString.stringify(query))
+
+        navigate(`/product/${slug.name}?${queryString.stringify(query)}`)
+
+    }, [brandAPI])
+
+    const updateCheckStatusBrand = (id) => {
+        console.log('onChange')
+        // const query = queryString.parse(location.search)
+
+        setBrand(brand => {
+            const brandListNew = brand.map(item =>
+                item._id === id ? { ...item, checked: !item.checked } : item
+            )
+
+            let brands = []
+            brandListNew.forEach(item => {
+                if (item.checked === true) brands.push(item.name)
+            })
+            console.log('brands: ', brands)
+
+            setBrandAPI(brands)
+            // query.brand = brands
+            // console.log('query: ', query)
+
+            return brandListNew
+        })
+
+        // navigate(`/product/${slug.name}?${queryString.stringify(query)}`)
+
+    }
 
     const handleChangePage = (e, page) => {
 
-        const query = queryString.parse(location.search) 
+        const query = queryString.parse(location.search)
         query.page = page
         // console.log('location: ', location.search)
         // console.log('query: ', query)
+        console.log('e: ', e.target.name)
         navigate(`/product/${slug.name}?${queryString.stringify(query)}`)
     }
 
@@ -82,9 +141,9 @@ const ProductList = () => {
                                         brand?.map((data, index) => {
                                             return (
                                                 <div key={index} className="flex items-center relative flex-1 ">
-                                                    <input type="checkbox" id={data.name} name={data.name} className=" w-[15px] h-[15px] " />
+                                                    <input onChange={() => updateCheckStatusBrand(data._id)} checked={data.checked} type="checkbox" id={data.name} name={data.name} className=" w-[15px] h-[15px] cursor-pointer" />
                                                     {/* <BsCheck className="absolute top-0 left-[-3px] w-[20px] h-[20px] text-[#ff2d37] " /> */}
-                                                    <label htmlFor={data.name} className="text-[14px] ml-[8px]">{data.name}</label>
+                                                    <label htmlFor={data.name} className="text-[14px] pl-[8px] w-full cursor-pointer select-none">{data.name}</label>
                                                 </div>
                                             )
                                         })
@@ -96,34 +155,34 @@ const ProductList = () => {
                             <div className="px-[15px] pb-[15px] pt-[6px] border border-solid border-[#ebebeb] ">
                                 <div className="flex flex-col gap-[15px] mt-[9px]  overflow-y-auto scrollbar-thin">
                                     <div className="flex items-center relative flex-1 ">
-                                        <input type="checkbox" id=" name=" className=" w-[15px] h-[15px] " />
+                                        <input type="checkbox" id="1" className=" w-[15px] h-[15px] cursor-pointer" />
                                         {/* <BsCheck className="absolute top-0 left-[-3px] w-[20px] h-[20px] text-[#ff2d37] " /> */}
-                                        <label htmlFor="Hura" className="text-[14px] ml-[8px]">Giá dưới 100.000đ</label>
+                                        <label htmlFor="1" className="text-[14px] pl-[8px] cursor-pointer select-none">Giá dưới 100.000đ</label>
                                     </div>
                                     <div className="flex items-center relative flex-1 ">
-                                        <input type="checkbox" id=" name=" className=" w-[15px] h-[15px] " />
+                                        <input type="checkbox" id="2" className=" w-[15px] h-[15px] cursor-pointer" />
                                         {/* <BsCheck className="absolute top-0 left-[-3px] w-[20px] h-[20px] text-[#ff2d37] " /> */}
-                                        <label htmlFor="Hura" className="text-[14px] ml-[8px]">100.000đ - 200.000đ</label>
+                                        <label htmlFor="2" className="text-[14px] pl-[8px] cursor-pointer select-none">100.000đ - 200.000đ</label>
                                     </div>
                                     <div className="flex items-center relative flex-1 ">
-                                        <input type="checkbox" id=" name=" className=" w-[15px] h-[15px] " />
+                                        <input type="checkbox" id="3" className=" w-[15px] h-[15px] cursor-pointer" />
                                         {/* <BsCheck className="absolute top-0 left-[-3px] w-[20px] h-[20px] text-[#ff2d37] " /> */}
-                                        <label htmlFor="Hura" className="text-[14px] ml-[8px]">200.000đ - 300.000đ</label>
+                                        <label htmlFor="3" className="text-[14px] pl-[8px] cursor-pointer select-none">200.000đ - 300.000đ</label>
                                     </div>
                                     <div className="flex items-center relative flex-1 ">
-                                        <input type="checkbox" id=" name=" className=" w-[15px] h-[15px] " />
+                                        <input type="checkbox" id="4" className=" w-[15px] h-[15px] cursor-pointer" />
                                         {/* <BsCheck className="absolute top-0 left-[-3px] w-[20px] h-[20px] text-[#ff2d37] " /> */}
-                                        <label htmlFor="Hura" className="text-[14px] ml-[8px]">300.000đ - 500.000đ</label>
+                                        <label htmlFor="4" className="text-[14px] pl-[8px] cursor-pointer select-none">300.000đ - 500.000đ</label>
                                     </div>
                                     <div className="flex items-center relative flex-1 ">
-                                        <input type="checkbox" id=" name=" className=" w-[15px] h-[15px] " />
+                                        <input type="checkbox" id="5" className=" w-[15px] h-[15px] cursor-pointer" />
                                         {/* <BsCheck className="absolute top-0 left-[-3px] w-[20px] h-[20px] text-[#ff2d37] " /> */}
-                                        <label htmlFor="Hura" className="text-[14px] ml-[8px]">500.000đ - 1.000.000đ</label>
+                                        <label htmlFor="5" className="text-[14px] pl-[8px] cursor-pointer select-none">500.000đ - 1.000.000đ</label>
                                     </div>
                                     <div className="flex items-center relative flex-1 ">
-                                        <input type="checkbox" id=" name=" className=" w-[15px] h-[15px] " />
+                                        <input type="checkbox" id="6" className=" w-[15px] h-[15px] cursor-pointer" />
                                         {/* <BsCheck className="absolute top-0 left-[-3px] w-[20px] h-[20px] text-[#ff2d37] " /> */}
-                                        <label htmlFor="Hura" className="text-[14px] ml-[8px]">Giá trên 1.000.000đ</label>
+                                        <label htmlFor="6" className="text-[14px] pl-[8px] cursor-pointer select-none">Giá trên 1.000.000đ</label>
                                     </div>
                                 </div>
                             </div>
@@ -132,24 +191,24 @@ const ProductList = () => {
                             <div className="leading-[40px] text-[14px] font-bold mt-[24px]">THEO KÍCH CỠ</div>
                             <div className="flex flex-wrap gap-x-[20px] gap-y-[10px] px-[15px] pb-[15px] pt-[6px] border border-solid border-[#ebebeb] ">
                                 <div className="flex items-center relative ">
-                                    <input type="checkbox" id="" name="" className=" w-[15px] h-[15px] " />
-                                    <label htmlFor="Hura" className="text-[14px] ml-[8px]">38</label>
+                                    <input type="checkbox" id="" name="" className=" w-[15px] h-[15px] cursor-pointer" />
+                                    <label htmlFor="Hura" className="text-[14px] pl-[8px] cursor-pointer select-none">38</label>
                                 </div>
                                 <div className="flex items-center relative ">
-                                    <input type="checkbox" id="" name="" className=" w-[15px] h-[15px] " />
-                                    <label htmlFor="Hura" className="text-[14px] ml-[8px]">39</label>
+                                    <input type="checkbox" id="" name="" className=" w-[15px] h-[15px] cursor-pointer" />
+                                    <label htmlFor="Hura" className="text-[14px] pl-[8px] cursor-pointer select-none">39</label>
                                 </div>
                                 <div className="flex items-center relative ">
-                                    <input type="checkbox" id="" name="" className=" w-[15px] h-[15px] " />
-                                    <label htmlFor="Hura" className="text-[14px] ml-[8px]">40</label>
+                                    <input type="checkbox" id="" name="" className=" w-[15px] h-[15px] cursor-pointer" />
+                                    <label htmlFor="Hura" className="text-[14px] pl-[8px] cursor-pointer select-none">40</label>
                                 </div>
                                 <div className="flex items-center relative ">
-                                    <input type="checkbox" id="" name="" className=" w-[15px] h-[15px] " />
-                                    <label htmlFor="Hura" className="text-[14px] ml-[8px]">41</label>
+                                    <input type="checkbox" id="" name="" className=" w-[15px] h-[15px] cursor-pointer" />
+                                    <label htmlFor="Hura" className="text-[14px] pl-[8px] cursor-pointer select-none">41</label>
                                 </div>
                                 <div className="flex items-center relative ">
-                                    <input type="checkbox" id="" name="" className=" w-[15px] h-[15px] " />
-                                    <label htmlFor="Hura" className="text-[14px] ml-[8px]">42</label>
+                                    <input type="checkbox" id="" name="" className=" w-[15px] h-[15px] cursor-pointer" />
+                                    <label htmlFor="Hura" className="text-[14px] pl-[8px] cursor-pointer select-none">42</label>
                                 </div>
                             </div>
 
@@ -171,7 +230,7 @@ const ProductList = () => {
                             <div className="flex flex-wrap gap-x-[15px] gap-y-[20px]  w-[870px] mt-[20px]">
                                 <ProductCard products={product} />
                             </div>
-                            <PaginationRounded pageNumbers={pageNumbers} handleChangePage={handleChangePage}/>
+                            <PaginationRounded pageNumbers={pageNumbers} handleChangePage={handleChangePage} />
                         </div>
                     </div>
                 </div>
