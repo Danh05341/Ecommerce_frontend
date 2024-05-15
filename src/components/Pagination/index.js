@@ -1,9 +1,9 @@
 import * as React from 'react';
 import Pagination from '@mui/material/Pagination';
-import Stack from '@mui/material/Stack';
 
-export default function PaginationRounded({defaultPage, pageNumbers, handleChangePage}) {
+export default function PaginationRounded({page, pageNumbers, handleChangePage}) {
+  console.log('render-pagination')
   return (
-      <Pagination page={defaultPage} count={pageNumbers} onChange={handleChangePage} variant="outlined" shape="rounded" />
+      <Pagination page={page} count={pageNumbers} onChange={handleChangePage} variant="outlined" shape="rounded" />
   );
 }
