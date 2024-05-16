@@ -26,15 +26,19 @@ const ProductList = () => {
         getCategoryBySlugAPI(slug.name).then((dataRes) => {
             setCategory(dataRes.data)
         })
-        fetchBrandAPI().then((dataRes) => {
-            const brandList = dataRes.data.map(brand => ({ ...brand, checked: false }))
-            console.log('dataRes: ', brandList)
-            setBrand(brandList)
-        })
+        // fetchBrandAPI().then((dataRes) => {
+        //     const brandList = dataRes.data.map(brand => ({ ...brand, checked: false }))
+        //     console.log('dataRes: ', brandList)
+        //     setBrand(brandList)
+        // })
         fetchProductAPI(slug.name, location.search).then((dataRes) => {
             setProduct(dataRes.data)
             setPageNumbers(dataRes.totalPage)
-            // setBrand(dataRes.brandName)
+            console.log('dataRes-brand_names: ', dataRes.brandNames)
+
+            const brandList = dataRes.brandNames.map(brand => ({ ...brand, checked: false }))
+            console.log('dataRes1: ', brandList)
+            setBrand(brandList)
         })
     // console.log('vào 1: ', location.search)
         setPage(1)
