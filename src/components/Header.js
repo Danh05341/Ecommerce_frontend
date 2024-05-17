@@ -17,7 +17,6 @@ const Header = () => {
     
     const userImage = localStorage.getItem('user_image')
     const userToken = useSelector(state => state.user.token)
-    
     const [inputValue, setInputValue] = useState('')
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -36,6 +35,7 @@ const Header = () => {
         localStorage.removeItem('refresh_token')
         localStorage.removeItem('user_image')
         localStorage.removeItem('user_role')
+        localStorage.removeItem('cart_id')
 
         dispatch(logoutRedux())
         dispatch(setDataLogout())

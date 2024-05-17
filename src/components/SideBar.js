@@ -155,9 +155,9 @@ const SideBar = () => {
                     )
                 }
             </li>
-            <li className="list-none text-[14px] hover:text-[#ff2d37] cursor-pointer"><Link to='/gioi-thieu'>Giới thiệu</Link></li>
-            <li className="list-none text-[14px] hover:text-[#ff2d37] cursor-pointer"><Link to='/lien-he'>Liên hệ</Link></li>
-            <li className="list-none text-[14px] hover:text-[#ff2d37] cursor-pointer"><Link to='/tin-tuc'>Tin tức</Link></li>
+            <Link to='/gioi-thieu'><li className="list-none text-[14px] hover:text-[#ff2d37] cursor-pointer">Giới thiệu</li></Link>
+            <Link to='/gioi-thieu'><li className="list-none text-[14px] hover:text-[#ff2d37] cursor-pointer">Liên hệ</li></Link>
+            <Link to='/gioi-thieu'><li className="list-none text-[14px] hover:text-[#ff2d37] cursor-pointer">Tin tức</li></Link>
         </div>
     )
 }

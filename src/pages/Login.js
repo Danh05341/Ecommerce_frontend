@@ -41,6 +41,7 @@ const Login = () => {
                 localStorage.setItem('refresh_token', dataRes.data.token.refreshToken)
                 localStorage.setItem('user_image', dataRes.data.image)
                 localStorage.setItem('user_role', dataRes.data.role)
+                localStorage.setItem('cart_id', dataRes.data.cart_id)
                 dispatch(loginRedux(dataRes))
                 navigate('/')
             }
