@@ -1,28 +1,27 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import clsx from "clsx";
 import { BsFillTelephoneFill, BsCheck, BsChevronRight } from "react-icons/bs";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import { GiBeachBag } from "react-icons/gi";
 import { FiScissors } from "react-icons/fi";
+import { FaStickyNote } from "react-icons/fa";
 
 import "./ProductDetails.scss";
 import WrapperModel from "./WrapperModel";
 import WrapperImage from "./WrapperImage";
 import { useDispatch, useSelector } from "react-redux";
-import { addProduct, productSlice } from "../../redux/productSlice";
+import { addProduct, productSlice } from "../../redux/cartSlice";
 
 function ProductDetail() {
+    const navigate = useNavigate()
     const dispatch = useDispatch()
     const userData = useSelector(state => state.user.data)
-    const products = useSelector(state => state.product.data)
+    const products = useSelector(state => state.cart.data)
     //số lượng sp trong cart
-    const [productCount, setProductCount] = useState(() => {
-        const count =  products.reduce((count, product) => {
-            return count += product.quantity
-        }, 0)
-        return count
-    })
+    const productCount = products.reduce((count, product) => {
+        return count += product.quantity
+    }, 0)
     const [currentImage, setCurrentImage] = useState(0);
     const handleActiveImageItem = (index) => {
         setCurrentImage(index);
@@ -30,9 +29,9 @@ function ProductDetail() {
     // số lượng
     const [value, setValue] = useState(1);
     const [isActive, setIsActive] = useState("Mô tả");
+    const [isActiveSizeGuild, setIsActiveSizeGuild] = useState(false);
     const [modalIsActive, setModalIsActive] = useState(false);
     const [product, setProduct] = useState();
-    console.log('product: ', product);
     const { slug } = useParams();
     useEffect(() => {
         const getProduct = async () => {
@@ -48,9 +47,9 @@ function ProductDetail() {
     const handleMinus = () => {
         setValue((prev) => {
             if (prev > 1) {
-                return setValue(prev - 1);
+                return (prev - 1);
             } else {
-                return setValue(1);
+                return (1);
             }
         });
     };
@@ -62,28 +61,33 @@ function ProductDetail() {
         const name = e.target.dataset.name;
         setIsActive(name);
     };
+    const handleClickSizeGuild = () => {
+        setIsActiveSizeGuild(prev => !prev)
+    }
     const handleClickBuy = (e) => {
         setModalIsActive((prev) => !prev);
-        if (modalIsActive) {
-            dispatch(addProduct(product))
-            if(userData.cart_id) {
+        if (!modalIsActive) {
+            console.log('value: ', value)
+            dispatch(addProduct({ product: product, value: value, image: currentImage }))
+            if (userData.cart_id) {
                 fetch(`${process.env.REACT_APP_SERVER_LOCAL}cart/${userData.cart_id}`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                         // 'Content-Type': 'application/x-www-form-urlencoded',
                     },
-                    body: JSON.stringify(product)
+                    body: JSON.stringify({product, value})
                 }).then(respone => respone.json())
-                .then(respone => {
-                    console.log(respone)
-                })
-                .catch(err => console.log(err))
+                    .then(respone => {
+                        console.log(respone)
+                    })
+                    .catch(err => console.log(err))
             }
         }
-        
-
     };
+    const handleClickCart = () => {
+        navigate('/cart')
+    }
     const handleStopPropag = (e) => {
         e.stopPropagation();
     };
@@ -174,7 +178,8 @@ function ProductDetail() {
                                     }
                                 </span>
                             </div>
-                            <div className="product-guild-size">
+                            <div onClick={handleClickSizeGuild} className="product-guild-size flex items-center gap-2 px-2 select-none">
+                                <FaStickyNote></FaStickyNote>
                                 <span>Hướng dẫn chọn size</span>
                             </div>
                             <div className="product-price">
@@ -293,15 +298,16 @@ function ProductDetail() {
                         <div className="flex-col w-[375px] h-[240px] p-[30px]  flex border-r border-solid border-[#ebebeb]">
                             <div className="">
                                 <BsCheck className="text-[#ff2d37] text-[24px] inline-block"></BsCheck>
-                                <span className="text-[#ff2d37] text-[14px] italic">
+                                <span className="text-[#ff2d37] text-[14px] italic font-bold">
                                     Sản phẩm vừa được thêm vào giỏ hàng
                                 </span>
                                 <div className=" border-b border-solid border-[#ebebeb] mt-[12px]"></div>
                             </div>
-                            <div className="flex  mt-[20px] gap-[20px]">
+                            <div className="flex  mt-[32px] gap-[20px]">
                                 <img
                                     className="w-[100px] h-[100px]"
                                     src={product?.image[currentImage]}
+                                    alt="product-img"
                                 />
                                 <div className="flex flex-col">
                                     <span className="font-bold text-[14px]">{product?.name}</span>
@@ -314,13 +320,13 @@ function ProductDetail() {
                         <div className="w-[360px]">
                             <div className="flex-col w-[375px] h-[240px] p-[30px]  flex border-r border-solid border-[#ebebeb]">
                                 <div className="">
-                                    <GiBeachBag className="text-[#ff2d37] text-[20px] inline align-text-top"></GiBeachBag>
-                                    <span className="ml-[4px] text-[#898989] text-[16px] cursor-pointer hover:text-[#ff2d37]">
+                                    <GiBeachBag className="text-[#ff2d37] text-[20px] inline align-text-top "></GiBeachBag>
+                                    <span onClick={handleClickCart} className="ml-[4px] text-[#898989] text-[16px] cursor-pointer hover:text-[#ff2d37]">
                                         Giỏ hàng ({productCount})
                                     </span>
                                     <div className=" border-b border-solid border-[#ebebeb] mt-[12px]"></div>
                                 </div>
-                                <div className="flex flex-col mt-[20px] gap-[20px]">
+                                <div className="flex flex-col mt-[32px] gap-[20px]">
                                     <div className="flex items-center">
                                         <span className="font-bold text-[14px]">Tổng tiền:</span>
                                         <span className="ml-[12px] text-[#ff2d37] text-[18px] font-[500]">
@@ -338,6 +344,21 @@ function ProductDetail() {
                     </div>
                 </div>
             )}
+            {
+                isActiveSizeGuild && (
+                    <div
+                        onClick={handleClickSizeGuild}
+                        className="modal w-full h-full flex justify-center fixed top-0 left-0 right-0 bottom-0  bg-[rgba(0,0,0,0.4)] z-50"
+                    >
+                        <div
+                            onClick={handleStopPropag}
+                            className=" w-[500px] h-[435px] pt-[20px] pb-[40px] rounded-[25px] flex absolute top-[15%] bg-white select-none"
+                        >
+                            <img className="w-[500px]h-[375px]" src="https://bizweb.dktcdn.net/100/342/645/themes/701397/assets/size_giay.jpg?1705907597479" alt="size-guild-img"></img>
+                        </div>
+                    </div>
+                )
+            }
         </div>
     );
 }

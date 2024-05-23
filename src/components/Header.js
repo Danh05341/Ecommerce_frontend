@@ -9,12 +9,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import { logoutRedux } from '../redux/userSlice'
 import Cart from './Cart';
 import logo from '../assets/images/logo.webp'
-import { setDataLogout } from '../redux/productSlice';
+import { setDataLogout } from '../redux/cartSlice';
 import { toast } from 'react-toastify'
 
 
 const Header = () => {
-    
+
     const userImage = localStorage.getItem('user_image')
     const userToken = useSelector(state => state.user.token)
     const [inputValue, setInputValue] = useState('')
@@ -43,7 +43,7 @@ const Header = () => {
     return (
         <div className="header h-[110px] py-[10px] w-full flex justify-center">
             <div className="w-[1200px] mx-[32px] px-[15px] flex items-center justify-between">
-            {/* <div><Link to={"/admin/dashboard"}>GO to admin page</Link></div> */}
+                {/* <div><Link to={"/admin/dashboard"}>GO to admin page</Link></div> */}
 
                 {/* Logo */}
                 <div className="block w-[300px] h-[90px] py-[10px] float-left px-[15px] cursor-pointer">
@@ -100,9 +100,10 @@ const Header = () => {
 
                     }
 
-
                     <div className="relative h-[45px] w-[45px] bg-[#ff2d37] rounded-[50px] flex items-center justify-center  text-white cursor-pointer group/cart" >
-                        <FaBasketShopping />
+                        <Link to='/cart'>
+                            <FaBasketShopping />
+                        </Link>
                         <Cart />
                     </div>
                 </div>

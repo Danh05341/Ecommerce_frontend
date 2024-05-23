@@ -4,12 +4,12 @@ import { BsTrash3Fill } from 'react-icons/bs'
 import CartItem from "./CartItem"
 import { Link } from "react-router-dom"
 import { useState, useEffect } from "react"
-import { setDataProduct } from "../redux/productSlice"
+import { setDataProduct } from "../redux/cartSlice"
 
 const Cart = () => {
 	const dispatch = useDispatch()
     const userData = useSelector(state => state.user.data)
-    const products = useSelector(state => state.product.data)
+    const products = useSelector(state => state.cart.data)
     const [totalPrice, setTotalPrice] = useState()
     useEffect(() => {
         const getProduct = async() => {
@@ -25,7 +25,7 @@ const Cart = () => {
         // Tính tổng tiền khi products thay đổi
         const calculateTotalPrice = () => {
             let totalPrice = products.reduce((total, product) => {
-                total += +product?.productId?.price.replace(/\./g, '') * product?.quantity
+                total += +product?.productId?.price?.replace(/\./g, '') * product?.quantity
                 return total;
             }, 0)
             totalPrice = totalPrice.toLocaleString('vi-VN')
@@ -37,7 +37,7 @@ const Cart = () => {
         <>
             {
                 products?.[0] ? (
-                    <div className="hidden absolute top-[45px] right-[-8px] bg-white shadow-lg z-50 group-hover/cart:block">
+                    <div className="hidden  absolute top-[44px] right-[-8px] bg-white shadow-lg z-50 group-hover/cart:block">
                         <ul className="w-[315px] max-h-[290px] overflow-auto">
                             {
                                 products.map((product, index) => {
