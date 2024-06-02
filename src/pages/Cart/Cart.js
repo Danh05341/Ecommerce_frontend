@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 function Cart() {
     const productsCart = useSelector(state => state.cart.data)
     const [totalPrice, setTotalPrice] = useState()
-    const [countProduct, setCcountProduct] = useState()
+    const [countProduct, setCountProduct] = useState()
     console.log('productsCart: ', productsCart)
     //chưa xong
     useEffect(() => {
@@ -25,7 +25,7 @@ function Cart() {
                 total += (product?.quantity)
                 return total;
             }, 0)
-            setCcountProduct(countProduct);
+            setCountProduct(countProduct);
         }
         calculateTotalPrice()
         calculateCountProduct()
@@ -65,9 +65,9 @@ function Cart() {
                                     {/* 1 product item cart */}
                                     {/* render item cart */}
                                     {
-                                        productsCart.map((product, index) => {
+                                        productsCart.map((product) => {
                                             return (
-                                                <CartItem key={index} product={product.productId} quantity={product.quantity}></CartItem>
+                                                <CartItem key={product.productId._id} product={product.productId} quantity={product.quantity}></CartItem>
                                             )
                                         })
                                     }
@@ -83,9 +83,11 @@ function Cart() {
                                             <div className="text-[#ff2d37] text-[18px] font-bold">{totalPrice}₫</div>
                                         </div>
                                     </div>
-                                    <div className="w-[360px] h-[40px] bg-[#ff2d37] rounded-[40px] cursor-pointer flex items-center justify-center border border-solid border-[#ff2d37] float-right mt-[25px] hover:bg-white hover:border-[#ff2d37] group/continue">
-                                        <div className="px-[56px] py-[5px] text-[16px] text-white  select-none group-hover/continue:text-[#ff2d37]">Tiến hành thanh toán</div>
-                                    </div>
+                                    <Link to={'/checkout'}>
+                                        <div className="w-[360px] h-[40px] bg-[#ff2d37] rounded-[40px] cursor-pointer flex items-center justify-center border border-solid border-[#ff2d37] float-right mt-[25px] hover:bg-white hover:border-[#ff2d37] group/continue">
+                                            <div className="px-[56px] py-[5px] text-[16px] text-white  select-none group-hover/continue:text-[#ff2d37]">Tiến hành thanh toán</div>
+                                        </div>
+                                    </Link>
 
                                 </div>
                             ) : (

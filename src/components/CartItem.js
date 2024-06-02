@@ -9,7 +9,7 @@ const CartItem = (props) => {
     const userData = useSelector(state => state.user.data)
 
     const handleRemoveProduct = () => {
-        dispatch(removeProduct(product.productId._id))
+        dispatch(removeProduct({id: product.productId._id}))
         if (userData.cart_id) {
             fetch(`${process.env.REACT_APP_SERVER_LOCAL}cart/${userData.cart_id}`, {
                 method: "DELETE",

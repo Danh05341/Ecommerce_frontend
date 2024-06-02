@@ -22,6 +22,13 @@ function ProductDetail() {
     const productCount = products.reduce((count, product) => {
         return count += product.quantity
     }, 0)
+    //tong tien
+    let productTotalPrice = products.reduce((total, product) => {
+        total += +product?.productId?.price?.replace(/\./g, '') * product?.quantity
+        return total;
+    }, 0)
+    productTotalPrice = productTotalPrice.toLocaleString('vi-VN')
+
     const [currentImage, setCurrentImage] = useState(0);
     const handleActiveImageItem = (index) => {
         setCurrentImage(index);
@@ -33,6 +40,17 @@ function ProductDetail() {
     const [modalIsActive, setModalIsActive] = useState(false);
     const [product, setProduct] = useState();
     const { slug } = useParams();
+
+    const [sizeActive, setSizeActive] = useState()
+    const handleActiveSize = (size) => {
+        setSizeActive(size)
+    }
+    const getClassNamesSize = (size) => {
+        return (
+            `relative flex items-center justify-center h-[32px] text-[14px] font-[600] w-[45px] border border-[#ff2d37] cursor-pointer  ${size === sizeActive ? 'text-[#ff2d37]' : 'text-[#c6cddb]'}`
+        )
+    }
+
     useEffect(() => {
         const getProduct = async () => {
             const fetchData = await fetch(
@@ -76,7 +94,7 @@ function ProductDetail() {
                         "Content-Type": "application/json",
                         // 'Content-Type': 'application/x-www-form-urlencoded',
                     },
-                    body: JSON.stringify({product, value})
+                    body: JSON.stringify({ product, value })
                 }).then(respone => respone.json())
                     .then(respone => {
                         console.log(respone)
@@ -91,7 +109,7 @@ function ProductDetail() {
     const handleStopPropag = (e) => {
         e.stopPropagation();
     };
-
+    console.log('product-1: ', product)
     return (
         <div className="product-detail">
             <div className="product-container">
@@ -183,8 +201,23 @@ function ProductDetail() {
                                 <span>Hướng dẫn chọn size</span>
                             </div>
                             <div className="product-price">
-                                <span className="special-price">{product?.price}</span>
-                                <span className="old-price">{product?.sale_price}</span>
+                                <span className="special-price">{product?.price}₫</span>
+                                {product?.sale_price ? <span className="old-price">{product?.sale_price}₫</span> : <></>}
+                            </div>
+                            <div className="flex py-[20px]">
+                                <div className="text-[14px] font-bold w-[90px]">Kích thước:</div>
+                                <div className="flex flex-wrap items-center gap-[10px] ml-[28px]">
+                                    {
+                                        product?.size?.map((item, index) => {
+                                            return (
+                                                <div key={index} onClick={() => handleActiveSize(item.size)} className={getClassNamesSize(item.size)}>
+                                                    <div>{item.size}</div>
+                                                    {sizeActive === item.size && <img className="absolute h-[14px] w-[14px] right-0 bottom-0" src="https://bizweb.dktcdn.net/100/342/645/themes/701397/assets/checked.png?1705907579799" alt=""></img>}
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </div>
                             </div>
                             <div className="product-quantity">
                                 <div className="lable-name">Số lượng:</div>
@@ -330,7 +363,7 @@ function ProductDetail() {
                                     <div className="flex items-center">
                                         <span className="font-bold text-[14px]">Tổng tiền:</span>
                                         <span className="ml-[12px] text-[#ff2d37] text-[18px] font-[500]">
-                                            18.700.000đ
+                                            {productTotalPrice}
                                         </span>
                                     </div>
                                     <Link to={"/checkout"}>

@@ -76,7 +76,8 @@ function CartItem({ product, quantity }) {
     }
 
     const handleRemoveProductCart = () => {
-        dispatch(removeProduct(product._id))
+        console.log('product: ', product)
+        dispatch(removeProduct({ id: product._id }))
         if (userData.cart_id) {
             fetch(`${process.env.REACT_APP_SERVER_LOCAL}cart/${userData.cart_id}`, {
                 method: "DELETE",
