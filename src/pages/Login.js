@@ -42,6 +42,7 @@ const Login = () => {
                 localStorage.setItem('user_image', dataRes.data.image)
                 localStorage.setItem('user_role', dataRes.data.role)
                 localStorage.setItem('cart_id', dataRes.data.cart_id)
+                localStorage.setItem('user_id', dataRes.data._id)
                 dispatch(loginRedux(dataRes))
                 navigate('/')
             }

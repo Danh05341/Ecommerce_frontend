@@ -26,7 +26,7 @@ function Products() {
     }
     console.log('product: ', products)
     return (
-        <div className='ml-[230px] w-[calc(100%-230px)] h-full px-[30px]'>
+        <div className='ml-[230px] w-[calc(100%-230px)] pt-[52px] h-full px-[30px]'>
             <div className='ml-[2px] text-[22px] font-[500] h-[65px] flex items-center justify-between'>
                 <div>Danh sách sản phẩm</div>
                 <div className='flex items-center justify-center gap-[6px] w-[164px] h-[36px] bg-[#0088FF] text-white text-[16px] rounded-[6px] cursor-pointer'>

@@ -5,13 +5,13 @@ import NavCategory from "./NavCategory"
 import NavSportShoes from "./NavSportShoes"
 import slugify from 'slugify'
 import { fetchCategoryAPI } from "../apis"
+import { useSelector } from "react-redux"
 
 const Navbar = () => {
     const [categories, setCategories] = useState([])
     const [sportShoes, setsportShoes] = useState([])
     const [open, setOpen] = useState(false)
     const [open2, setOpen2] = useState(false)
-
     const handleOnMouse2 = () => {
         setOpen2(true)
     }

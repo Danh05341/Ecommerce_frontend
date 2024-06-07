@@ -15,7 +15,7 @@ const Cart = () => {
         const getProduct = async() => {
             const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}cart/${userData.cart_id}`)
             const dataRes = await fetchData.json()
-            dispatch(setDataProduct(dataRes.data.items))
+            dispatch(setDataProduct(dataRes?.data?.items))
         }
            if(userData.cart_id) {
                 getProduct()
@@ -24,11 +24,11 @@ const Cart = () => {
     useEffect(() => {
         // Tính tổng tiền khi products thay đổi
         const calculateTotalPrice = () => {
-            let totalPrice = products.reduce((total, product) => {
+            let totalPrice = products?.reduce((total, product) => {
                 total += +product?.productId?.price?.replace(/\./g, '') * product?.quantity
                 return total;
             }, 0)
-            totalPrice = totalPrice.toLocaleString('vi-VN')
+            totalPrice = totalPrice?.toLocaleString('vi-VN')
             setTotalPrice(totalPrice);
         };
         calculateTotalPrice();

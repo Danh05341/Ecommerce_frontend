@@ -17,9 +17,12 @@ export const cartSlice = createSlice({
         },
         addProduct: (state, action) => {
             const product = action.payload.product
+            const currentImage = action.payload.image
+            const productSize = action.payload.size
+            const productImage = product.image[currentImage]
             const count = Number(action.payload.value)
             const existingProduct = state?.data?.find(
-                (item) => item.productId?._id === product?._id
+                (item) => (item.productId?._id === product?._id && item.productSize === productSize && item.imageCurrent === currentImage)
             )
             // Nếu sản phẩm đã tồn tại, tăng số lượng
             if (existingProduct) {
@@ -27,16 +30,21 @@ export const cartSlice = createSlice({
             }
             // const target_copy = JSON.parse(JSON.stringify(existingProduct))
             else {
-                state.data.push({
+                state?.data?.push({
                     productId: product,
-                    quantity: count
+                    quantity: count,
+                    imageCurrent: currentImage,
+                    productSize
                 })
             }
         },
         minusProduct: (state, action) => {
             const product = action.payload.product
+            const productSize = action.payload.size
+            const currentImage = action.payload.image
+
             const existingProduct = state?.data?.find(
-                (item) => item.productId?._id === product?._id
+                (item) => (item.productId?._id === product?._id && item.productSize === productSize && item.imageCurrent === currentImage)
             )
             // Nếu sản phẩm đã tồn tại, tăng số lượng
             if (existingProduct) {
@@ -45,19 +53,35 @@ export const cartSlice = createSlice({
         },
         setCountProduct: (state, action) => {
             const product = action.payload.product
+            const currentImage = action.payload.image
+            const productSize = action.payload.size
+
             const count = Number(action.payload.value)
             const existingProduct = state?.data?.find(
-                (item) => item.productId?._id === product?._id
+                (item) => (item.productId?._id === product?._id && item.productSize === productSize && item.imageCurrent === currentImage)
             )
             // Nếu sản phẩm đã tồn tại, tăng số lượng
             if (existingProduct) {
                 existingProduct.quantity = count;
-                console.log('type:', typeof(existingProduct.quantity))
             }
         },
         removeProduct: (state, action) => {
             const id = action.payload.id
-            state.data = state.data.filter(item => item.productId._id !== id)
+            const productSize = action.payload.size
+            const currentImage = action.payload.image
+            
+            const existingProductIndex = state.data.findIndex(item => {
+                return (item.productId._id === id && item.productSize === productSize && item.imageCurrent === currentImage)
+            })
+            console.log('existingProductIndex:', existingProductIndex)
+            if (existingProductIndex !== -1) {
+                state.data = state.data.filter(item => 
+                    !(item.productId._id === id && item.productSize === productSize && item.imageCurrent === currentImage)
+                );
+            } else {
+                throw new Error("Không tìm thấy sản phẩm")
+            }
+
         }
     }
 })

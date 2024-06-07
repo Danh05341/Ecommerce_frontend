@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
     data: {
+        user_id: localStorage.getItem('user_id'),
         cart_id: localStorage.getItem('cart_id')
     },
     token: {

@@ -12,16 +12,16 @@ function Cart() {
     //chưa xong
     useEffect(() => {
         const calculateTotalPrice = () => {
-            let totalPrice = productsCart.reduce((total, product) => {
+            let totalPrice = productsCart?.reduce((total, product) => {
                 total += +product?.productId?.price?.replace(/\./g, '') * product?.quantity
                 return total;
             }, 0)
-            totalPrice = totalPrice.toLocaleString('vi-VN')
+            totalPrice = totalPrice?.toLocaleString('vi-VN')
             setTotalPrice(totalPrice);
         };
         const calculateCountProduct = () => {
-            let countProduct = productsCart.reduce((total, product) => {
-                console.log('product.quantity:', product.quantity)
+            let countProduct = productsCart?.reduce((total, product) => {
+                console.log('product.quantity:', product?.quantity)
                 total += (product?.quantity)
                 return total;
             }, 0)
@@ -54,7 +54,7 @@ function Cart() {
                             <p className="text-[14px] text-[#8d90a6] mt-2">(<span>{countProduct}</span> sản phẩm)</p>
                         </div>
                         {
-                            productsCart.length > 0 ? (
+                            productsCart?.length > 0 ? (
                                 <div className="">
                                     <div className="py-[10px] flex border-b">
                                         <div className="w-[43%] font-bold text-[16px] text-[#282828]">Sản phẩm</div>
@@ -65,9 +65,9 @@ function Cart() {
                                     {/* 1 product item cart */}
                                     {/* render item cart */}
                                     {
-                                        productsCart.map((product) => {
+                                        productsCart?.map((product) => {
                                             return (
-                                                <CartItem key={product.productId._id} product={product.productId} quantity={product.quantity}></CartItem>
+                                                <CartItem key={`${product.productId._id}${product.productSize}`} product={product.productId} quantity={product.quantity} imageCurrent={product.imageCurrent} productSize={product.productSize}></CartItem>
                                             )
                                         })
                                     }

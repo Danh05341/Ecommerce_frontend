@@ -1,23 +1,26 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { getOrderUserAPI } from '../../apis';
 import { IoIosSearch } from "react-icons/io";
 import { TiArrowSortedDown } from "react-icons/ti";
 import { CiFilter } from "react-icons/ci";
-import Pagination from '../../../components/Pagination'
-import { getAllOrderAPI } from '../../../apis';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import Pagination from '../../components/Pagination'
 import queryString from 'query-string';
 const PAGE_LIMIT = 10
-function Orders() {
+const OrderList = () => {
+    const navigate = useNavigate()
+    const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const { id } = useParams()
+    const location = useLocation()
     const [statusOrder, setStatusOrder] = useState('all')
     const [page, setPage] = useState(1)
-    const [orders, setOrders] = useState([]);
-    const [pageNumbers, setPageNumbers] = useState([]);
-    const location = useLocation()
-    const navigate = useNavigate()
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredOrders, setFilteredOrders] = useState([]);
     const [showStatusDropdown, setShowStatusDropdown] = useState(false);
     const [showDateDropDown, setShowDateDropDown] = useState(false);
+    const [pageNumbers, setPageNumbers] = useState(0);
+
     // Thêm hai state mới để lưu giá trị của ngày bắt đầu và kết thúc
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
@@ -30,14 +33,8 @@ function Orders() {
     const handleEndDateChange = (e) => {
         setEndDate(e.target.value);
     };
-    useEffect(() => {
-        getAllOrderAPI(location.search).then(dataRes => {
-            setOrders(dataRes.data);
-            setPageNumbers(Math.ceil(dataRes.totalPage / PAGE_LIMIT))
-        }).catch(err => {
-            console.error(err);
-        });
-    }, [location.search]);
+
+
     const getStatusProcessing = (status) => {
         switch (status) {
             case 'unconfirmed':
@@ -53,13 +50,14 @@ function Orders() {
             default:
                 return status;
         }
-    };
+        };
+    console.log('location:', location.search)
     const handleChangePage = (e, page) => {
         const query = queryString.parse(location.search)
         query.page = page
         query.limit = PAGE_LIMIT
         setPage(page)
-        navigate(`/admin/orders/?${queryString.stringify(query)}`)
+        navigate(`/order/user/65520534365011e1cd195c21?${queryString.stringify(query)}`)
     }
     const handleChangeStatus = (status) => {
         setStatusOrder(status)
@@ -70,6 +68,17 @@ function Orders() {
             `text-[#747C87] font-[500] flex items-center px-[20px] h-full cursor-pointer ${statusOrder === status ? 'border-b-[2px] border-[#0088FF] text-[#0088FF]' : 'border-b-[2px] border-transparent hover:hover:border-[#747C87] hover:text-[#000]'}`
         )
     }
+    useEffect(() => {
+        // Giả sử bạn có API để lấy danh sách đơn hàng của người dùng
+        getOrderUserAPI(id, location.search).then(dataRes => {
+            setOrders(dataRes.data);
+            setPageNumbers(Math.ceil(dataRes.totalPage/PAGE_LIMIT))
+            setLoading(false);
+        }).catch(err => {
+            console.error(err);
+            setLoading(false);
+        });
+    }, [id, location.search]);
     useEffect(() => {
         let filtered = orders;
         if (statusOrder !== 'all') {
@@ -135,8 +144,13 @@ function Orders() {
         if(array) setFilteredOrders(filtered);
         else setFilteredOrders(orders)
     };
+
+    if (loading) {
+        return <div className="text-center mt-20">Đang tải dữ liệu...</div>;
+    }
+   
     return (
-        <div className='w-[calc(100%-230px)] h-full ml-[230px] px-[30px] pt-[52px]'>
+        <div className='w-[full] h-full px-[65px]'>
             <div className='ml-[2px] text-[22px] font-[500] h-[65px] flex items-center'>
                 Danh sách đơn hàng
             </div>
@@ -246,7 +260,7 @@ function Orders() {
                 {
                     filteredOrders?.map(order => {
                         return (
-                            <Link to={`/admin/order/details/${order._id}`} key={order._id}>
+                            <Link to={`/order/details/${order._id}`} key={order._id}>
                                 <div className='h-[42px] bg-[white] flex gap-[20px] items-center text-[#282828] font-[500] pl-[12px] border-t border-b hover:bg-[#F3F4F5] cursor-pointer'>
                                     <div className='w-[25%] hover:text-[#0088ff] hover:underline'>
                                         #{order._id}
@@ -274,9 +288,7 @@ function Orders() {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-// active text : #0088FF
-
-export default Orders
+export default OrderList;

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { addProduct, minusProduct, setCountProduct, removeProduct } from "../../../redux/cartSlice"
 
-function CartItem({ product, quantity }) {
+function CartItem({ product, quantity, imageCurrent, productSize }) {
     const dispatch = useDispatch()
     const userData = useSelector(state => state.user.data)
     const [value, setValue] = useState(Number(quantity));
@@ -13,7 +13,7 @@ function CartItem({ product, quantity }) {
     const handleMinus = () => {
         setValue((prev) => {
             if (prev > 1) {
-                dispatch(minusProduct({ product }))
+                dispatch(minusProduct({ product, size: productSize, image: imageCurrent }))
                 // gọi API
                 fetch(`${process.env.REACT_APP_SERVER_LOCAL}cart/${userData.cart_id}`, {
                     method: "PUT",
@@ -21,7 +21,7 @@ function CartItem({ product, quantity }) {
                         "Content-Type": "application/json",
                         // 'Content-Type': 'application/x-www-form-urlencoded',
                     },
-                    body: JSON.stringify({ product, value: -1 })
+                    body: JSON.stringify({ product, value: -1, currentImage: imageCurrent, sizeActive: productSize })
                 }).then(respone => respone.json())
                     .then(respone => {
                         console.log(respone)
@@ -36,14 +36,14 @@ function CartItem({ product, quantity }) {
     const handlePlus = () => {
         setValue((prev) => {
             if (prev < 9999) {
-                dispatch(addProduct({ product, value: +1 }))
+                dispatch(addProduct({ product, value: +1, size: productSize, image: imageCurrent }))
                 fetch(`${process.env.REACT_APP_SERVER_LOCAL}cart/${userData.cart_id}`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                         // 'Content-Type': 'application/x-www-form-urlencoded',
                     },
-                    body: JSON.stringify({ product, value: 1 })
+                    body: JSON.stringify({ product, value: 1, currentImage: imageCurrent, sizeActive: productSize })
                 }).then(respone => respone.json())
                     .then(respone => {
                         console.log(respone)
@@ -59,14 +59,14 @@ function CartItem({ product, quantity }) {
     const handleChangeQuantity = (e) => {
         if (e.target.value < 9999 && e.target.value > 0) {
             setValue(e.target.value);
-            dispatch(setCountProduct({ product, value: e.target.value }))
+            dispatch(setCountProduct({ product, value: e.target.value, size: productSize, image: imageCurrent }))
             fetch(`${process.env.REACT_APP_SERVER_LOCAL}cart/${userData.cart_id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                     // 'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: JSON.stringify({ product, value: e.target.value, setCount: true })
+                body: JSON.stringify({ product, value: e.target.value,  setCount: true, currentImage: imageCurrent, sizeActive: productSize })
             }).then(respone => respone.json())
                 .then(respone => {
                     console.log(respone)
@@ -76,8 +76,7 @@ function CartItem({ product, quantity }) {
     }
 
     const handleRemoveProductCart = () => {
-        console.log('product: ', product)
-        dispatch(removeProduct({ id: product._id }))
+        dispatch(removeProduct({ id: product._id, size: productSize, image: imageCurrent }))
         if (userData.cart_id) {
             fetch(`${process.env.REACT_APP_SERVER_LOCAL}cart/${userData.cart_id}`, {
                 method: "DELETE",
@@ -85,7 +84,7 @@ function CartItem({ product, quantity }) {
                     "Content-Type": "application/json",
                     // 'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: JSON.stringify({ id: product._id }),
+                body: JSON.stringify({ id: product._id, size: productSize, image: imageCurrent}),
             }).then(respone => respone.json())
                 .then(respone => {
                     console.log(respone)
@@ -93,7 +92,6 @@ function CartItem({ product, quantity }) {
                 .catch(err => console.log(err))
         }
     }
-    console.log('product: ', product)
     useEffect(() => {
         const calculateTotalPrice = () => {
             let totalPrice = product?.price?.replace(/\./g, '') * value
@@ -102,7 +100,7 @@ function CartItem({ product, quantity }) {
         };
         calculateTotalPrice()
     }, [value])
-
+  
     return (
         <div className="py-[30px] border-b">
             <div className="flex ">
@@ -110,15 +108,16 @@ function CartItem({ product, quantity }) {
                 <div className="w-[14%] px-[5px] flex justify-center">
                     <Link to={`/${product?.slug}`} className="inline-block w-[100px]">
                         <div className="w-[100px] object-contain border border-solid border-[#ebebeb]">
-                            <img className="w-[100%] " src={product?.image[0]} alt=""></img>
+                            <img className="w-[100%] " src={product?.image[imageCurrent]} alt=""></img>
                         </div>
                     </Link>
                 </div>
                 {/* thông tin sản phẩm */}
                 <div className="w-[24%]  px-[5px] flex flex-col justify-center select-none">
                     <Link to={`/${product?.slug}`}>
-                        <div className="text-[16px] text-[#282828] hover:text-[#ff2d37] cursor-pointer">Giày đá bóng chính hãng hàng hot</div>
+                        <div className="text-[16px] text-[#282828] hover:text-[#ff2d37] cursor-pointer">{product?.name}</div>
                     </Link>
+                    <div className='text-[14px] text-[#747c98]'>Kích thước: <span>{productSize}</span></div>
                     <div className="flex items-center gap-1 mt-3">
                         <Link className="flex items-center gap-1 ">
                             <BsTrash3Fill className="text-[#ff2d37] h-[13px] "></BsTrash3Fill>

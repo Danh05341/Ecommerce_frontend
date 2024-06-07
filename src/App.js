@@ -35,7 +35,7 @@ function App() {
                 {
                     privateRoutes.map((route, index) => {
                         const Page = route.page
-                        const Layout = route.layout || DefaultLayout
+                        let Layout = route.layout || DefaultLayout
                         if (route.layout === null) {
                             Layout = Fragment
                         }

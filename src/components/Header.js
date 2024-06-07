@@ -14,7 +14,7 @@ import { toast } from 'react-toastify'
 
 
 const Header = () => {
-
+    const userData = useSelector(state => state.user.data)
     const userImage = localStorage.getItem('user_image')
     const userToken = useSelector(state => state.user.token)
     const [inputValue, setInputValue] = useState('')
@@ -84,6 +84,7 @@ const Header = () => {
                                 }
                                 <div className=" hidden w-[180px] bg-white p-[10px] text-center absolute z-50 top-[45px] border rounded-[10px] shadow-md group-hover/user:block ">
                                     <Link className="block bg-[#ff2d37] text-white border border-[#ff2d37] h-[35px] leading-[35px] rounded-[25px] mt-[5px] hover:bg-white hover:text-[#ff2d37]" to={'/account/user'}>Tài khoản</Link>
+                                    <Link className="block bg-[#ff2d37] text-white border border-[#ff2d37] h-[35px] leading-[35px] rounded-[25px] mt-[5px] hover:bg-white hover:text-[#ff2d37]" to={`/order/user/${userData.user_id}`}>Đơn mua</Link>
                                     <Link to='/' onClick={handleLogout} className="block bg-[#ff2d37] text-white border border-[#ff2d37] h-[35px] leading-[35px] rounded-[25px] mt-[5px] hover:bg-white hover:text-[#ff2d37]" >Đăng xuất</Link>
                                 </div>
                             </div>

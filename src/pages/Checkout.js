@@ -1,14 +1,21 @@
 import { Box } from '@mui/material'
 import TextField from '@mui/material/TextField'
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { FaRegMoneyBillAlt } from "react-icons/fa";
 import { IoChevronBack } from "react-icons/io5";
 import { useSelector } from 'react-redux';
-
+import { createOrderAPI, createPaymentUrl, getAllProvince, getBrandById } from '../apis';
+import { toast } from 'react-toastify'
 function Checkout() {
     const productsCart = useSelector(state => state.cart.data)
+    const userData = useSelector(state => state.user.data)
     console.log('productsCart-1: ', productsCart)
+    const navigate = useNavigate()
+    const [provinceAll, setProvinceAll] = useState([])
+    const [provinces, setProvinces] = useState([])
+    const [districts, setDistricts] = useState([])
+    const [wards, setWards] = useState([])
     const [totalQuantity, setTotalQuantity] = useState(() => {
         const countProduct = productsCart.reduce((total, product) => {
             total += (product?.quantity)
@@ -23,7 +30,9 @@ function Checkout() {
             return total;
         }, 0)
         return totalPrice.toLocaleString('vi-VN')
+
     })
+
     const [dataForm, setDataForm] = useState({
         email: "",
         name: "",
@@ -31,7 +40,24 @@ function Checkout() {
         address: "",
         city: "",
         district: "",
-        note: ""
+        ward: "",
+        shippingFee: '40.000',
+        discountCode: "",
+        discount: "",
+        paymentMethod: "",
+        productsOrder: productsCart?.map(product => {
+            return {
+                name: product.productId.name,
+                image: product.productId.image[product.imageCurrent],
+                // price: (product.productId.size.find(size => size.size === product.productSize)).price,
+                price: product.productId.price,
+                quantity: product.quantity,
+                size: product.productSize,
+                brandId: product.productId.brand_id,
+            }
+        }),
+        totalPrice: totalPrice,
+        userId: userData.user_id
     })
     const handleOnChange = (e) => {
         const name = e.target.name
@@ -42,11 +68,77 @@ function Checkout() {
                 [name]: value,
             }
         })
+        if (name === 'city') {
+            setDistricts(
+                provinceAll.find(province => province.Name === value).District
+            )
+            setDataForm(prev => {
+                return {
+                    ...prev,
+                    district: '',
+                    ward: ''
+                }
+            })
+        }
+        if (name === 'district') {
+            setWards(
+                districts.find(district => district.FullName === value).Ward
+            )
+            setDataForm(prev => {
+                return {
+                    ...prev,
+                    ward: ''
+                }
+            })
+        }
     }
+    const handleOrder = () => {
+        if (dataForm.email && dataForm.name && dataForm.phone && dataForm.address && dataForm.city && dataForm.district && dataForm.ward && dataForm.shippingFee && dataForm.productsOrder && dataForm.totalPrice && dataForm.userId) {
+            if (dataForm.paymentMethod === 'VNPAY') {
+                createOrderAPI(dataForm).then((dataRes) => {
+                    if (dataRes.data) {
+                        const amount = dataRes.data.totalPrice.replace(/\./g, '')
+                        const orderId = dataRes.data._id
+                        createPaymentUrl(amount, orderId).then(dataRes => {
+                            const urlPayment = dataRes.data
+                            if (urlPayment) {
+                                window.location.href = urlPayment
+                            }
+                            else {
+                                console.log('loi server')
+                            }
+                        }).catch(err => console.error(err))
+                    }
+                })
+                    .catch(err => console.error(err))
+
+            } else {
+                createOrderAPI(dataForm).then((dataRes) => {
+                    console.log('dataRes2: ', dataRes)
+                    navigate(`/order/status?orderId=${dataRes.data._id}&success=true`)
+
+                }).catch(err => {
+                    console.error(err)
+                    navigate(`/order/status?success=false`)
+                })
+            }
+
+        } else {
+            toast.warning('Vui lòng điền đầy đủ thông tin để đặt hàng')
+        }
+    }
+
+    useEffect(() => {
+        getAllProvince().then(dataRes => {
+            setProvinceAll(dataRes.data)
+        }).catch(err => {
+            console.log('error', err)
+        })
+    }, [])
     console.log('dataForm: ', dataForm)
     return (
         <div className='w-[1260px] px-[28px] mx-auto flex'>
-            <div className='px-[28px] pt-[28px] w-[70%] border-r'>
+            <div className='px-[28px] pt-[8px] pb-[40px] w-[70%] border-r'>
                 <Link to={'/'} className='text-[#2a9dcc] text-[28px] hover:text-[#2a6395] cursor-pointer inline-block pb-[10px]'>Delta Shoes</Link>
                 <div className='flex'>
                     <div className='px-[14px] flex-1'>
@@ -97,9 +189,13 @@ function Checkout() {
                                 className='w-full h-[40px] border border-solid border-[#d9d9d9] bg-white px-[11px]  rounded focus-within:outline-blue-300'
                             >
                                 <option selected value="">---</option>
-                                <option value="Hà Nội">Hà Nội</option>
-                                <option value="Đà Nẵng">Đà Nẵng</option>
-                                <option value="Hồ Chí Minh">Hồ Chí Minh</option>
+                                {
+                                    provinceAll?.map(province => {
+                                        return (
+                                            <option key={province.Code} value={province.Name}>{province.Name}</option>
+                                        )
+                                    })
+                                }
                             </select>
                         </div>
                         <div className='py-[5px] '>
@@ -110,9 +206,30 @@ function Checkout() {
                                 className='w-full h-[40px] border border-solid border-[#d9d9d9] bg-white px-[11px]  rounded focus-within:outline-blue-300'
                             >
                                 <option selected value="">---</option>
-                                <option value="Hà Nội">Nam Từ Liêm</option>
-                                <option value="Đà Nẵng">Thanh Khê</option>
-                                <option value="Hồ Chí Minh">Bình Thạnh</option>
+                                {
+                                    districts?.map(district => {
+                                        return (
+                                            <option key={district.Code} value={district.FullName}>{district.FullName}</option>
+                                        )
+                                    })
+                                }
+                            </select>
+                        </div>
+                        <div className='py-[5px] '>
+                            <label htmlFor='ward' className='px-[11px] text-[#999]'>Phường Xã</label>
+                            <select
+                                name="ward" id="ward"
+                                onChange={handleOnChange}
+                                className='w-full h-[40px] border border-solid border-[#d9d9d9] bg-white px-[11px]  rounded focus-within:outline-blue-300'
+                            >
+                                <option selected value="">---</option>
+                                {
+                                    wards?.map(ward => {
+                                        return (
+                                            <option key={ward.Code} value={ward.FullName}>{ward.FullName}</option>
+                                        )
+                                    })
+                                }
                             </select>
                         </div>
                     </div>
@@ -121,20 +238,32 @@ function Checkout() {
                             Vận chuyển
                         </div>
 
-                        <div className='h-[40px] flex items-center mt-[28px] text-[14px] bg-[#d1ecf1] border border-solid border-[#d1ecf1] rounded px-[20px] py-[12px]'>
-                            Vui lòng nhập thông tin giao hàng
+                        <div className='h-[40px] flex items-center mt-[28px] text-[14px] bg-[transparent] border border-solid border-[#d1ecf1] rounded px-[20px] py-[12px]'>
+                            <input type='radio' id='shippingFee' checked={true} className='w-[18px] h-[18px] '></input>
+                            <div className='mb-[2px] ml-[8px] flex-1'>Giao hàng tận nơi</div>
+                            <div>{dataForm?.shippingFee}₫</div>
                         </div>
                         <div className='mt-[24px]'>
                             <div className='text-[18px] font-bold mb-[10px]'>
                                 Thanh toán
                             </div>
-                            <label htmlFor='checkout'>
-                                <div className='flex items-center h-[68px] p-[14px] border border-solid border-[#d9d9d9] rounded cursor-pointer'>
-                                    <input type='radio' id='checkout' className='w-[18px] h-[18px] '></input>
-                                    <div className='text-[#999] mb-[2px] ml-[8px] flex-1'>Thanh toán khi giao hàng (COD)</div>
-                                    <FaRegMoneyBillAlt className='w-[18px] h-[18px] '></FaRegMoneyBillAlt>
-                                </div>
-                            </label>
+                            <form >
+                                <label htmlFor='Postpaid'>
+                                    <div className='flex items-center h-[68px] p-[14px] border border-solid border-[#d9d9d9] rounded cursor-pointer'>
+                                        <input onChange={handleOnChange} value={'Postpaid'} name="paymentMethod" type='radio' id='Postpaid' className='w-[18px] h-[18px] '></input>
+                                        <div className='text-[#999] mb-[2px] ml-[8px] flex-1'>Thanh toán khi giao hàng (COD)</div>
+                                        <FaRegMoneyBillAlt className='w-[18px] h-[18px] '></FaRegMoneyBillAlt>
+                                    </div>
+                                </label>
+                                <label htmlFor='VNPAY'>
+                                    <div className='flex items-center h-[68px] p-[14px] mt-[20px] border border-solid border-[#d9d9d9] rounded cursor-pointer'>
+                                        <input onChange={handleOnChange} value={'VNPAY'} name="paymentMethod" type='radio' id='VNPAY' className='w-[18px] h-[18px] '></input>
+                                        <div className='text-[#999] mb-[2px] ml-[8px] flex-1'>Thanh toán bằng VNPAY</div>
+                                        <FaRegMoneyBillAlt className='w-[18px] h-[18px] '></FaRegMoneyBillAlt>
+                                    </div>
+                                </label>
+
+                            </form>
                         </div>
 
                     </div>
@@ -147,16 +276,16 @@ function Checkout() {
                 <div className='h-[145px] ml-[24px] overflow-auto border-b'>
                     {/* từng item  */}
                     {
-                        productsCart.map(product => {
+                        productsCart?.map(product => {
                             return (
-                                <div key={product.productId._id} className='flex flex-col gap-[12px] py-[20px]'>
+                                <div key={`${product.productId._id}${product.productSize}${product.imageCurrent}`} className='flex flex-col gap-[12px] py-[20px]'>
                                     <div className='pr-[24px]  flex items-center'>
                                         <Link className='relative inline-block w-[50px] h-[50px] border rounded-[8px]'>
-                                            <img className='w-full h-full rounded-[8px]' src={product.productId.image[0]} alt=''></img>
+                                            <img className='w-full h-full rounded-[8px]' src={product.productId.image[product.imageCurrent]} alt=''></img>
                                             <div className='absolute top-[-10px] right-[-10px] w-[20px] h-[20px] flex items-center justify-center text-white text-[13px] bg-[#2a9dcc] rounded-full'>{product.quantity}</div>
                                         </Link>
-                                        <div className='text-[#333333] text-[14px] flex-1 pl-[4px]'>{product.productId.name}</div>
-                                        <div className='text-[#717171] text-[14px]'>1{product.productId.price}₫</div>
+                                        <div className='text-[#333333] text-[14px] flex-1 pl-[4px]'>{product.productId.name} {product?.productSize}</div>
+                                        <div className='text-[#717171] text-[14px]'>{(product?.productId?.price?.replace(/\./g, '') * Number(product?.quantity)).toLocaleString('vi-VN')}₫</div>
                                     </div>
                                 </div>
                             )
@@ -165,8 +294,8 @@ function Checkout() {
                 </div>
                 <div className='ml-[24px] flex gap-[12px] border-b py-[20px]'>
                     <input
-                        type='text' id='address' name='address' placeholder='Nhập mã giảm giá'
-                        value={dataForm.address}
+                        type='text' id='discountCode' name='discountCode' placeholder='Nhập mã giảm giá'
+                        value={dataForm.discountCode}
                         onChange={handleOnChange}
                         className='w-[170px] h-[40px] flex-1 border border-solid border-[#d9d9d9] bg-white px-[11px] py-[13px] rounded focus-within:outline-blue-300'
                     />
@@ -183,8 +312,9 @@ function Checkout() {
                     </div>
                     <div className='flex justify-between py-[5px] text-[#717171] text-[15px]'>
                         <span>Phí vận chuyển</span>
-                        <span>0₫</span>
+                        <span>40000₫</span>
                     </div>
+
                 </div>
                 <div className=' py-[15px] ml-[24px] flex justify-between'>
                     <span className='text-[#717171] text-[17px]'>Tổng cộng</span>
@@ -195,7 +325,7 @@ function Checkout() {
                         <IoChevronBack className='mt-[2px]'></IoChevronBack>
                         Quay về giỏ hàng
                     </span>
-                    <div className='w-[121px] h-[40px] border border-solid border-[#d9d9d9] cursor-pointer bg-[#357ebd] text-[14px] flex items-center justify-center text-white rounded focus-within:outline-blue-300'>
+                    <div onClick={handleOrder} className='w-[121px] h-[40px] border border-solid border-[#d9d9d9] cursor-pointer bg-[#357ebd] text-[14px] flex items-center justify-center text-white rounded focus-within:outline-blue-300'>
                         ĐẶT HÀNG
                     </div>
                 </div>

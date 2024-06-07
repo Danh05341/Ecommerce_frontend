@@ -12,22 +12,22 @@ import WrapperModel from "./WrapperModel";
 import WrapperImage from "./WrapperImage";
 import { useDispatch, useSelector } from "react-redux";
 import { addProduct, productSlice } from "../../redux/cartSlice";
-
+import { toast } from 'react-toastify'
 function ProductDetail() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const userData = useSelector(state => state.user.data)
     const products = useSelector(state => state.cart.data)
     //số lượng sp trong cart
-    const productCount = products.reduce((count, product) => {
+    const productCount = products?.reduce((count, product) => {
         return count += product.quantity
     }, 0)
     //tong tien
-    let productTotalPrice = products.reduce((total, product) => {
+    let productTotalPrice = products?.reduce((total, product) => {
         total += +product?.productId?.price?.replace(/\./g, '') * product?.quantity
         return total;
     }, 0)
-    productTotalPrice = productTotalPrice.toLocaleString('vi-VN')
+    productTotalPrice = productTotalPrice?.toLocaleString('vi-VN')
 
     const [currentImage, setCurrentImage] = useState(0);
     const handleActiveImageItem = (index) => {
@@ -71,6 +71,7 @@ function ProductDetail() {
             }
         });
     };
+    console.log('sizeActive: ', sizeActive)
     const handlePlus = () => {
         setValue((prev) => prev + 1);
     };
@@ -83,23 +84,30 @@ function ProductDetail() {
         setIsActiveSizeGuild(prev => !prev)
     }
     const handleClickBuy = (e) => {
+
         setModalIsActive((prev) => !prev);
         if (!modalIsActive) {
-            console.log('value: ', value)
-            dispatch(addProduct({ product: product, value: value, image: currentImage }))
-            if (userData.cart_id) {
-                fetch(`${process.env.REACT_APP_SERVER_LOCAL}cart/${userData.cart_id}`, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                        // 'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: JSON.stringify({ product, value })
-                }).then(respone => respone.json())
-                    .then(respone => {
-                        console.log(respone)
-                    })
-                    .catch(err => console.log(err))
+            if (sizeActive) {
+                console.log('value: ', value)
+                console.log('image: ', currentImage)
+                console.log('size: ', sizeActive)
+                dispatch(addProduct({ product: product, value: value, image: currentImage, size: sizeActive }))
+                if (userData.cart_id) {
+                    fetch(`${process.env.REACT_APP_SERVER_LOCAL}cart/${userData?.cart_id}`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                            // 'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: JSON.stringify({ product, value, currentImage, sizeActive })
+                    }).then(respone => respone.json())
+                        .then(respone => {
+                            console.log(respone)
+                        })
+                        .catch(err => console.log(err))
+                }
+            } else {
+                toast.warning('Vui lòng chọn kích cỡ')
             }
         }
     };

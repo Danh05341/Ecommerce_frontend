@@ -9,12 +9,19 @@ import ProductList from "../pages/ProductList"
 import ProductDetail from "../pages/ProductDetail"
 import Cart from "../pages/Cart/Cart"
 import Checkout from "../pages/Checkout"
+import Payments from "../pages/Payments"
+import OrderList from "../pages/Order/OrderList"
+import OrderDetail from "../pages/Order/OrderDetail"
+import OrderStatus from "../pages/Order/OrderStatus"
 
 import Dashboard from "../pages/Admin/Dashboard/Dashboard"
 import AdminLayout from "../components/Layouts/AdminLayout"
 import Orders from "../pages/Admin/Orders/Orders"
 import Products from "../pages/Admin/Products/Products"
 import ProductDetails from "../pages/Admin/Products/ProductDetails"
+import AddProductVariant from "../pages/Admin/Products/AddProductVariant"
+import OrderDetailsAdmin from "../pages/Admin/Orders/OrderDetailsAdmin"
+
 
 
 const publicRoutes = [
@@ -29,7 +36,11 @@ const publicRoutes = [
     { path: '/search', page: ProductList},
     { path: '/:slug', page: ProductDetail},
     { path: '/cart', page: Cart},
+    { path: '/order/user/:id', page: OrderList},
+    { path: '/order/details/:id', page: OrderDetail},
     { path: '/checkout', page: Checkout, layout: null},
+    { path: '/payment/status', page: Payments, layout: null},
+    { path: '/order/status', page: OrderStatus, layout: null},
 ]
 
 const privateRoutes = [
@@ -37,6 +48,8 @@ const privateRoutes = [
     { path: '/admin/orders', page: Orders, layout: AdminLayout},
     { path: '/admin/products', page: Products, layout: AdminLayout},
     { path: '/admin/products/:id', page: ProductDetails, layout: AdminLayout},
+    { path: '/admin/products/:id/variant/create', page: AddProductVariant, layout: null},
+    { path: '/admin/order/details/:id', page: OrderDetailsAdmin, layout: AdminLayout},
     // { path: '/admin/orders', page: Orders},
     // { path: '/admin/all-products', page: ProductsAll},
     // { path: '/admin/add-product', page: AddProduct},
