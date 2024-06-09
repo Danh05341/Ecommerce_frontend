@@ -26,7 +26,7 @@ function SideBarAdmin() {
     )
   }
   return (
-    <div className='fixed left-0 top-0 bottom-0 w-[230px] h-[100vh] bg-[#182537] text-[#EEEFEF] flex flex-col'>
+    <div className='fixed left-0 top-0 bottom-0 w-[230px] h-[100vh] bg-[#182537] text-[#EEEFEF] flex flex-col z-20'>
       <div className='h-[52px] flex items-center border-b border-[#46515F]'>
         <div className='font-bold px-[20px]'>DELTA SHOES</div>
       </div>

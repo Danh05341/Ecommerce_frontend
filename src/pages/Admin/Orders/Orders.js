@@ -6,6 +6,7 @@ import Pagination from '../../../components/Pagination'
 import { getAllOrderAPI } from '../../../apis';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import queryString from 'query-string';
+import { Box, sliderClasses } from '@mui/material';
 const PAGE_LIMIT = 10
 function Orders() {
     const [statusOrder, setStatusOrder] = useState('all')
@@ -34,6 +35,15 @@ function Orders() {
         getAllOrderAPI(location.search).then(dataRes => {
             setOrders(dataRes.data);
             setPageNumbers(Math.ceil(dataRes.totalPage / PAGE_LIMIT))
+            const query = queryString.parse(location.search)
+            console.log('lc: ', location.search)
+            if( query.status === 'all' || 
+                query.status === 'unconfirmed' || 
+                query.status === 'delivering' || 
+                query.status === 'cancel' || 
+                query.status === 'finish'
+            ) setStatusOrder(query.status);
+            else setStatusOrder('all')
         }).catch(err => {
             console.error(err);
         });
@@ -63,7 +73,18 @@ function Orders() {
     }
     const handleChangeStatus = (status) => {
         setStatusOrder(status)
+        let query = queryString.parse(location.search)
+        query.status = status
+        query.limit = PAGE_LIMIT
+        query.page = 1
+        delete query.startDate 
+        delete query.endDate
+        // location.search = queryString.stringify(query)
+        navigate(`/admin/orders/?${queryString.stringify(query)}`)
+        setPage(1)
         setSearchTerm('')
+        setStartDate('')
+        setEndDate('')
     }
     const getClassNamesStatus = (status) => {
         return (
@@ -72,9 +93,9 @@ function Orders() {
     }
     useEffect(() => {
         let filtered = orders;
-        if (statusOrder !== 'all') {
-            filtered = filtered.filter(order => order.proccesingStatus === statusOrder);
-        }
+        // if (statusOrder !== 'all') {
+        //     filtered = filtered.filter(order => order.proccesingStatus === statusOrder);
+        // }
         if (searchTerm) {
             filtered = filtered.filter(order =>
                 order._id.includes(searchTerm) ||
@@ -102,39 +123,62 @@ function Orders() {
     const handleDateFilter = () => {
         setShowDateDropDown(false)
         // setStatusOrder('all')
-        // setSearchTerm('')
+        setSearchTerm('')
+        
         // Thực hiện lọc dữ liệu dựa trên ngày bắt đầu và kết thúc
-        let filtered = orders;
-        // Nếu có giá trị ngày bắt đầu, thực hiện lọc
-        if (startDate) {
-            filtered = filtered.filter(order => new Date(order.createdAt) >= new Date(startDate));
-        }
+        // let filtered = orders;
+        // console.log('orders-h: ', orders)
+        // // Nếu có giá trị ngày bắt đầu, thực hiện lọc
+        // if (startDate) {
+        //     filtered = filtered.filter(order => new Date(order.createdAt) >= new Date(startDate));
+        // }
 
-        // Nếu có giá trị ngày kết thúc, thực hiện lọc
-        if (endDate) {
+        // // Nếu có giá trị ngày kết thúc, thực hiện lọc
+        // if (endDate) {
 
-            // Lấy ngày kết thúc là ngày kế tiếp sau ngày được chọn
-            const nextEndDate = new Date(endDate);
-            nextEndDate.setDate(nextEndDate.getDate() + 1);
+        //     // Lấy ngày kết thúc là ngày kế tiếp sau ngày được chọn
+        //     const nextEndDate = new Date(endDate);
+        //     nextEndDate.setDate(nextEndDate.getDate() + 1);
 
-            filtered = filtered.filter(order => new Date(order.createdAt) < nextEndDate);
-        }
-        // Cập nhật danh sách đơn hàng đã lọc
-        setFilteredOrders(filtered);
-
+        //     filtered = filtered.filter(order => new Date(order.createdAt) < nextEndDate);
+        // }
+        // // Cập nhật danh sách đơn hàng đã lọc
+        // setFilteredOrders(filtered);
+        let query = {}
+        // query.limit = PAGE_LIMIT
+        if (startDate) query.startDate = startDate;
+        if (endDate) query.endDate = endDate;
+        // query.page = 1;
+        location.search = queryString.stringify(query);
+        navigate(`/admin/orders/?${queryString.stringify(query)}`);
+        setPage(1);
     };
-   
+
     const handleFilter = () => {
         setShowStatusDropdown(false);
-        let filtered = orders.filter(order => {
-            // Kiểm tra xem order có chứa ít nhất một trong các trạng thái được chọn hay không
-            return Object.keys(selectedStatus).some(status => selectedStatus[status] && order.proccesingStatus === status);
+        // let filtered = orders.filter(order => {
+        //     // Kiểm tra xem order có chứa ít nhất một trong các trạng thái được chọn hay không
+        //     return Object.keys(selectedStatus).some(status => selectedStatus[status] && order.proccesingStatus === status);
+        // });
+        // // Lọc khi k check -> all
+        // const array = Object.keys(selectedStatus).find(status => selectedStatus[status] === true)
+        // if (array) setFilteredOrders(filtered);
+        // else setFilteredOrders(orders)
+        setSearchTerm('')
+        setStartDate('')
+        setEndDate('')
+        let selectedArrays = []
+        Object.keys(selectedStatus).forEach(status => {
+            if (selectedStatus[status] === true)
+                selectedArrays.push(status)
         });
-        // Lọc khi k check -> all
-        const array = Object.keys(selectedStatus).find(status => selectedStatus[status] === true)
-        if(array) setFilteredOrders(filtered);
-        else setFilteredOrders(orders)
+        // Nếu không check, trả về all tất cả trạng thái
+        if (selectedArrays.length === 0) navigate('/admin/orders')
+        else {
+            navigate(`/admin/orders?status=${selectedArrays.join(',')}`)
+        }
     };
+    console.log('pageNumber: ', pageNumbers);
     return (
         <div className='w-[calc(100%-230px)] h-full ml-[230px] px-[30px] pt-[52px]'>
             <div className='ml-[2px] text-[22px] font-[500] h-[65px] flex items-center'>
@@ -146,7 +190,7 @@ function Orders() {
                     <div onClick={() => handleChangeStatus('unconfirmed')} className={getClassNamesStatus('unconfirmed')}>Đang chờ xác nhận</div>
                     <div onClick={() => handleChangeStatus('delivering')} className={getClassNamesStatus('delivering')}>Chờ giao hàng</div>
                     <div onClick={() => handleChangeStatus('finish')} className={getClassNamesStatus('finish')}>Đã hoàn thành</div>
-                    <div onClick={() => handleChangeStatus('unpaid')} className={getClassNamesStatus('unpaid')}>Chưa thanh toán</div>
+                    {/* <div onClick={() => handleChangeStatus('unpaid')} className={getClassNamesStatus('unpaid')}>Chưa thanh toán</div> */}
                     <div onClick={() => handleChangeStatus('cancel')} className={getClassNamesStatus('cancel')}>Đã hủy</div>
                 </div>
                 <div className='h-[76px] flex items-center px-[20px] z-10 justify-between'>
@@ -270,7 +314,15 @@ function Orders() {
                     })
                 }
                 <div className='h-[70px] flex justify-center items-center pb-[15px]'>
-                    <Pagination page={page} pageNumbers={pageNumbers} handleChangePage={handleChangePage} />
+                    {
+                        pageNumbers ?
+                            <Pagination page={page} pageNumbers={pageNumbers} handleChangePage={handleChangePage} /> : (
+                                <Box sx={{ bgcolor: '#fcf8e3', padding: '16px', color: '#8a6d3b', fontSize: '14px' }}>
+                                    Không tìm thấy đơn hàng
+                                </Box>
+                            )
+                    }
+
                 </div>
             </div>
         </div>

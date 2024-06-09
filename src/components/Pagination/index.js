@@ -21,9 +21,7 @@ export default function PaginationRounded({ page, pageNumbers, handleChangePage 
         }}
       />
     ) : (
-      <Box sx={{ bgcolor: '#fcf8e3', padding: '16px', color: '#8a6d3b', fontSize: '14px' }}>
-        Sản phẩm đang được cập nhật
-      </Box>
+      <></>
     )
   );
 }

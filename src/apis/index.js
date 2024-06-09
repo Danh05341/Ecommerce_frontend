@@ -90,6 +90,7 @@ export const getAllOrderAPI = async (query) => {
     const dataRes = await fetchData.json()
     return dataRes
 }
+
 export const updateOrderAPI = async (id, updateData) => {
     const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}order/${id}`, {
         method: 'PUT',
@@ -99,7 +100,6 @@ export const updateOrderAPI = async (id, updateData) => {
         body: JSON.stringify(updateData)
     })
     const dataRes = await fetchData.json()
-    return dataRes
     return dataRes
 }
 
@@ -135,6 +135,42 @@ export const createPaymentUrl = async (amount, orderId) => {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({amount, orderId})
+    })
+    const dataRes = await fetchData.json()
+    return dataRes
+}
+
+// Mock data
+export const getDashboardData = async () => {
+    // Đây là dữ liệu giả lập, trong thực tế bạn sẽ lấy từ server
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve({
+                revenue: {
+                    labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6'],
+                    data: [1200, 2100, 1500, 3000, 2500, 3200]
+                },
+                orderStatus: {
+                    labels: ['Đang chờ xác nhận', 'Chờ giao hàng', 'Đã hoàn thành', 'Đã hủy'],
+                    data: [30, 15, 50, 5]
+                },
+                categoryDistribution: {
+                    labels: ['Điện thoại', 'Máy tính', 'Phụ kiện', 'Đồ gia dụng', 'Thời trang', 'Khác'],
+                    data: [40, 20, 30, 10, 15, 10]
+                }
+            });
+        }, 1000);
+    });
+};
+
+// Dashboard
+export const revenueSummaryAPI = async (startDate, endDate) => {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}order/revenue-summary`, {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({startDate, endDate})
     })
     const dataRes = await fetchData.json()
     return dataRes

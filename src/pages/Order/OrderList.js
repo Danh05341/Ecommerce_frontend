@@ -61,7 +61,16 @@ const OrderList = () => {
     }
     const handleChangeStatus = (status) => {
         setStatusOrder(status)
+        let query = queryString.parse(location.search)
+        query.status = status
+        query.limit = PAGE_LIMIT
+        query.page = 1
+        // location.search = queryString.stringify(query)
+        navigate(`/order/user/65520534365011e1cd195c21?${queryString.stringify(query)}`)
+        setPage(1)
         setSearchTerm('')
+        delete query.startDate 
+        delete query.endDate
     }
     const getClassNamesStatus = (status) => {
         return (
@@ -73,6 +82,15 @@ const OrderList = () => {
         getOrderUserAPI(id, location.search).then(dataRes => {
             setOrders(dataRes.data);
             setPageNumbers(Math.ceil(dataRes.totalPage/PAGE_LIMIT))
+            const query = queryString.parse(location.search)
+            console.log('lc: ', location.search)
+            if( query.status === 'all' || 
+                query.status === 'unconfirmed' || 
+                query.status === 'delivering' || 
+                query.status === 'cancel' || 
+                query.status === 'finish'
+            ) setStatusOrder(query.status);
+            else setStatusOrder('all')
             setLoading(false);
         }).catch(err => {
             console.error(err);
@@ -81,9 +99,9 @@ const OrderList = () => {
     }, [id, location.search]);
     useEffect(() => {
         let filtered = orders;
-        if (statusOrder !== 'all') {
-            filtered = filtered.filter(order => order.proccesingStatus === statusOrder);
-        }
+        // if (statusOrder !== 'all') {
+        //     filtered = filtered.filter(order => order.proccesingStatus === statusOrder);
+        // }
         if (searchTerm) {
             filtered = filtered.filter(order =>
                 order._id.includes(searchTerm) ||
@@ -111,38 +129,58 @@ const OrderList = () => {
     const handleDateFilter = () => {
         setShowDateDropDown(false)
         // setStatusOrder('all')
-        // setSearchTerm('')
-        // Thực hiện lọc dữ liệu dựa trên ngày bắt đầu và kết thúc
-        let filtered = orders;
-        // Nếu có giá trị ngày bắt đầu, thực hiện lọc
-        if (startDate) {
-            filtered = filtered.filter(order => new Date(order.createdAt) >= new Date(startDate));
-        }
+        setSearchTerm('')
+        // // Thực hiện lọc dữ liệu dựa trên ngày bắt đầu và kết thúc
+        // let filtered = orders;
+        // // Nếu có giá trị ngày bắt đầu, thực hiện lọc
+        // if (startDate) {
+        //     filtered = filtered.filter(order => new Date(order.createdAt) >= new Date(startDate));
+        // }
 
-        // Nếu có giá trị ngày kết thúc, thực hiện lọc
-        if (endDate) {
+        // // Nếu có giá trị ngày kết thúc, thực hiện lọc
+        // if (endDate) {
 
-            // Lấy ngày kết thúc là ngày kế tiếp sau ngày được chọn
-            const nextEndDate = new Date(endDate);
-            nextEndDate.setDate(nextEndDate.getDate() + 1);
+        //     // Lấy ngày kết thúc là ngày kế tiếp sau ngày được chọn
+        //     const nextEndDate = new Date(endDate);
+        //     nextEndDate.setDate(nextEndDate.getDate() + 1);
 
-            filtered = filtered.filter(order => new Date(order.createdAt) < nextEndDate);
-        }
-        // Cập nhật danh sách đơn hàng đã lọc
-        setFilteredOrders(filtered);
-
+        //     filtered = filtered.filter(order => new Date(order.createdAt) < nextEndDate);
+        // }
+        // // Cập nhật danh sách đơn hàng đã lọc
+        // setFilteredOrders(filtered);
+        let query = {}
+        // query.limit = PAGE_LIMIT
+        if (startDate) query.startDate = startDate;
+        if (endDate) query.endDate = endDate;
+        // query.page = 1;
+        location.search = queryString.stringify(query);
+        navigate(`/order/user/65520534365011e1cd195c21?${queryString.stringify(query)}`);
+        setPage(1);
     };
    
     const handleFilter = () => {
         setShowStatusDropdown(false);
-        let filtered = orders.filter(order => {
-            // Kiểm tra xem order có chứa ít nhất một trong các trạng thái được chọn hay không
-            return Object.keys(selectedStatus).some(status => selectedStatus[status] && order.proccesingStatus === status);
+        // let filtered = orders.filter(order => {
+        //     // Kiểm tra xem order có chứa ít nhất một trong các trạng thái được chọn hay không
+        //     return Object.keys(selectedStatus).some(status => selectedStatus[status] && order.proccesingStatus === status);
+        // });
+        // // Lọc khi k check -> all
+        // const array = Object.keys(selectedStatus).find(status => selectedStatus[status] === true)
+        // if(array) setFilteredOrders(filtered);
+        // else setFilteredOrders(orders)
+        setSearchTerm('')
+        setStartDate('')
+        setEndDate('')
+        let selectedArrays = []
+        Object.keys(selectedStatus).forEach(status => {
+            if (selectedStatus[status] === true)
+                selectedArrays.push(status)
         });
-        // Lọc khi k check -> all
-        const array = Object.keys(selectedStatus).find(status => selectedStatus[status] === true)
-        if(array) setFilteredOrders(filtered);
-        else setFilteredOrders(orders)
+        // Nếu không check, trả về all tất cả trạng thái
+        if (selectedArrays.length === 0) navigate('/order/user/65520534365011e1cd195c21')
+        else {
+            navigate(`/order/user/65520534365011e1cd195c21?status=${selectedArrays.join(',')}`)
+        }
     };
 
     if (loading) {
@@ -160,7 +198,7 @@ const OrderList = () => {
                     <div onClick={() => handleChangeStatus('unconfirmed')} className={getClassNamesStatus('unconfirmed')}>Đang chờ xác nhận</div>
                     <div onClick={() => handleChangeStatus('delivering')} className={getClassNamesStatus('delivering')}>Chờ giao hàng</div>
                     <div onClick={() => handleChangeStatus('finish')} className={getClassNamesStatus('finish')}>Đã hoàn thành</div>
-                    <div onClick={() => handleChangeStatus('unpaid')} className={getClassNamesStatus('unpaid')}>Chưa thanh toán</div>
+                    {/* <div onClick={() => handleChangeStatus('unpaid')} className={getClassNamesStatus('unpaid')}>Chưa thanh toán</div> */}
                     <div onClick={() => handleChangeStatus('cancel')} className={getClassNamesStatus('cancel')}>Đã hủy</div>
                 </div>
                 <div className='h-[76px] flex items-center px-[20px] z-10 justify-between'>

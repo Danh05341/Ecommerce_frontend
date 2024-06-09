@@ -4,7 +4,7 @@ import { FaChevronDown } from "react-icons/fa6";
 
 function HeaderAdmin() {
     return (
-        <div style={{ boxShadow: '0px 2px 2px -1px rgba(0, 0, 0, 0.15)' }} className='fixed left-[230px] w-[calc(100%-230px)] h-[52px] bg-white flex items-center justify-between px-[30px]'>
+        <div style={{ boxShadow: '0px 2px 2px -1px rgba(0, 0, 0, 0.15)' }} className='fixed left-[230px] w-[calc(100%-230px)] h-[52px] bg-white flex items-center justify-between px-[30px] z-20'>
             {/* header left */}
             <div className='flex'>
                 <div className='flex items-center bg-[white] border border-transparent rounded-[6px] w-[600px] hover:bg-[#F3F3F3] focus-within:border-[#0088FF] cursor-pointer group/input'>

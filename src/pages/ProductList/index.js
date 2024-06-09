@@ -8,6 +8,7 @@ import { fetchBrandAPI, fetchProductAPI, getCategoryBySlugAPI } from "../../apis
 import PaginationRounded from "../../components/Pagination";
 import queryString from "query-string";
 import CheckBox from '../../components/Checkbox'
+import { Box } from "@mui/material";
 
 const ProductList = () => {
     const [brand, setBrand] = useState()
@@ -40,7 +41,7 @@ const ProductList = () => {
             console.log('dataRes1: ', brandList)
             setBrand(brandList)
         })
-    // console.log('vào 1: ', location.search)
+        // console.log('vào 1: ', location.search)
         setPage(1)
     }, [slug.name])
     // console.log('slug: ', slug)
@@ -52,7 +53,7 @@ const ProductList = () => {
             setProduct(dataRes.data)
             setPageNumbers(dataRes.totalPage)
         })
-    // console.log('vào 2: ', location.search)
+        // console.log('vào 2: ', location.search)
 
     }, [location.search])
 
@@ -66,7 +67,7 @@ const ProductList = () => {
             query.brands = brandAPI.join(',')
             query.page = 1
         }
-        else{
+        else {
             delete query.brands
             delete query.page
         }
@@ -249,7 +250,14 @@ const ProductList = () => {
                             <div className="flex flex-wrap gap-x-[15px] gap-y-[20px]  w-[870px] mt-[20px]">
                                 <ProductCard products={product} />
                             </div>
-                            <PaginationRounded page={page}  pageNumbers={pageNumbers} handleChangePage={handleChangePage} />
+
+                            {
+                                pageNumbers ? (<PaginationRounded page={page} pageNumbers={pageNumbers} handleChangePage={handleChangePage} />) : (
+                                    <Box sx={{ bgcolor: '#fcf8e3', padding: '16px', color: '#8a6d3b', fontSize: '14px' }}>
+                                        Sản phẩm đang được cập nhật
+                                    </Box>
+                                )
+                            }
                         </div>
                     </div>
                 </div>
