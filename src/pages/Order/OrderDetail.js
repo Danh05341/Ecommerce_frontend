@@ -87,7 +87,7 @@ const OrderDetail = () => {
                             </div>
                         </div>
                     ))}
-                    {order.proccesingStatus !== 'cancel' && (
+                    {order.proccesingStatus !== 'cancel' && order.proccesingStatus !== 'finish' && (
                         <button
                             className='mt-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 cursor-pointer'
                             onClick={handleCancelOrder}

@@ -21,8 +21,80 @@ const ProductList = () => {
     const navigate = useNavigate()
     const slug = useParams();
     const location = useLocation();
-    // console.log('page-ngoài: ', page)
+    const [checkAscDesc, setCheckAscDesc] = useState({
+        ascending: false,
+        descending: false
+    })
+    const [price, setPrice] = useState([
+        { id: 1, minPrice: '0', maxPrice: '100.000', value: 'Dưới 100.000', checked: false },
+        { id: 2, minPrice: '100.000', maxPrice: '200.000', value: '100.000 - 200.000', checked: false },
+        { id: 3, minPrice: '200.000', maxPrice: '300.000', value: '200.000 - 300.000', checked: false },
+        { id: 4, minPrice: '300.000', maxPrice: '500.000', value: '300.000 - 500.000', checked: false },
+        { id: 5, minPrice: '500.000', maxPrice: '1.000.000', value: '500.000 - 1.000.000', checked: false },
+        { id: 6, minPrice: '1.000.000', maxPrice: '999.999.999.999', value: 'Trên 1.000.000', checked: false }
+    ])
+    
+    useEffect(() => {
+        // Lọc ra các mục đã được chọn
+        const selectedPrices = price?.filter(item => item.checked === true);
+        const query = queryString.parse(location.search)
+        query.page = 1
+        setPage(1)
+        // Nếu không có mục nào được chọn, không cần gọi API
+        if (selectedPrices?.length === 0) {
+            delete query.minPrice
+            delete query.maxPrice
 
+            navigate(`/product/${slug.name}?${queryString.stringify(query)}`)
+            return
+        };
+
+        // Tìm giá trị minPrice nhỏ nhất và maxPrice lớn nhất
+        const minPrice = Math.min(...selectedPrices?.map(item => item.minPrice.replace(/\./g, '')));
+        const maxPrice = Math.max(...selectedPrices?.map(item => item.maxPrice.replace(/\./g, '')));
+
+
+        // Gọi API với giá trị minPrice và maxPrice
+        query.minPrice = minPrice
+        query.maxPrice = maxPrice
+        navigate(`/product/${slug.name}?${queryString.stringify(query)}`)
+    }, [price])
+    const handleChangePrice = (id) => {
+        setPrice(prevState => {
+            const newPrice = prevState.map(
+                item => item.id === id ? { ...item, checked: !item.checked } : { ...item }
+            )
+
+            return newPrice
+        })
+    }
+    const handleChangeAscDesc = (status) => {
+        // chỉ 1 status được chọn
+        setCheckAscDesc(prevState => {
+            if (prevState[status]) {
+                const query = queryString.parse(location.search)
+                query.page = 1
+                setPage(1)
+                delete query.sort
+                navigate(`/product/${slug.name}?${queryString.stringify(query)}`)
+                console.log('query: ', query)
+                return {
+                    ascending: false,
+                    descending: false
+                }
+            }
+            const query = queryString.parse(location.search)
+            query.page = 1
+            setPage(1)
+
+            query.sort = status
+            navigate(`/product/${slug.name}?${queryString.stringify(query)}`)
+            return {
+                ascending: status === 'ascending',
+                descending: status === 'descending'
+            };
+        })
+    }
     useEffect(() => {
         getCategoryBySlugAPI(slug.name).then((dataRes) => {
             setCategory(dataRes.data)
@@ -35,6 +107,8 @@ const ProductList = () => {
         fetchProductAPI(slug.name, location.search).then((dataRes) => {
             setProduct(dataRes.data)
             setPageNumbers(dataRes.totalPage)
+            setCheckAscDesc({ ascending: false, descending: false })
+            setPrice(prevState => prevState.map(item => ({ ...item, checked: false })))
             console.log('dataRes-brand_names: ', dataRes.brandNames)
 
             const brandList = dataRes.brandNames.map(brand => ({ ...brand, checked: false }))
@@ -53,7 +127,6 @@ const ProductList = () => {
             setProduct(dataRes.data)
             setPageNumbers(dataRes.totalPage)
         })
-        // console.log('vào 2: ', location.search)
 
     }, [location.search])
 
@@ -174,36 +247,18 @@ const ProductList = () => {
                             <div className="leading-[40px] text-[14px] font-bold mt-[24px]">MỨC GIÁ</div>
                             <div className="px-[15px] pb-[15px] pt-[6px] border border-solid border-[#ebebeb] ">
                                 <div className="flex flex-col gap-[15px] mt-[9px]  overflow-y-auto scrollbar-thin">
-                                    <div className="flex items-center relative flex-1 ">
-                                        <input type="checkbox" id="1" className=" w-[15px] h-[15px] cursor-pointer" />
-                                        {/* <BsCheck className="absolute top-0 left-[-3px] w-[20px] h-[20px] text-[#ff2d37] " /> */}
-                                        <label htmlFor="1" className="text-[14px] pl-[8px] cursor-pointer select-none">Giá dưới 100.000đ</label>
-                                    </div>
-                                    <div className="flex items-center relative flex-1 ">
-                                        <input type="checkbox" id="2" className=" w-[15px] h-[15px] cursor-pointer" />
-                                        {/* <BsCheck className="absolute top-0 left-[-3px] w-[20px] h-[20px] text-[#ff2d37] " /> */}
-                                        <label htmlFor="2" className="text-[14px] pl-[8px] cursor-pointer select-none">100.000đ - 200.000đ</label>
-                                    </div>
-                                    <div className="flex items-center relative flex-1 ">
-                                        <input type="checkbox" id="3" className=" w-[15px] h-[15px] cursor-pointer" />
-                                        {/* <BsCheck className="absolute top-0 left-[-3px] w-[20px] h-[20px] text-[#ff2d37] " /> */}
-                                        <label htmlFor="3" className="text-[14px] pl-[8px] cursor-pointer select-none">200.000đ - 300.000đ</label>
-                                    </div>
-                                    <div className="flex items-center relative flex-1 ">
-                                        <input type="checkbox" id="4" className=" w-[15px] h-[15px] cursor-pointer" />
-                                        {/* <BsCheck className="absolute top-0 left-[-3px] w-[20px] h-[20px] text-[#ff2d37] " /> */}
-                                        <label htmlFor="4" className="text-[14px] pl-[8px] cursor-pointer select-none">300.000đ - 500.000đ</label>
-                                    </div>
-                                    <div className="flex items-center relative flex-1 ">
-                                        <input type="checkbox" id="5" className=" w-[15px] h-[15px] cursor-pointer" />
-                                        {/* <BsCheck className="absolute top-0 left-[-3px] w-[20px] h-[20px] text-[#ff2d37] " /> */}
-                                        <label htmlFor="5" className="text-[14px] pl-[8px] cursor-pointer select-none">500.000đ - 1.000.000đ</label>
-                                    </div>
-                                    <div className="flex items-center relative flex-1 ">
-                                        <input type="checkbox" id="6" className=" w-[15px] h-[15px] cursor-pointer" />
-                                        {/* <BsCheck className="absolute top-0 left-[-3px] w-[20px] h-[20px] text-[#ff2d37] " /> */}
-                                        <label htmlFor="6" className="text-[14px] pl-[8px] cursor-pointer select-none">Giá trên 1.000.000đ</label>
-                                    </div>
+                                    {
+                                        price?.map(item => {
+                                            return (
+                                                <div key={`price-${item.value}`} className="flex items-center relative flex-1 ">
+                                                    <input onChange={() => handleChangePrice(item.id)} type="checkbox" id={`price-${item.value}`} checked={item.checked} className=" w-[15px] h-[15px] cursor-pointer" />
+                                                    {/* <BsCheck className="absolute top-0 left-[-3px] w-[20px] h-[20px] text-[#ff2d37] " /> */}
+                                                    <label htmlFor={`price-${item.value}`} className="text-[14px] pl-[8px] cursor-pointer select-none">{item.value}đ</label>
+                                                </div>
+                                            )
+                                        })
+                                    }
+
                                 </div>
                             </div>
 
@@ -238,12 +293,12 @@ const ProductList = () => {
                                 <span className=" font-bold ">Sắp xếp:</span>
                                 <div className="ml-[30px] inline-block">
                                     <div className="inline-flex ml-[20px] items-center hover:text-[#ff2d37] ">
-                                        <input type="checkbox" className="w-[14px] h-[14px] cursor-pointer" name="increase" id="increase" />
-                                        <label htmlFor="increase" className="ml-[6px] cursor-pointer">Giá tăng dần</label>
+                                        <input onChange={() => handleChangeAscDesc('ascending')} checked={checkAscDesc.ascending} type="checkbox" className="w-[14px] h-[14px] cursor-pointer" name="ascending" id="ascending" />
+                                        <label htmlFor="ascending" className="ml-[6px] cursor-pointer">Giá tăng dần</label>
                                     </div>
                                     <div className="inline-flex ml-[20px] items-center hover:text-[#ff2d37] ">
-                                        <input type="checkbox" className="w-[14px] h-[14px] cursor-pointer" name="decrease" id="decrease" />
-                                        <label htmlFor="decrease" className="ml-[6px] cursor-pointer">Giá giảm dần</label>
+                                        <input onChange={() => handleChangeAscDesc('descending')} checked={checkAscDesc.descending} type="checkbox" className="w-[14px] h-[14px] cursor-pointer" name="descending" id="descending" />
+                                        <label htmlFor="descending" className="ml-[6px] cursor-pointer">Giá giảm dần</label>
                                     </div>
                                 </div>
                             </div>
@@ -262,7 +317,7 @@ const ProductList = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 

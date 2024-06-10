@@ -51,7 +51,7 @@ function OrderDetails() {
     };
     const getStatusProcessing = (status) => {
         switch (status) {
-            case 'unconfimred':
+            case 'unconfirmed':
                 return 'Đang chờ xác nhận';
             case 'delivering':
                 return 'Chờ giao hàng';
