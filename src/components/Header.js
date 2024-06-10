@@ -25,7 +25,7 @@ const Header = () => {
     }
     const handleSearch = () => {
         if (inputValue) {
-            navigate(`/search?query=${encodeURIComponent(inputValue)}`)
+            navigate(`/product/all?search=${encodeURIComponent(inputValue)}`)
         }
         setInputValue("")
     }

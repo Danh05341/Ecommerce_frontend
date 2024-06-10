@@ -1,13 +1,12 @@
-import { BsChevronRight, BsCheck } from "react-icons/bs";
+import { BsChevronRight } from "react-icons/bs";
 
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import SideBar from "../../components/SideBar";
 import { useEffect, useState } from "react";
 import ProductCard from "../Home/ProductCard";
-import { fetchBrandAPI, fetchProductAPI, getCategoryBySlugAPI } from "../../apis";
+import { fetchProductAPI, getCategoryBySlugAPI } from "../../apis";
 import PaginationRounded from "../../components/Pagination";
 import queryString from "query-string";
-import CheckBox from '../../components/Checkbox'
 import { Box } from "@mui/material";
 
 const ProductList = () => {
@@ -16,11 +15,18 @@ const ProductList = () => {
     const [product, setProduct] = useState()
     const [page, setPage] = useState(0)
     const [category, setCategory] = useState()
-    // const [page, setPage] = useState(0)
     const [pageNumbers, setPageNumbers] = useState(0)
     const navigate = useNavigate()
     const slug = useParams();
     const location = useLocation();
+    const [sizes, setSizes] = useState([])
+    const [search, setSearch] = useState('')
+    useEffect(() => {
+        setBrand(brand.map(brand => ({ ...brand, checked: false })))
+        setPrice(price.map(item => ({ ...item, checked: false })))
+        setSizes(sizes.map(item => ({ ...item, checked: false })))
+        setCheckAscDesc({ ascending: false, descending: false })
+    }, [search])
     const [checkAscDesc, setCheckAscDesc] = useState({
         ascending: false,
         descending: false
@@ -33,12 +39,13 @@ const ProductList = () => {
         { id: 5, minPrice: '500.000', maxPrice: '1.000.000', value: '500.000 - 1.000.000', checked: false },
         { id: 6, minPrice: '1.000.000', maxPrice: '999.999.999.999', value: 'Trên 1.000.000', checked: false }
     ])
-    
+
     useEffect(() => {
         // Lọc ra các mục đã được chọn
         const selectedPrices = price?.filter(item => item.checked === true);
         const query = queryString.parse(location.search)
         query.page = 1
+        // 
         setPage(1)
         // Nếu không có mục nào được chọn, không cần gọi API
         if (selectedPrices?.length === 0) {
@@ -68,6 +75,34 @@ const ProductList = () => {
             return newPrice
         })
     }
+    const handleChangeSizeAPI = (sizes) => {
+        let newSizeAPI = []
+        const query = queryString.parse(location.search)
+        sizes.forEach(size => {
+            if (size.checked === true) newSizeAPI.push(size.size)
+        })
+        if (newSizeAPI.length === 0) {
+            delete query.size
+            navigate(`/product/${slug.name}?${queryString.stringify(query)}`)
+            return
+        }
+        query.size = newSizeAPI.join(',')
+        query.page = 1
+
+        setPage(1)
+        navigate(`/product/${slug.name}?${queryString.stringify(query)}`)
+    }
+    const handleChangeSize = (id) => {
+        let newSizes
+        setSizes(prevState => {
+            newSizes = prevState.map(size => size.size === id ?
+                { ...size, checked: !size.checked } :
+                { ...size })
+            handleChangeSizeAPI(newSizes)
+            return newSizes
+        })
+    }
+
     const handleChangeAscDesc = (status) => {
         // chỉ 1 status được chọn
         setCheckAscDesc(prevState => {
@@ -76,8 +111,8 @@ const ProductList = () => {
                 query.page = 1
                 setPage(1)
                 delete query.sort
+
                 navigate(`/product/${slug.name}?${queryString.stringify(query)}`)
-                console.log('query: ', query)
                 return {
                     ascending: false,
                     descending: false
@@ -109,25 +144,23 @@ const ProductList = () => {
             setPageNumbers(dataRes.totalPage)
             setCheckAscDesc({ ascending: false, descending: false })
             setPrice(prevState => prevState.map(item => ({ ...item, checked: false })))
-            console.log('dataRes-brand_names: ', dataRes.brandNames)
 
             const brandList = dataRes.brandNames.map(brand => ({ ...brand, checked: false }))
-            console.log('dataRes1: ', brandList)
             setBrand(brandList)
+            const sizeList = dataRes.sizes.map(item => ({ size: item, checked: false }))
+            console.log('sizeList: ', sizeList)
+            setSizes(sizeList)
         })
-        // console.log('vào 1: ', location.search)
         setPage(1)
     }, [slug.name])
-    // console.log('slug: ', slug)
-    // console.log('location: ', location)
-    // console.log('brand: ', brand)
+
     useEffect(() => {
         fetchProductAPI(slug.name, location.search).then((dataRes) => {
-            console.log('dataRes: ', dataRes.data)
             setProduct(dataRes.data)
             setPageNumbers(dataRes.totalPage)
         })
-
+        const query = queryString.parse(location.search)
+        setSearch(query.search)
     }, [location.search])
 
     // brandAPI
@@ -154,7 +187,6 @@ const ProductList = () => {
     }, [brandAPI])
 
     const updateCheckStatusBrand = (id) => {
-        console.log('onChange')
         // const query = queryString.parse(location.search)
 
         setBrand(brand => {
@@ -185,9 +217,8 @@ const ProductList = () => {
         console.log('page: ', page)
         const query = queryString.parse(location.search)
         query.page = page
-        // console.log('location: ', location.search)
-        // console.log('query: ', query)
-        console.log('e: ', e)
+
+
         navigate(`/product/${slug.name}?${queryString.stringify(query)}`)
     }
 
@@ -208,15 +239,24 @@ const ProductList = () => {
                         <li className="list-none inline cursor-text text-[#ff2d37] text-[14px]">Tất cả sản phẩm</li>
                     </div>
                     {
-                        slug.name === 'all' ? (
+                        (search ? (
                             <div className="text-[24px] font-bold text-[#ff2d37] leading-[38px] text-center mt-[8px]">
-                                Tất cả sản phẩm
+                                {search}
                             </div>
-                        ) : (
-                            <div className="text-[24px] font-bold text-[#ff2d37] leading-[38px] text-center mt-[8px]">
-                                {category?.name}
-                            </div>
+                        ) :
+                            slug.name === 'all' ? (
+                                <div className="text-[24px] font-bold text-[#ff2d37] leading-[38px] text-center mt-[8px]">
+                                    Tất cả sản phẩm
+                                </div>
+                            )
+                                :
+                                (
+                                    <div className="text-[24px] font-bold text-[#ff2d37] leading-[38px] text-center mt-[8px]">
+                                        {category?.name}
+                                    </div>
+                                )
                         )
+
                     }
 
 
@@ -262,29 +302,20 @@ const ProductList = () => {
                                 </div>
                             </div>
 
-                            {/* Color */}
+                            {/* Size */}
                             <div className="leading-[40px] text-[14px] font-bold mt-[24px]">THEO KÍCH CỠ</div>
                             <div className="flex flex-wrap gap-x-[20px] gap-y-[10px] px-[15px] pb-[15px] pt-[6px] border border-solid border-[#ebebeb] ">
-                                <div className="flex items-center relative ">
-                                    <input type="checkbox" id="" name="" className=" w-[15px] h-[15px] cursor-pointer" />
-                                    <label htmlFor="Hura" className="text-[14px] pl-[8px] cursor-pointer select-none">38</label>
-                                </div>
-                                <div className="flex items-center relative ">
-                                    <input type="checkbox" id="" name="" className=" w-[15px] h-[15px] cursor-pointer" />
-                                    <label htmlFor="Hura" className="text-[14px] pl-[8px] cursor-pointer select-none">39</label>
-                                </div>
-                                <div className="flex items-center relative ">
-                                    <input type="checkbox" id="" name="" className=" w-[15px] h-[15px] cursor-pointer" />
-                                    <label htmlFor="Hura" className="text-[14px] pl-[8px] cursor-pointer select-none">40</label>
-                                </div>
-                                <div className="flex items-center relative ">
-                                    <input type="checkbox" id="" name="" className=" w-[15px] h-[15px] cursor-pointer" />
-                                    <label htmlFor="Hura" className="text-[14px] pl-[8px] cursor-pointer select-none">41</label>
-                                </div>
-                                <div className="flex items-center relative ">
-                                    <input type="checkbox" id="" name="" className=" w-[15px] h-[15px] cursor-pointer" />
-                                    <label htmlFor="Hura" className="text-[14px] pl-[8px] cursor-pointer select-none">42</label>
-                                </div>
+                                {
+                                    sizes.map(size => {
+                                        return (
+                                            <div key={`${size.size}-size`} className="flex items-center relative ">
+                                                <input onChange={() => handleChangeSize(size.size)} type="checkbox" id={size.size} checked={size.checked} className=" w-[15px] h-[15px] cursor-pointer" />
+                                                <label htmlFor={size.size} className="text-[14px] pl-[8px] cursor-pointer select-none">{size.size}</label>
+                                            </div>
+                                        )
+                                    })
+                                }
+
                             </div>
 
                         </div>
