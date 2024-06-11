@@ -44,7 +44,7 @@ const Signup = () => {
                     navigate('/login')
                 }
                 else {
-                    alert(dataRes.message)
+                    alert('User already exits')
                 }
             }
             else {
