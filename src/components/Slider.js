@@ -6,7 +6,7 @@ const Slider = (props) => {
 
     useEffect(() => {
         const fetchApi = async () => {
-            const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}slider`)
+            const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}slider`)
             const dataRes = await fetchData.json()
             setSlider(dataRes.data[0].image_url)
         }

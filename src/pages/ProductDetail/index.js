@@ -54,7 +54,7 @@ function ProductDetail() {
     useEffect(() => {
         const getProduct = async () => {
             const fetchData = await fetch(
-                `${process.env.REACT_APP_SERVER_LOCAL}product/${slug}`
+                `${process.env.REACT_APP_SERVER_DOMAIN}product/${slug}`
             );
             const dataRes = await fetchData.json();
             setProduct(dataRes.data);
@@ -93,7 +93,7 @@ function ProductDetail() {
                 console.log('size: ', sizeActive)
                 dispatch(addProduct({ product: product, value: value, image: currentImage, size: sizeActive }))
                 if (userData.cart_id) {
-                    fetch(`${process.env.REACT_APP_SERVER_LOCAL}cart/${userData?.cart_id}`, {
+                    fetch(`${process.env.REACT_APP_SERVER_DOMAIN}cart/${userData?.cart_id}`, {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",
@@ -148,12 +148,12 @@ function ProductDetail() {
                         </li>
                     </Link>
                     <BsChevronRight className="text-[10px] font-bold w-[30px] h-[10px] inline" />
-                    <Link to="/">
+                    {/* <Link to="/">
                         <li className="list-none inline cursor-pointer  text-[14px] hover:text-[#ff2d37]">
                             Sneaker nổi bật
                         </li>
                     </Link>
-                    <BsChevronRight className="text-[10px] font-bold w-[30px] h-[10px] inline" />
+                    <BsChevronRight className="text-[10px] font-bold w-[30px] h-[10px] inline" /> */}
                     <li className="list-none inline cursor-text text-[#ff2d37] text-[14px]">
                         Tất cả sản phẩm
                     </li>

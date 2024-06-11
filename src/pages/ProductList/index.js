@@ -22,9 +22,9 @@ const ProductList = () => {
     const [sizes, setSizes] = useState([])
     const [search, setSearch] = useState('')
     useEffect(() => {
-        setBrand(brand.map(brand => ({ ...brand, checked: false })))
-        setPrice(price.map(item => ({ ...item, checked: false })))
-        setSizes(sizes.map(item => ({ ...item, checked: false })))
+        setBrand(brand?.map(brand => ({ ...brand, checked: false })))
+        setPrice(price?.map(item => ({ ...item, checked: false })))
+        setSizes(sizes?.map(item => ({ ...item, checked: false })))
         setCheckAscDesc({ ascending: false, descending: false })
     }, [search])
     const [checkAscDesc, setCheckAscDesc] = useState({
@@ -232,10 +232,10 @@ const ProductList = () => {
                             <li className="list-none inline cursor-pointer  text-[14px] hover:text-[#ff2d37]">Trang chủ</li>
                         </Link>
                         <BsChevronRight className='text-[10px] font-bold w-[30px] h-[10px] inline' />
-                        <Link to='/'>
+                        {/* <Link to='/'>
                             <li className="list-none inline cursor-pointer  text-[14px] hover:text-[#ff2d37]">Sneaker nổi bật</li>
                         </Link>
-                        <BsChevronRight className='text-[10px] font-bold w-[30px] h-[10px] inline' />
+                        <BsChevronRight className='text-[10px] font-bold w-[30px] h-[10px] inline' /> */}
                         <li className="list-none inline cursor-text text-[#ff2d37] text-[14px]">Tất cả sản phẩm</li>
                     </div>
                     {
@@ -261,7 +261,7 @@ const ProductList = () => {
 
 
                     <div className="flex mt-[20px] ">
-                        <div className="w-[300px] px-[15px] h-[10000px]">
+                        <div className="w-[300px] px-[15px] pb-[200px]">
                             <div className="leading-[40px] text-[14px] font-bold">DANH MỤC SẢN PHẨM</div>
                             <div className="px-[15px] pb-[15px] pt-[6px] border border-solid border-[#ebebeb]">
                                 <SideBar />

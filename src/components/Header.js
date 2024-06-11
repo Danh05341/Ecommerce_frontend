@@ -36,6 +36,7 @@ const Header = () => {
         localStorage.removeItem('user_image')
         localStorage.removeItem('user_role')
         localStorage.removeItem('cart_id')
+        localStorage.removeItem('user_id')
 
         dispatch(logoutRedux())
         dispatch(setDataLogout())

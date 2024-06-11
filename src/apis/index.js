@@ -5,19 +5,31 @@ export const fetchCategoryAPI = async () => {
 }
 
 export const fetchBrandAPI = async () => {
-    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}brand`)
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}brand`)
     const dataRes = await fetchData.json()
     return dataRes
 }
 export const getBrandById = async (id) => {
-    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}brand/${id}`)
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}brand/${id}`)
     const dataRes = await fetchData.json()
     return dataRes
 }
 
 export const fetchProductAPI = async (slug, location) => {
     console.log('slug + location: ',slug + location)
-    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}product/${slug + location}`)
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}product/${slug + location}`)
+    const dataRes = await fetchData.json()
+    return dataRes
+}
+
+export const addNewProductAPI = async(productNew) => {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}product/create`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(productNew)
+    })
     const dataRes = await fetchData.json()
     return dataRes
 }
@@ -25,7 +37,7 @@ export const fetchProductAPI = async (slug, location) => {
 export const updateProductAPI = async (id, updateData) => {
     console.log('id: ',id)
     console.log('updateData: ',updateData)
-    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}product/${id}`, {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}product/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -35,28 +47,25 @@ export const updateProductAPI = async (id, updateData) => {
     const dataRes = await fetchData.json()
     return dataRes
 }
-export const deleteManyProductAPI = async (id, dataToDelete) => {
-    console.log('id: ',id)
-    console.log('updateData: ',dataToDelete)
-    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}product/${id}`, {
+export const deleteProductAPI = async (id) => {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}product/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(dataToDelete)
     })
     const dataRes = await fetchData.json()
     return dataRes
 }
 
 export const getCategoryBySlugAPI = async (slug) => {
-    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}category/${slug}`)
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}category/${slug}`)
     const dataRes = await fetchData.json()
     return dataRes
 }
 
 export const LoginAPI = async (email, password) => {
-    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}users/login`, {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}users/login`, {
         method: 'POST',
         headers: {
             "Content-Type": "application/json"
@@ -68,7 +77,7 @@ export const LoginAPI = async (email, password) => {
 }
 
 export const checkTokenAPI = async (token) => {
-    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}users/checkToken`, {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}users/checkToken`, {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
@@ -80,19 +89,19 @@ export const checkTokenAPI = async (token) => {
 }
 
 export const getAllProvince = async () => {
-    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}province`)
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}province`)
     const dataRes = await fetchData.json()
     return dataRes
 }
 // Orders
 export const getAllOrderAPI = async (query) => {
-    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}order${query}`)
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}order${query}`)
     const dataRes = await fetchData.json()
     return dataRes
 }
 
 export const updateOrderAPI = async (id, updateData) => {
-    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}order/${id}`, {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}order/${id}`, {
         method: 'PUT',
         headers: {
             "Content-Type": "application/json",
@@ -104,13 +113,13 @@ export const updateOrderAPI = async (id, updateData) => {
 }
 
 export const getOrderDetailsAPI = async (id) => {
-    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}order/details/${id}`)
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}order/details/${id}`)
     const dataRes = await fetchData.json()
     return dataRes
 }
 
 export const createOrderAPI = async (dataForm) => {
-    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}order`, {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}order`, {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
@@ -121,7 +130,7 @@ export const createOrderAPI = async (dataForm) => {
     return dataRes
 }
 export const getOrderUserAPI = async (id, query) => {
-    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}order/user/${id}${query}`)
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}order/user/${id}${query}`)
     const dataRes = await fetchData.json()
     return dataRes
 }
@@ -129,7 +138,7 @@ export const getOrderUserAPI = async (id, query) => {
 // Payment
 
 export const createPaymentUrl = async (amount, orderId) => {
-    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}payment/create_payment_url`, {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}payment/create_payment_url`, {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
@@ -165,7 +174,7 @@ export const getDashboardData = async () => {
 
 // Dashboard
 export const revenueSummaryAPI = async (startDate, endDate) => {
-    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}order/revenue-summary`, {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}order/revenue-summary`, {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",

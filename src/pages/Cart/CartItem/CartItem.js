@@ -15,7 +15,7 @@ function CartItem({ product, quantity, imageCurrent, productSize }) {
             if (prev > 1) {
                 dispatch(minusProduct({ product, size: productSize, image: imageCurrent }))
                 // gọi API
-                fetch(`${process.env.REACT_APP_SERVER_LOCAL}cart/${userData.cart_id}`, {
+                fetch(`${process.env.REACT_APP_SERVER_DOMAIN}cart/${userData.cart_id}`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
@@ -37,7 +37,7 @@ function CartItem({ product, quantity, imageCurrent, productSize }) {
         setValue((prev) => {
             if (prev < 9999) {
                 dispatch(addProduct({ product, value: +1, size: productSize, image: imageCurrent }))
-                fetch(`${process.env.REACT_APP_SERVER_LOCAL}cart/${userData.cart_id}`, {
+                fetch(`${process.env.REACT_APP_SERVER_DOMAIN}cart/${userData.cart_id}`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
@@ -60,7 +60,7 @@ function CartItem({ product, quantity, imageCurrent, productSize }) {
         if (e.target.value < 9999 && e.target.value > 0) {
             setValue(e.target.value);
             dispatch(setCountProduct({ product, value: e.target.value, size: productSize, image: imageCurrent }))
-            fetch(`${process.env.REACT_APP_SERVER_LOCAL}cart/${userData.cart_id}`, {
+            fetch(`${process.env.REACT_APP_SERVER_DOMAIN}cart/${userData.cart_id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -78,7 +78,7 @@ function CartItem({ product, quantity, imageCurrent, productSize }) {
     const handleRemoveProductCart = () => {
         dispatch(removeProduct({ id: product._id, size: productSize, image: imageCurrent }))
         if (userData.cart_id) {
-            fetch(`${process.env.REACT_APP_SERVER_LOCAL}cart/${userData.cart_id}`, {
+            fetch(`${process.env.REACT_APP_SERVER_DOMAIN}cart/${userData.cart_id}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",

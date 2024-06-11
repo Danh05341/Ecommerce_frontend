@@ -31,7 +31,7 @@ const Signup = () => {
         const { firstName, email, password, confirmPassword } = dataForm
         if (firstName && email && password && confirmPassword) {
             if (password === confirmPassword) {
-                const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}users/signup`, {
+                const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}users/signup`, {
                     method: 'POST',
                     headers: {
                         "content-type": "application/json"

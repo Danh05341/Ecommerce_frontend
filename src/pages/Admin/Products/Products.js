@@ -13,7 +13,7 @@ function Products() {
     const [products, setProducts] = useState()
     const [pageNumbers, setPageNumbers] = useState()
     const [page, setPage] = useState(1)
-    
+
     useEffect(() => {
         fetchProductAPI('all', location.search).then((dataRes) => {
             setProducts(dataRes.data)
@@ -29,10 +29,12 @@ function Products() {
         <div className='ml-[230px] w-[calc(100%-230px)] pt-[52px] h-full px-[30px]'>
             <div className='ml-[2px] text-[22px] font-[500] h-[65px] flex items-center justify-between'>
                 <div>Danh sách sản phẩm</div>
-                <div className='flex items-center justify-center gap-[6px] w-[164px] h-[36px] bg-[#0088FF] text-white text-[16px] rounded-[6px] cursor-pointer'>
-                    <IoAddCircleOutline className='text-[20px]' />
-                    <span className='mb-[2px]'>Thêm sản phẩm</span>
-                </div>
+                <Link to={'/admin/products/create'}>
+                    <div className='flex items-center justify-center gap-[6px] w-[164px] h-[36px] bg-[#0088FF] text-white text-[16px] rounded-[6px] cursor-pointer'>
+                        <IoAddCircleOutline className='text-[20px]' />
+                        <span className='mb-[2px]'>Thêm sản phẩm</span>
+                    </div>
+                </Link>
             </div>
             <div style={{ boxShadow: '0px 1px 3px 1px rgba(0, 0, 0, 0.1)' }} className='w-full  bg-white  rounded-[6px]'>
                 <div className='h-[46px] flex items-center border-b'>

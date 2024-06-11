@@ -71,7 +71,7 @@ function AddProductVariant() {
 
             toast.success('Thêm phiên bản thành công')
             // gọi api cập nhật product
-            updateProductAPI(product?._id, { size: productClone?.size, total, status: total > 0 ? 'true' : product?.status}).then((dataRes) => {
+            updateProductAPI(product?._id, { size: productClone?.size, total, status: total > 0 ? 'true' : product?.status }).then((dataRes) => {
                 setProduct(dataRes.data)
             })
         }
@@ -124,9 +124,12 @@ function AddProductVariant() {
                                             <div className='border rounded-[6px]'>
                                                 <img className='h-[38px] w-[38px] rounded-[6px]' src={product?.image?.[0]} alt=''></img>
                                             </div>
-                                            <div className=''>
-                                                <div className='font-[500] text-[#0088FF]'>{size.size}</div>
-                                                <div className='text-[#747C87]'>Có thể bán: <span className='font-[500]'>{size.quantity}</span></div>
+                                            <div className='flex flex-1'>
+                                                <div className='flex-1'>
+                                                    <div className='font-[500] text-[#0088FF]'>{size.size}</div>
+                                                    <div className='text-[#747C87]'>Có thể bán: <span className='font-[500]'>{size.quantity}</span></div>
+                                                </div>
+                                                <div className='flex gap-2 items-center'>Giá bán:<span className='font-[500] text-[#0088FF]'>{size.price}₫</span></div>
                                             </div>
                                         </div>
                                     )

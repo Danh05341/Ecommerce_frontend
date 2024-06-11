@@ -10,7 +10,6 @@ import { toast } from 'react-toastify'
 function Checkout() {
     const productsCart = useSelector(state => state.cart.data)
     const userData = useSelector(state => state.user.data)
-    console.log('productsCart-1: ', productsCart)
     const navigate = useNavigate()
     const [provinceAll, setProvinceAll] = useState([])
     const [provinces, setProvinces] = useState([])
