@@ -39,7 +39,6 @@ const publicRoutes = [
     { path: '/cart', page: Cart},
     { path: '/order/user/:id', page: OrderList},
     { path: '/order/details/:id', page: OrderDetail},
-    { path: '/checkout', page: Checkout, layout: null},
     { path: '/payment/status', page: Payments, layout: null},
     { path: '/order/status', page: OrderStatus, layout: null},
 ]
@@ -52,6 +51,9 @@ const privateRoutes = [
     { path: '/admin/products/create', page: CreateNewProduct, layout: AdminLayout},
     { path: '/admin/products/:id/variant/create', page: AddProductVariant, layout: null},
     { path: '/admin/order/details/:id', page: OrderDetailsAdmin, layout: AdminLayout},
+    
+    { path: '/checkout', page: Checkout, layout: null},
+
     // { path: '/admin/orders', page: Orders},
     // { path: '/admin/all-products', page: ProductsAll},
     // { path: '/admin/add-product', page: AddProduct},

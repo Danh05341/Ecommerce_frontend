@@ -15,6 +15,7 @@ function Checkout() {
     const [provinces, setProvinces] = useState([])
     const [districts, setDistricts] = useState([])
     const [wards, setWards] = useState([])
+    const [total, setTotal] = useState()
     const [totalQuantity, setTotalQuantity] = useState(() => {
         const countProduct = productsCart.reduce((total, product) => {
             total += (product?.quantity)
@@ -28,6 +29,7 @@ function Checkout() {
             total += +product?.productId?.price?.replace(/\./g, '') * product?.quantity
             return total;
         }, 0)
+        setTotal((totalPrice - 40000).toLocaleString('vi-VN'))
         return totalPrice.toLocaleString('vi-VN')
 
     })
@@ -317,7 +319,7 @@ function Checkout() {
                 </div>
                 <div className=' py-[15px] ml-[24px] flex justify-between'>
                     <span className='text-[#717171] text-[17px]'>Tổng cộng</span>
-                    <span className='text-[#2a9dcc] text-[22px]'>{totalPrice}₫</span>
+                    <span className='text-[#2a9dcc] text-[22px]'>{total}₫</span>
                 </div>
                 <div className='flex justify-between ml-[24px]'>
                     <span className='text-[#2a9dcc] text-[14px] cursor-pointer flex items-center'>
