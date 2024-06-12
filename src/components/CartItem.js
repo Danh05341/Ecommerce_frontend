@@ -10,7 +10,7 @@ const CartItem = (props) => {
     const handleRemoveProduct = () => {
         dispatch(removeProduct({id: product.productId._id, size: product.productSize, image: product.imageCurrent}))
         if (userData.cart_id) {
-            fetch(`${process.env.REACT_APP_SERVER_DOMAIN}cart/${userData.cart_id}`, {
+            fetch(`${process.env.REACT_APP_SERVER_LOCAL}cart/${userData.cart_id}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",

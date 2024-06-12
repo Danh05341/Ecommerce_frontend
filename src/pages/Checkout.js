@@ -29,11 +29,11 @@ function Checkout() {
             total += +product?.productId?.price?.replace(/\./g, '') * product?.quantity
             return total;
         }, 0)
-        setTotal((totalPrice - 40000).toLocaleString('vi-VN'))
+        setTotal((totalPrice + 40000).toLocaleString('vi-VN'))
         return totalPrice.toLocaleString('vi-VN')
 
     })
-
+  
     const [dataForm, setDataForm] = useState({
         email: "",
         name: "",
@@ -58,7 +58,7 @@ function Checkout() {
             }
         }),
         totalPrice: totalPrice,
-        userId: userData.user_id
+        userId: userData.user_id ?? userData._id
     })
     const handleOnChange = (e) => {
         const name = e.target.name
@@ -94,6 +94,7 @@ function Checkout() {
         }
     }
     const handleOrder = () => {
+     
         if (dataForm.email && dataForm.name && dataForm.phone && dataForm.address && dataForm.city && dataForm.district && dataForm.ward && dataForm.shippingFee && dataForm.productsOrder && dataForm.totalPrice && dataForm.userId) {
             if (dataForm.paymentMethod === 'VNPAY') {
                 createOrderAPI(dataForm).then((dataRes) => {

@@ -54,7 +54,7 @@ function ProductDetail() {
     useEffect(() => {
         const getProduct = async () => {
             const fetchData = await fetch(
-                `${process.env.REACT_APP_SERVER_DOMAIN}product/${slug}`
+                `${process.env.REACT_APP_SERVER_LOCAL}product/${slug}`
             );
             const dataRes = await fetchData.json();
             setProduct(dataRes.data);
@@ -85,7 +85,7 @@ function ProductDetail() {
     }
     const handleClickBuy = (e) => {
 
-        setModalIsActive((prev) => !prev);
+        if(sizeActive) setModalIsActive((prev) => !prev);
         if (!modalIsActive) {
             if (sizeActive) {
                 console.log('value: ', value)
@@ -93,7 +93,7 @@ function ProductDetail() {
                 console.log('size: ', sizeActive)
                 dispatch(addProduct({ product: product, value: value, image: currentImage, size: sizeActive }))
                 if (userData.cart_id) {
-                    fetch(`${process.env.REACT_APP_SERVER_DOMAIN}cart/${userData?.cart_id}`, {
+                    fetch(`${process.env.REACT_APP_SERVER_LOCAL}cart/${userData?.cart_id}`, {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",

@@ -11,7 +11,7 @@ const Banner = () => {
     const [banners, setBanners] = useState()
     useEffect(() => {
         const fetchApi = async () => {
-            const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}banner`)
+            const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}banner`)
             const dataRes = await fetchData.json()
             setBanners(dataRes.data)
         }

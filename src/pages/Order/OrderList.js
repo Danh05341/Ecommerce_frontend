@@ -6,8 +6,10 @@ import { TiArrowSortedDown } from "react-icons/ti";
 import { CiFilter } from "react-icons/ci";
 import Pagination from '../../components/Pagination'
 import queryString from 'query-string';
+import { useSelector } from 'react-redux';
 const PAGE_LIMIT = 10
 const OrderList = () => {
+    const userData = useSelector(state => state.user.data)
     const navigate = useNavigate()
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -57,7 +59,7 @@ const OrderList = () => {
         query.page = page
         query.limit = PAGE_LIMIT
         setPage(page)
-        navigate(`/order/user/65520534365011e1cd195c21?${queryString.stringify(query)}`)
+        navigate(`/order/user/${userData.user_id ?? userData._id}?${queryString.stringify(query)}`)
     }
     const handleChangeStatus = (status) => {
         setStatusOrder(status)
@@ -66,7 +68,7 @@ const OrderList = () => {
         query.limit = PAGE_LIMIT
         query.page = 1
         // location.search = queryString.stringify(query)
-        navigate(`/order/user/65520534365011e1cd195c21?${queryString.stringify(query)}`)
+        navigate(`/order/user/${userData.user_id ?? userData._id}?${queryString.stringify(query)}`)
         setPage(1)
         setSearchTerm('')
         delete query.startDate 
@@ -129,6 +131,12 @@ const OrderList = () => {
     const handleDateFilter = () => {
         setShowDateDropDown(false)
         // setStatusOrder('all')
+        setSelectedStatus({
+            unconfirmed: false,
+            delivering: false,
+            finish: false,
+            cancel: false,
+        })
         setSearchTerm('')
         // // Thực hiện lọc dữ liệu dựa trên ngày bắt đầu và kết thúc
         // let filtered = orders;
@@ -154,7 +162,7 @@ const OrderList = () => {
         if (endDate) query.endDate = endDate;
         // query.page = 1;
         location.search = queryString.stringify(query);
-        navigate(`/order/user/65520534365011e1cd195c21?${queryString.stringify(query)}`);
+        navigate(`/order/user/${userData.user_id ?? userData._id}?${queryString.stringify(query)}`);
         setPage(1);
     };
    
@@ -177,9 +185,9 @@ const OrderList = () => {
                 selectedArrays.push(status)
         });
         // Nếu không check, trả về all tất cả trạng thái
-        if (selectedArrays.length === 0) navigate('/order/user/65520534365011e1cd195c21')
+        if (selectedArrays.length === 0) navigate(`/order/user/${userData.user_id ?? userData._id}`)
         else {
-            navigate(`/order/user/65520534365011e1cd195c21?status=${selectedArrays.join(',')}`)
+            navigate(`/order/user/${userData.user_id ?? userData._id}?status=${selectedArrays.join(',')}`)
         }
     };
 

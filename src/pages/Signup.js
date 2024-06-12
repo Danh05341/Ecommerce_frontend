@@ -31,7 +31,7 @@ const Signup = () => {
         const { firstName, email, password, confirmPassword } = dataForm
         if (firstName && email && password && confirmPassword) {
             if (password === confirmPassword) {
-                const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}users/register`, {
+                const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}users/register`, {
                     method: 'POST',
                     headers: {
                         "content-type": "application/json"
@@ -44,15 +44,15 @@ const Signup = () => {
                     navigate('/login')
                 }
                 else {
-                    alert('User already exits')
+                    alert('Email của người dùng đã tồn tại')
                 }
             }
             else {
-                alert("password and confirm password not equals")
+                alert("password và confirm password không giống nhau")
             }
         }
         else {
-            alert("Please enter required fields")
+            alert("Vui lòng nhập đủ các trường")
         }
     }
     const handleShowPassword = () => {

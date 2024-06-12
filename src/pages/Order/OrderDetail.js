@@ -49,7 +49,7 @@ const OrderDetail = () => {
     return (
         <div className='w-[full] h-full px-[65px]'>
             <div className='ml-[2px] text-[22px] font-[500] h-[65px] flex gap-[16px] items-center'>
-                <Link to={`/order/user/${userData.user_id}`}>
+                <Link to={`/order/user/${userData.user_id ?? userData._id}`}>
                     <div className='h-[36px] w-[36px] bg-white flex items-center justify-center rounded-[6px] border border-[#D3D5D7] cursor-pointer'>
                         <FaArrowLeftLong className='text-[14px] text-[#747C87]' />
                     </div>
