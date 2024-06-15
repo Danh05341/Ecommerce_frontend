@@ -24,6 +24,12 @@ import OrderDetailsAdmin from "../pages/Admin/Orders/OrderDetailsAdmin"
 import CreateNewProduct from "../pages/Admin/Products/CreateNewProduct"
 import Category from "../pages/Admin/Category/Category"
 import CategoryForm from "../pages/Admin/Category/CategoryForm"
+import DiscountList from "../pages/Admin/Discount/DiscountList"
+import CreateDiscount from "../pages/Admin/Discount/CreateDiscount"
+import EditDiscount from "../pages/Admin/Discount/EditDiscount"
+import CustomerList from "../pages/Admin/Customer/CustomerList"
+import CreateCustomer from "../pages/Admin/Customer/CreateCustomer"
+import EditCustomer from "../pages/Admin/Customer/EditCustomer"
 
 
 
@@ -55,6 +61,12 @@ const privateRoutes = [
     { path: '/admin/order/details/:id', page: OrderDetailsAdmin, layout: AdminLayout},
     { path: '/admin/category', page: Category, layout: AdminLayout},
     { path: '/admin/category/create', page: CategoryForm, layout: AdminLayout},
+    { path: '/admin/discounts', page: DiscountList, layout: AdminLayout},
+    { path: '/admin/discounts/create', page: CreateDiscount, layout: AdminLayout},
+    { path: '/admin/discounts/edit/:id', page: EditDiscount, layout: AdminLayout},
+    { path: '/admin/customers', page: CustomerList, layout: AdminLayout},
+    { path: '/admin/customers/create', page: CreateCustomer, layout: AdminLayout},
+    { path: '/admin/customers/edit/:id', page: EditCustomer, layout: AdminLayout},
     
     { path: '/checkout', page: Checkout, layout: null},
 

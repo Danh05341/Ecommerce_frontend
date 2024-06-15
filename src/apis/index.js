@@ -213,3 +213,99 @@ export const revenueSummaryAPI = async (startDate, endDate) => {
     const dataRes = await fetchData.json()
     return dataRes
 }
+
+// Discount admin API
+export const getDiscountsAPI = async () => {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}discount`);
+    const dataRes = await fetchData.json()
+    return dataRes
+};
+
+export const getDiscountAPI = async (id) => {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}discount/${id}`);
+    const dataRes = await fetchData.json()
+    return dataRes
+};
+
+export const createDiscountAPI = async (discount) => {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}discount/create`, {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(discount)
+    })
+    const dataRes = await fetchData.json()
+    return dataRes;
+};
+
+export const updateDiscountAPI = async (id, update) => {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}discount/edit/${id}`, {
+        method: 'PUT',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(update)
+    })
+    const dataRes = await fetchData.json()
+    return dataRes;
+};
+
+export const deleteDiscountAPI = async (id) => {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}discount/${id}`, {
+        method: 'DELETE',
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+    const dataRes = await fetchData.json()
+    return dataRes;
+};
+
+// Customer admin API
+export const getCustomersAPI = async () => {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}users`);
+    const dataRes = await fetchData.json()
+    return dataRes
+};
+
+export const getCustomerAPI = async (id) => {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}users/${id}`);
+    const dataRes = await fetchData.json()
+    return dataRes
+};
+
+export const createCustomerAPI = async (user) => {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}users/create`, {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user)
+    })
+    const dataRes = await fetchData.json()
+    return dataRes;
+};
+
+export const updateCustomerAPI = async (id, update) => {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}users/edit/${id}`, {
+        method: 'PUT',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(update)
+    })
+    const dataRes = await fetchData.json()
+    return dataRes;
+};
+
+export const deleteCustomerAPI = async (id) => {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}users/${id}`, {
+        method: 'DELETE',
+        headers: {
+            "Content-Type": "application/json",
+        },
+    })
+    const dataRes = await fetchData.json()
+    return dataRes;
+};

@@ -30,7 +30,7 @@ function SideBarAdmin() {
       <div className='h-[52px] flex items-center border-b border-[#46515F]'>
         <div className='font-bold px-[20px]'>DELTA SHOES</div>
       </div>
-      <div className='px-[12px] flex flex-col gap-y-[4px] my-[8px] '>
+      <div className='px-[12px] flex flex-col gap-y-[8px] my-[8px] '>
 
         <Link to={'/admin/dashboard'}>
           <div onClick={() => handleCLick('dashboard')} className={getClassNames('dashboard')}>
@@ -66,7 +66,7 @@ function SideBarAdmin() {
           </div>
         </Link>
 
-        <Link to={'/admin/discount'}>
+        <Link to={'/admin/discounts'}>
           <div onClick={() => handleCLick('discount')} className={getClassNames('discount')}>
             <CiDiscount1 className='text-[20px] mt-[2px] text-[#EEEFEF] group-hover/icon:text-[#EEEFEF]'></CiDiscount1>
             <span className='text-[16px] '>Khuyến mãi</span>
