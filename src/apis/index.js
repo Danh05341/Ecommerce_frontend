@@ -4,6 +4,41 @@ export const fetchCategoryAPI = async () => {
     return dataRes
 }
 
+export const getCategoryBySlugAPI = async (slug) => {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}category/${slug}`)
+    const dataRes = await fetchData.json()
+    return dataRes
+}
+
+export const categoryQuantityProductAPI = async (query) => {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}category/quantity${query}`)
+    const dataRes = await fetchData.json()
+    return dataRes
+}
+export const createCategoryAPI = async (body) => {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}category/create`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+    })
+    const dataRes = await fetchData.json()
+    return dataRes
+}
+
+export const deleteCategoryAPI = async (toDelete) => {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}category`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(toDelete)
+    })
+    const dataRes = await fetchData.json()
+    return dataRes
+}
+
 export const fetchBrandAPI = async () => {
     const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}brand`)
     const dataRes = await fetchData.json()
@@ -54,12 +89,6 @@ export const deleteProductAPI = async (id) => {
           'Content-Type': 'application/json'
         },
     })
-    const dataRes = await fetchData.json()
-    return dataRes
-}
-
-export const getCategoryBySlugAPI = async (slug) => {
-    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}category/${slug}`)
     const dataRes = await fetchData.json()
     return dataRes
 }

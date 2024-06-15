@@ -7,7 +7,7 @@ const NavCategory = (props) => {
             <div className="flex gap-3 m-auto flex-1">
                 {
                     props?.data ? (
-                        props.data.map((category, index) => {
+                        props?.data?.map((category, index) => {
                             return (
                                 <div key={index} className="max-w-[200px] flex-1 mx-auto">
 
@@ -18,10 +18,10 @@ const NavCategory = (props) => {
                                     </Link>
                                     <div key={index} className="flex flex-col justify-between gap-[6px] mt-[10px] mb-[10px]">
                                         {
-                                            category.children.map((children, index) => {
+                                            category?.children?.map((children, index) => {
                                                 return (
-                                                    <Link key={index} to={"/product/" + slugify(children.name, { locale: 'vi' })}>
-                                                        <span onClick={props?.handleClick} key={index} className=" text-[13px] text-[#282828] normal-case font-normal  cursor-pointer hover:text-[#ff2d37]">{children.name}</span>
+                                                    <Link key={index} to={"/product/" + slugify(children?.name, { locale: 'vi' })}>
+                                                        <span onClick={props?.handleClick} key={index} className=" text-[13px] text-[#282828] normal-case font-normal  cursor-pointer hover:text-[#ff2d37]">{children?.name}</span>
                                                     </Link>
                                                 )
                                             })

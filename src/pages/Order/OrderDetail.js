@@ -1,20 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { getOrderDetailsAPI, updateOrderAPI } from '../../apis';
+import { createPaymentUrl, getOrderDetailsAPI, updateOrderAPI } from '../../apis';
 import { FaArrowLeftLong } from 'react-icons/fa6';
 import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 
 const OrderDetail = () => {
     const { id } = useParams()
     const [order, setOrder] = useState()
     const userData = useSelector(state => state.user.data)
     const [cancelling, setCancelling] = useState(false);
+    const [paying, setPaying] = useState(false);
     useEffect(() => {
         getOrderDetailsAPI(id).then(dataRes => {
             setOrder(dataRes.data)
             // setCancelling(dataRes.data.proccesingStatus)
         }).catch(error => console.error(error))
     }, [id])
+
+    const handlePayment = async () => {
+        setPaying(true);
+        try {
+            const amount = order.totalPrice.replace(/\./g, '')
+            const orderId = order._id
+            const dataRes = await createPaymentUrl(amount, orderId);
+            const urlPayment = dataRes.data;
+            if (urlPayment) {
+                window.location.href = urlPayment;
+            } else {
+                console.log('Lỗi server');
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error('Thanh toán thất bại')
+        } finally {
+            setPaying(false);
+        }
+    };
     const handleCancelOrder = async () => {
         if (window.confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?')) {
             setCancelling(true);
@@ -70,7 +92,7 @@ const OrderDetail = () => {
                         <p className='mb-2'><strong>Tổng giá trị đơn hàng:</strong> {order.totalPrice}₫</p>
                         <p className='mb-2'><strong>Phương thức thanh toán:</strong> {order.paymentMethod === 'Postpaid' ? 'Thanh toán khi nhận hàng' : 'VNPAY'}</p>
                         {order.discountAmount && <p className='mb-2'><strong>Số tiền giảm:</strong> {order.discountAmount}₫</p>}
-                        <p className='mb-2'><strong>Trạng thái thanh toán:</strong> {order.status === 'pending' ? 'Chưa thanh toán' : 'Đã thanh toán'}</p>
+                        <p className='mb-2'><strong>Trạng thái thanh toán:</strong> {order.status === 'paid' ? 'Đã thanh toán' : 'Chưa thanh toán' }</p>
                         <p className='mb-2'><strong>Trạng thái xử lý:</strong> {getStatusProcessing(order.proccesingStatus)}</p>
                     </div>
                     <hr className='my-6 border-gray-300' />
@@ -102,6 +124,15 @@ const OrderDetail = () => {
                             disabled
                         >
                             Đơn hàng đã bị hủy
+                        </button>
+                    )}
+                    {order.status !== 'paid' && order.proccesingStatus !== 'cancel' && (
+                        <button
+                            className='mx-4 mt-4 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 cursor-pointer'
+                            onClick={handlePayment}
+                            disabled={paying}
+                        >
+                            {paying ? 'Đang thanh toán...' : 'Thanh toán'}
                         </button>
                     )}
                 </div>

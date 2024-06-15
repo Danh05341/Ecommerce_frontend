@@ -6,7 +6,7 @@ import { CgWebsite } from "react-icons/cg";
 import { FaEye } from "react-icons/fa";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { IoSettingsOutline } from "react-icons/io5";
-import { BiPackage } from "react-icons/bi";
+import { BiCategory, BiPackage } from "react-icons/bi";
 import { FaRegUser } from "react-icons/fa6";
 import { CiDiscount1 } from "react-icons/ci";
 
@@ -52,13 +52,20 @@ function SideBarAdmin() {
           </div>
         </Link>
 
+        <Link to={'/admin/category'}>
+          <div onClick={() => handleCLick('category')} className={getClassNames('category')}>
+            <BiCategory className='text-[20px] mt-[2px] text-[#EEEFEF] group-hover/icon:text-[#EEEFEF]'></BiCategory >
+            <span className='text-[16px] '>Danh mục sản phẩm</span>
+          </div>
+        </Link>
+
         <Link to={'/admin/customers'}>
           <div onClick={() => handleCLick('customers')} className={getClassNames('customers')}>
             <FaRegUser className='text-[20px] mt-[2px] text-[#EEEFEF] group-hover/icon:text-[#EEEFEF]'></FaRegUser>
             <span className='text-[16px] '>Khách hàng</span>
           </div>
         </Link>
-        
+
         <Link to={'/admin/discount'}>
           <div onClick={() => handleCLick('discount')} className={getClassNames('discount')}>
             <CiDiscount1 className='text-[20px] mt-[2px] text-[#EEEFEF] group-hover/icon:text-[#EEEFEF]'></CiDiscount1>
@@ -73,13 +80,15 @@ function SideBarAdmin() {
           <IoIosAddCircleOutline className='text-[21px] text-[#EEEFEF] ' ></IoIosAddCircleOutline>
         </div>
 
-        <div onClick={() => handleCLick('website')} className={getClassNames('website')}>
-          <div className='hover:bg-[#2B4263] cursor-pointer group/icon flex items-center h-[32px] gap-[13px] rounded pl-[8px] ml-[-8px] flex-1'>
-            <div className='w-[18px] h-[18px] bg-[#0DB473] rounded flex items-center justify-center'><CgWebsite className='text-[20px] mt-[2px] text-[white] inline-block px-[2px]'></CgWebsite></div>
-            <span className='text-[16px] flex-1'>Website</span>
+        <Link to={'/'} target='blank'>
+          <div onClick={() => handleCLick('website')} className={getClassNames('website')}>
+            <div className='hover:bg-[#2B4263] cursor-pointer group/icon flex items-center h-[32px] gap-[13px] rounded pl-[8px] ml-[-8px] flex-1'>
+              <div className='w-[18px] h-[18px] bg-[#0DB473] rounded flex items-center justify-center'><CgWebsite className='text-[20px] mt-[2px] text-[white] inline-block px-[2px]'></CgWebsite></div>
+              <span className='text-[16px] flex-1'>Website</span>
+            </div>
+            <FaEye className='text-[18px] text-[#EEEFEF] hover:text-[#EEEFEF] cursor-pointer'></FaEye>
           </div>
-          <FaEye className='text-[18px] text-[#EEEFEF] hover:text-[#EEEFEF] cursor-pointer'></FaEye>
-        </div>
+        </Link>
       </div>
       <div className='px-[12px] py-[4px] flex-1 flex flex-col gap-y-[4px] my-[8px] border-t  border-[#46515F]'>
         <div className='flex items-center justify-between pr-[6px]'>

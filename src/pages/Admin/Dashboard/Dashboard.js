@@ -154,10 +154,11 @@ function Dashboard() {
                                 }}
                             />
                         </Grid>
-                        <Grid item>
+                        
+                    </Grid>
+                    <Grid item sx={{textAlign: 'right', marginTop: '10px'}}>
                             <Button variant="contained" onClick={handleCustomDateFetch}>Lấy dữ liệu</Button>
                         </Grid>
-                    </Grid>
                     <Line data={chartData}/>
                 </Box>
             </div>

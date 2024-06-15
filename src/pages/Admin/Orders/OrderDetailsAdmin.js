@@ -65,6 +65,13 @@ function OrderDetails() {
                 return status;
         }
     };
+    const statusOptions = {
+        unconfirmed: ['delivering', 'finish', 'cancel'],
+        delivering: ['finish', 'cancel'],
+        finish: [],
+        cancel: []
+    };
+    const allStatusOptions = ['unconfirmed', 'delivering', 'finish', 'cancel'];
     return (
         <div className='w-[calc(100%-230px)] h-full ml-[230px] pt-[52px] px-[30px]'>
 
@@ -91,7 +98,7 @@ function OrderDetails() {
                             <p className='mb-2'><strong>Tổng giá trị đơn hàng:</strong> {order.totalPrice}₫</p>
                             <p className='mb-2'><strong>Phương thức thanh toán:</strong> {order.paymentMethod === 'Postpaid' ? 'Thanh toán khi nhận hàng' : 'VNPAY'}</p>
                             {order.discountAmount && <p className='mb-2'><strong>Số tiền giảm:</strong> {order.discountAmount}₫</p>}
-                            <p className='mb-2'><strong>Trạng thái:</strong> {order.status === 'pending' ? 'Chưa thanh toán' : 'Đã thanh toán'}</p>
+                            <p className='mb-2'><strong>Trạng thái:</strong> {order.status === 'paid' ? 'Đã thanh toán' : 'Chưa thanh toán' }</p>
                             <p className='mb-2'><strong>Trạng thái xử lý:</strong> {getStatusProcessing(order.proccesingStatus)}</p>
                         </div>
                         <hr className='my-6 border-gray-300'/>
@@ -116,10 +123,22 @@ function OrderDetails() {
                                 onChange={(e) => setNewStatus(e.target.value)}
                                 className='block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500'
                             >
-                                <option value='unconfirmed'>Đang chờ xác nhận</option>
+                                {/* <option value='unconfirmed'>Đang chờ xác nhận</option>
                                 <option value='delivering'>Chờ giao hàng</option>
                                 <option value='finish'>Đã hoàn thành</option>
-                                <option value='cancel'>Đã hủy</option>
+                                <option value='cancel'>Đã hủy</option> */}
+                                {allStatusOptions.map((status) => (
+                                    <option
+                                        key={status}
+                                        value={status}
+                                        disabled={
+                                            status !== order.proccesingStatus &&
+                                            !statusOptions[order.proccesingStatus]?.includes(status)
+                                        }
+                                    >
+                                        {getStatusProcessing(status)}
+                                    </option>
+                                ))}
                             </select>
                         </div>
                         <button
@@ -129,7 +148,7 @@ function OrderDetails() {
                         >
                             Cập nhật trạng thái xử lý
                         </button>
-                        <div className='mt-6 mb-4'>
+                        {/* <div className='mt-6 mb-4'>
                             <label className='block font-semibold mb-2'>Trạng thái thanh toán:</label>
                             <select
                                 value={newPaymentStatus}
@@ -146,7 +165,7 @@ function OrderDetails() {
                             className='bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring focus:ring-green-200 disabled:opacity-50'
                         >
                             Cập nhật trạng thái thanh toán
-                        </button>
+                        </button> */}
                     </div>
                 )}
             </div>

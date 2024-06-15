@@ -10,7 +10,7 @@ const Payments = () => {
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
             <div className="bg-white p-8 rounded-lg shadow-lg text-center">
-                {success ? (
+                {success==='true' ? (
                     <>
                         <h1 className="text-3xl font-bold text-green-600 mb-4">Thanh toán thành công!</h1>
                         <p className="text-gray-700 mb-4">

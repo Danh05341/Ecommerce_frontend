@@ -22,6 +22,8 @@ import ProductDetails from "../pages/Admin/Products/ProductDetails"
 import AddProductVariant from "../pages/Admin/Products/AddProductVariant"
 import OrderDetailsAdmin from "../pages/Admin/Orders/OrderDetailsAdmin"
 import CreateNewProduct from "../pages/Admin/Products/CreateNewProduct"
+import Category from "../pages/Admin/Category/Category"
+import CategoryForm from "../pages/Admin/Category/CategoryForm"
 
 
 
@@ -51,6 +53,8 @@ const privateRoutes = [
     { path: '/admin/products/create', page: CreateNewProduct, layout: AdminLayout},
     { path: '/admin/products/:id/variant/create', page: AddProductVariant, layout: null},
     { path: '/admin/order/details/:id', page: OrderDetailsAdmin, layout: AdminLayout},
+    { path: '/admin/category', page: Category, layout: AdminLayout},
+    { path: '/admin/category/create', page: CategoryForm, layout: AdminLayout},
     
     { path: '/checkout', page: Checkout, layout: null},
 

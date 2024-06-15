@@ -4,16 +4,55 @@ import { TiArrowSortedDown } from "react-icons/ti";
 import { CiFilter } from "react-icons/ci";
 import Pagination from '../../../components/Pagination'
 import { IoAddCircleOutline } from "react-icons/io5";
-import { fetchProductAPI } from '../../../apis';
+import { fetchBrandAPI, fetchProductAPI } from '../../../apis';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-
+import queryString from 'query-string'
 function Products() {
     const location = useLocation()
     const navigate = useNavigate()
     const [products, setProducts] = useState()
     const [pageNumbers, setPageNumbers] = useState()
     const [page, setPage] = useState(1)
-
+    const [inputValue, setInputValue] = useState()
+    const [showBrandDropdown, setShowBrandDropdown] = useState(false)
+    const [brands, setBrands] = useState([])
+    const handleBrandDropDownChange = (event, brandId) => {
+        setBrands(prev => {
+            const newBrands = prev.map(brand => {
+                if (brand._id === brandId) return { ...brand, checked: !brand.checked }
+                else return { ...brand }
+            })
+            return newBrands
+        });
+    };
+    const handleFilterBrands = () => {
+        setShowBrandDropdown(false);
+        setInputValue('')
+        let selectedArrays = []
+        brands.forEach(brand => {
+            if (brand.checked === true)
+                selectedArrays.push(brand)
+        });
+        // Nếu không check, trả về all tất cả trạng thái
+        if (selectedArrays.length === 0) {
+            navigate(`/admin/products`)
+        }
+        else {
+            const query = queryString.parse(location.search)
+            const brandNames = selectedArrays.map(brand => brand.name)
+            query.brands = brandNames.join(',')
+            query.page = 1
+            setPage(1)
+            delete query.search
+           
+            navigate(`/admin/products?${queryString.stringify(query)}`)
+        }
+    };
+    useEffect(() => {
+        fetchBrandAPI().then((dataRes) => {
+            setBrands(dataRes.data.map(brand => ({ ...brand, checked: false })))
+        }).catch((error) => console.error(error))
+    }, [])
     useEffect(() => {
         fetchProductAPI('all', location.search).then((dataRes) => {
             setProducts(dataRes.data)
@@ -24,7 +63,15 @@ function Products() {
         setPage(page)
         navigate(`/admin/products?page=${page}`)
     }
-    console.log('product: ', products)
+
+    const handleChangeInput = (e) => {
+        setInputValue((e.target.value))
+        const query = queryString.parse(location.search)
+        query.page = 1
+        setPage(1)
+        query.search = e.target.value
+        navigate(`/admin/products?${queryString.stringify(query)}`)
+    }
     return (
         <div className='ml-[230px] w-[calc(100%-230px)] pt-[52px] h-full px-[30px]'>
             <div className='ml-[2px] text-[22px] font-[500] h-[65px] flex items-center justify-between'>
@@ -45,63 +92,37 @@ function Products() {
                         <div className='w-[full] h-[full] flex items-center justify-center mx-[8px]'>
                             <IoIosSearch className='text-[#9CA3B5] text-[20px] ' />
                         </div>
-                        <input className='h-[full] text-[14px] rounded-[6px] bg-[white] outline-none w-full font-[500] group-hover/input:bg-[#F3F3F3] focus:border-[black]' placeholder='Tìm kiếm theo mã sản phẩm, tên sản phẩm ...'></input>
+                        <input onChange={handleChangeInput} value={inputValue} className='h-[full] text-[14px] rounded-[6px] bg-[white] outline-none w-full font-[500] group-hover/input:bg-[#F3F3F3] focus:border-[black]' placeholder='Tìm kiếm theo tên sản phẩm ...'></input>
                     </div>
                     <div className='ml-[15px] flex'>
                         {/* trạng thái giao hàng */}
-                        <div className='relative flex gap-[4px] mb-[2px] items-center justify-center text-[#0F1824]  bg-[white] border-l border-t border-b rounded-tl-[6px] rounded-bl-[6px] w-[160px] h-[34px] cursor-pointer hover:bg-[#F3F4F5]'>
+                        <div onClick={() => { setShowBrandDropdown(prev => !prev) }} className='relative flex gap-[4px] mb-[2px] items-center justify-center text-[#0F1824] select-none bg-[white] border rounded-tl-[6px] rounded-bl-[6px] w-[175px] h-[34px] cursor-pointer hover:bg-[#F3F4F5]'>
                             <span>Thương hiệu</span>
                             <TiArrowSortedDown className='mt-[4px] text-[#747C87]' />
-                            {/* <div className='absolute hidden top-[40px] w-[180px] flex-col gap-y-[10px] py-[20px] px-[12px] border rounded-[6px] bg-[white] shadow-md'>
-                                <label htmlFor='1'>
-                                    <div className='flex items-center gap-3 cursor-pointer'>
-                                        <input type='checkbox' id='1' className='w-[18px] h-[18px] '></input>
-                                        <div className='mb-[2px]'>Chưa xác nhận</div>
+                            {showBrandDropdown && (
+                                <div onClick={(event) => event.stopPropagation()} className='absolute top-full left-0 w-full p-[12px] bg-white border shadow-md z-20'>
+                                    {brands.map((brand) => (
+                                        <div key={brand._id} className='flex mb-[10px]'>
+                                            <label htmlFor={brand._id} className='flex flex-1 gap-x-[12px] cursor-pointer'>
+                                                <input
+                                                    id={brand._id}
+                                                    type='checkbox'
+                                                    className='w-[16px] cursor-pointer'
+                                                    checked={brand.checked}
+                                                    onChange={(event) => handleBrandDropDownChange(event, brand._id)}
+                                                />
+                                                <span className='flex-1'>{brand.name}</span>
+                                            </label>
+                                        </div>
+                                    ))}
+                                    <div onClick={handleFilterBrands} className='mt-[10px] w-[full] rounded-[6px] h-[36px] bg-[#0088FF] text-white flex justify-center items-center font-[500] hover:bg-[#33A0FF]' >
+                                        Lọc
                                     </div>
-                                </label>
-                                <label htmlFor='2'>
-                                    <div className='flex items-center gap-3 cursor-pointer'>
-                                        <input type='checkbox' id='2' className='w-[18px] h-[18px] '></input>
-                                        <div className='mb-[2px]'>Đang giao hàng</div>
+                                </div>
+                            )}
 
-                                    </div>
-                                </label>
-                                <label htmlFor='3'>
-                                    <div className='flex items-center gap-3 cursor-pointer'>
-                                        <input type='checkbox' id='3' className='w-[18px] h-[18px] '></input>
-                                        <div className='mb-[2px]'>Đã nhận hàng</div>
-                                    </div>
-                                </label>
-                                <div className='mt-[10px] w-[full] rounded-[6px] h-[36px] bg-[#0088FF] text-white flex justify-center items-center font-[500] hover:bg-[#33A0FF]'>Lọc</div>
-                            </div> */}
                         </div>
-                        {/* Ngày tạo*/}
-                        <div className='relative flex gap-[4px] mb-[2px] items-center justify-center text-[#0F1824]  bg-[white] border w-[115px] h-[34px] cursor-pointer hover:bg-[#F3F4F5]'>
-                            <span>Ngày tạo</span>
-                            <TiArrowSortedDown className='mt-[4px] text-[#747C87]' />
-                            {/* <div className='absolute hidden top-[40px] w-[180px] flex-col gap-y-[10px] py-[20px] px-[12px] border rounded-[6px] bg-[white] shadow-md'>
-                                <label htmlFor='1'>
-                                    <div className='flex items-center gap-3 cursor-pointer'>
-                                        <input type='checkbox' id='1' className='w-[18px] h-[18px] '></input>
-                                        <div className='mb-[2px]'>Chưa xác nhận</div>
-                                    </div>
-                                </label>
-                                <label htmlFor='2'>
-                                    <div className='flex items-center gap-3 cursor-pointer'>
-                                        <input type='checkbox' id='2' className='w-[18px] h-[18px] '></input>
-                                        <div className='mb-[2px]'>Đang giao hàng</div>
-
-                                    </div>
-                                </label>
-                                <label htmlFor='3'>
-                                    <div className='flex items-center gap-3 cursor-pointer'>
-                                        <input type='checkbox' id='3' className='w-[18px] h-[18px] '></input>
-                                        <div className='mb-[2px]'>Đã nhận hàng</div>
-                                    </div>
-                                </label>
-                                <div className='mt-[10px] w-[full] rounded-[6px] h-[36px] bg-[#0088FF] text-white flex justify-center items-center font-[500] hover:bg-[#33A0FF]'>Lọc</div>
-                            </div> */}
-                        </div>
+                       
                         {/* Bộ lọc khác */}
                         <div className='relative flex gap-[4px] mb-[2px] items-center justify-center text-[#0F1824]  bg-[white] border-r border-b border-t rounded-tr-[6px] rounded-br-[6px] w-[132px] h-[34px] cursor-pointer hover:bg-[#F3F4F5]'>
                             <CiFilter className='mt-[2px] text-[#7C838E] text-[20px]' />
