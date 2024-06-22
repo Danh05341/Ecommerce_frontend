@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { FaRegMoneyBillAlt } from "react-icons/fa";
 import { IoChevronBack } from "react-icons/io5";
 import { useSelector } from 'react-redux';
-import { createOrderAPI, createPaymentUrl, getAllProvince, getBrandById } from '../apis';
+import { createOrderAPI, createPaymentUrl, getAllProvince, getBrandById, applyDiscountAPI } from '../apis';
 import { toast } from 'react-toastify'
 function Checkout() {
     const productsCart = useSelector(state => state.cart.data)
@@ -15,7 +15,16 @@ function Checkout() {
     const [provinces, setProvinces] = useState([])
     const [districts, setDistricts] = useState([])
     const [wards, setWards] = useState([])
-    const [total, setTotal] = useState()
+    const [discountValue, setDiscountValue] = useState('')
+    const [displayDiscount, setDisplayDiscount] = useState(false)
+
+    const [total, setTotal] = useState(() => {
+        let totalPrice = productsCart.reduce((total, product) => {
+            total += +product?.productId?.price?.replace(/\./g, '') * product?.quantity
+            return total;
+        }, 0)
+        return (totalPrice + 40000).toLocaleString('vi-VN')
+    })
     const [totalQuantity, setTotalQuantity] = useState(() => {
         const countProduct = productsCart.reduce((total, product) => {
             total += (product?.quantity)
@@ -29,11 +38,11 @@ function Checkout() {
             total += +product?.productId?.price?.replace(/\./g, '') * product?.quantity
             return total;
         }, 0)
-        setTotal((totalPrice + 40000).toLocaleString('vi-VN'))
+
         return totalPrice.toLocaleString('vi-VN')
 
     })
-  
+    console.log('total: ', total)
     const [dataForm, setDataForm] = useState({
         email: "",
         name: "",
@@ -57,9 +66,52 @@ function Checkout() {
                 brandId: product.productId.brand_id,
             }
         }),
-        totalPrice: totalPrice,
+        totalPrice: total,
         userId: userData.user_id ?? userData._id
     })
+
+    const handleDiscount = () => {
+        applyDiscountAPI(dataForm.discountCode).then(dataRes => {
+            if (dataRes.data) {
+                setDisplayDiscount(true)
+                const priceTotal = (Number(total.replace(/\./g, '')) - Number(dataRes.data.amount.replace(/\./g, ''))).toLocaleString('vi-VN')
+                setDataForm(prev => {
+                    return {
+                        ...prev,
+                        discount: dataRes.data.amount,
+                        totalPrice: priceTotal
+                    }
+                })
+                setTotal(priceTotal)
+                toast.success('Áp dụng mã giảm giá thành công')
+            } else {
+                toast.error('Mã giảm giá không hợp lệ')
+                const priceTotal = (Number(totalPrice.replace(/\./g, '')) + 40000).toLocaleString('vi-VN')
+
+                setDataForm(prev => {
+                    return {
+                        ...prev,
+                        discount: "",
+                        totalPrice: priceTotal
+                    }
+                })
+                setTotal(priceTotal)
+
+            }
+        }).catch(err => {
+            const priceTotal = (Number(totalPrice.replace(/\./g, '')) + 40000).toLocaleString('vi-VN')
+            toast.error('Mã giảm giá không hợp lệ')
+
+            setDataForm(prev => {
+                return {
+                    ...prev,
+                    discount: "",
+                    totalPrice: priceTotal
+                }
+            })
+            setTotal(priceTotal)
+        })
+    }
     const handleOnChange = (e) => {
         const name = e.target.name
         const value = e.target.value
@@ -94,8 +146,8 @@ function Checkout() {
         }
     }
     const handleOrder = () => {
-     
-        if (dataForm.email && dataForm.name && dataForm.phone && dataForm.address && dataForm.city && dataForm.district && dataForm.ward && dataForm.shippingFee && dataForm.productsOrder && dataForm.totalPrice && dataForm.userId) {
+
+        if (dataForm.email && dataForm.name && dataForm.phone && dataForm.address && dataForm.city && dataForm.district && dataForm.paymentMethod && dataForm.ward && dataForm.shippingFee && dataForm.productsOrder && dataForm.totalPrice && dataForm.userId) {
             if (dataForm.paymentMethod === 'VNPAY') {
                 createOrderAPI(dataForm).then((dataRes) => {
                     if (dataRes.data) {
@@ -302,7 +354,7 @@ function Checkout() {
                         className='w-[170px] h-[40px] flex-1 border border-solid border-[#d9d9d9] bg-white px-[11px] py-[13px] rounded focus-within:outline-blue-300'
                     />
 
-                    <div className='w-[100px] h-[40px] border border-solid border-[#d9d9d9] bg-[#357ebd] text-[14px] flex items-center justify-center text-white rounded focus-within:outline-blue-300'>
+                    <div onClick={handleDiscount} className='w-[100px] h-[40px] border border-solid border-[#d9d9d9] bg-[#357ebd] text-[14px] flex items-center justify-center text-white rounded focus-within:outline-blue-300 cursor-pointer'>
                         Áp dụng
                     </div>
                 </div>
@@ -314,8 +366,16 @@ function Checkout() {
                     </div>
                     <div className='flex justify-between py-[5px] text-[#717171] text-[15px]'>
                         <span>Phí vận chuyển</span>
-                        <span>40000₫</span>
+                        <span>{dataForm.shippingFee}₫</span>
                     </div>
+                    {
+                        displayDiscount && (
+                            <div className='flex justify-between py-[5px] text-[#717171] text-[15px]'>
+                                <span>Mã giảm giá</span>
+                                <span>- {dataForm.discount}₫</span>
+                            </div>
+                        )
+                    }
 
                 </div>
                 <div className=' py-[15px] ml-[24px] flex justify-between'>
@@ -323,10 +383,12 @@ function Checkout() {
                     <span className='text-[#2a9dcc] text-[22px]'>{total}₫</span>
                 </div>
                 <div className='flex justify-between ml-[24px]'>
-                    <span className='text-[#2a9dcc] text-[14px] cursor-pointer flex items-center'>
-                        <IoChevronBack className='mt-[2px]'></IoChevronBack>
-                        Quay về giỏ hàng
-                    </span>
+                    <Link to={'/cart'}>
+                        <span className='text-[#2a9dcc] text-[14px] cursor-pointer flex items-center'>
+                            <IoChevronBack className='mt-[2px]'></IoChevronBack>
+                            Quay về giỏ hàng
+                        </span>
+                    </Link>
                     <div onClick={handleOrder} className='w-[121px] h-[40px] border border-solid border-[#d9d9d9] cursor-pointer bg-[#357ebd] text-[14px] flex items-center justify-center text-white rounded focus-within:outline-blue-300'>
                         ĐẶT HÀNG
                     </div>

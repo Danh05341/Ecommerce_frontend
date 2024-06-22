@@ -309,3 +309,16 @@ export const deleteCustomerAPI = async (id) => {
     const dataRes = await fetchData.json()
     return dataRes;
 };
+
+
+export const applyDiscountAPI = async (code) => {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}discount/apply`, {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({code: code})
+    })
+    const dataRes = await fetchData.json()
+    return dataRes;
+};

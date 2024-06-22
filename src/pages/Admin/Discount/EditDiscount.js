@@ -9,19 +9,32 @@ function EditDiscount() {
     const { id } = useParams();
     const [code, setCode] = useState('');
     const [amount, setAmount] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [maxUses, setMaxUses] = useState('');
+    const [uses, setUses] = useState('');
     const navigate = useNavigate()
     useEffect(() => {
         // Lấy thông tin khuyến mãi hiện tại
         getDiscountAPI(id).then(dataRes => {
-            setCode(dataRes.data.code);
-            setAmount(dataRes.data.amount.toString());
+            const { code, amount, startDate, endDate, maxUses, timesUsed } = dataRes.data;
+            setCode(code);
+            setAmount(amount.toString());
+            setStartDate(startDate?.substring(0, 10));
+            setEndDate(endDate?.substring(0, 10)); 
+            setMaxUses(maxUses);
+            setUses(timesUsed);
         });
     }, [id]);
 
     const handleUpdateDiscount = async () => {
+        if(!code || !amount || !startDate || !endDate || !maxUses) {
+            toast.warning('Vui lòng nhập đủ thông tin mã giảm giá')
+            return
+        }
         try {
             // Gọi API cập nhật khuyến mãi
-            const response = await updateDiscountAPI(id, { code, amount });
+            const response = await updateDiscountAPI(id, { code, amount, startDate, endDate, maxUses });
             // Điều hướng đến trang danh sách khuyến mãi sau khi cập nhật thành công
             if (response.data) {
                 navigate('/admin/discounts');
@@ -72,6 +85,51 @@ function EditDiscount() {
                                 placeholder='Nhập số tiền giảm giá...'
                             />
                             <div className='w-[30px] h-[34px] flex justify-center items-center text-[#747c87] select-none'>₫</div>
+                        </div>
+                    </div>
+                    <div className='flex items-center gap-x-[20px]'>
+                        <label className='w-[120px] font-[500] text-[16px]'>Ngày bắt đầu:</label>
+                        <div className='flex border w-[240px] border-[#0088FF] rounded-[6px] text-[#0088FF] font-[600] bg-[white]'>
+                            <input
+                                type='date'
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                className='flex-1 h-[36px] px-[10px] rounded-[6px] outline-none'
+                            />
+                        </div>
+                    </div>
+                    <div className='flex items-center gap-x-[20px]'>
+                        <label className='w-[120px] font-[500] text-[16px]'>Ngày kết thúc:</label>
+                        <div className='flex border w-[240px] border-[#0088FF] rounded-[6px] text-[#0088FF] font-[600] bg-[white]'>
+                            <input
+                                type='date'
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
+                                className='flex-1 h-[36px] px-[10px] rounded-[6px] outline-none'
+                            />
+                        </div>
+                    </div>
+                    <div className='flex items-center gap-x-[20px]'>
+                        <label className='w-[120px] font-[500] text-[16px]'>Giới hạn sử dụng:</label>
+                        <div className='flex border w-[240px] border-[#0088FF] rounded-[6px] text-[#0088FF] font-[600] bg-[white]'>
+                            <input
+                                type='number'
+                                value={maxUses}
+                                onChange={(e) => setMaxUses(e.target.value)}
+                                className='flex-1 h-[36px] px-[10px] rounded-[6px] outline-none'
+                                placeholder='Nhập giới hạn sử dụng...'
+                            />
+                        </div>
+                    </div>
+                    <div className='flex items-center gap-x-[20px]'>
+                        <label className='w-[120px] font-[500] text-[16px]'>Đã sử dụng:</label>
+                        <div className='flex border w-[240px] border-[#0088FF] rounded-[6px] text-[#0088FF] font-[600] bg-[white]'>
+                            <input
+                                type='number'
+                                value={uses}
+                                disabled
+                                className='flex-1 h-[36px] px-[10px] rounded-[6px] outline-none bg-gray-100'
+                            />
                         </div>
                     </div>
                 </div>

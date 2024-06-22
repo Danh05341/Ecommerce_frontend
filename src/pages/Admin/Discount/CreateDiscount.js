@@ -7,19 +7,24 @@ import { toast } from 'react-toastify'
 function CreateDiscount() {
     const [code, setCode] = useState('');
     const [amount, setAmount] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [maxUses, setMaxUses] = useState('');
     const navigate = useNavigate()
     const handleCreateDiscount = async () => {
+        if( !code || !amount || !startDate || !endDate || !maxUses) {
+            return toast.warning('Vui lòng nhập thông tin mã giảm giá')
+        }
         try {
             // Gọi API tạo khuyến mãi với code và amount
-            const response = await createDiscountAPI({ code, amount });
+            const response = await createDiscountAPI({ code, amount, startDate, endDate, maxUses });
 
             console.log('Khuyến mãi đã được tạo:', response);
             if (response.data) {
                 navigate('/admin/discounts');
                 toast.success('Tạo mã giảm giá thành công')
             } else {
-                toast.error('Tạo mã giảm giá thất bại')
-
+                toast.warning('Mã giảm giá đã tồn tại')
             }
 
         } catch (error) {
@@ -65,6 +70,40 @@ function CreateDiscount() {
                             />
                             <div className='w-[30px] h-[34px] flex justify-center items-center text-[#747c87] select-none'>₫</div>
 
+                        </div>
+                    </div>
+                    <div className='flex items-center gap-x-[20px]'>
+                        <label className='w-[120px] font-[500] text-[16px]'>Ngày bắt đầu:</label>
+                        <div className='flex border w-[240px] border-[#0088FF] rounded-[6px] text-[#0088FF] font-[600] bg-[white]'>
+                            <input
+                                type='date'
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                className='flex-1 h-[36px] px-[10px] rounded-[6px] outline-none'
+                            />
+                        </div>
+                    </div>
+                    <div className='flex items-center gap-x-[20px]'>
+                        <label className='w-[120px] font-[500] text-[16px]'>Ngày kết thúc:</label>
+                        <div className='flex border w-[240px] border-[#0088FF] rounded-[6px] text-[#0088FF] font-[600] bg-[white]'>
+                            <input
+                                type='date'
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
+                                className='flex-1 h-[36px] px-[10px] rounded-[6px] outline-none'
+                            />
+                        </div>
+                    </div>
+                    <div className='flex items-center gap-x-[20px]'>
+                        <label className='w-[120px] font-[500] text-[16px]'>Sử dụng tối đa:</label>
+                        <div className='flex border w-[240px] border-[#0088FF] rounded-[6px] text-[#0088FF] font-[600] bg-[white]'>
+                            <input
+                                type='number'
+                                value={maxUses}
+                                onChange={(e) => setMaxUses(e.target.value)}
+                                className='flex-1 h-[36px] px-[10px] rounded-[6px] outline-none'
+                                placeholder='Nhập số lần sử dụng tối đa...'
+                            />
                         </div>
                     </div>
                 </div>

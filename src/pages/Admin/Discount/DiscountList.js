@@ -42,16 +42,30 @@ function DiscountList() {
                     <table className='w-full border-collapse'>
                         <thead>
                             <tr className='bg-gray-100'>
-                                <th className='border border-gray-300 px-4 py-2 text-left'>Tên mã giảm giá</th>
+                                {/* <th className='border border-gray-300 px-4 py-2 text-left'>Tên mã giảm giá</th>
                                 <th className='border border-gray-300 px-4 py-2 text-left'>Số tiền giảm</th>
+                                <th className='border border-gray-300 px-4 py-2 text-left'>Hành động</th> */}
+                                 <th className='border border-gray-300 px-4 py-2 text-left'>Tên mã giảm giá</th>
+                                <th className='border border-gray-300 px-4 py-2 text-left'>Số tiền giảm</th>
+                                <th className='border border-gray-300 px-4 py-2 text-left'>Thời hạn</th>
+                                <th className='border border-gray-300 px-4 py-2 text-left'>Số lần sử dụng</th>
+                                <th className='border border-gray-300 px-4 py-2 text-left'>Trạng thái</th>
                                 <th className='border border-gray-300 px-4 py-2 text-left'>Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
                             {discounts.map(discount => (
                                 <tr key={discount._id}>
+                                    {/* <td className='border border-gray-300 px-4 py-2'>{discount.code}</td>
+                                    <td className='border border-gray-300 px-4 py-2'>{discount.amount.toLocaleString('vi-VN')}₫</td>
+                                    <td className='border border-gray-300 px-4 py-2'> */}
                                     <td className='border border-gray-300 px-4 py-2'>{discount.code}</td>
                                     <td className='border border-gray-300 px-4 py-2'>{discount.amount.toLocaleString('vi-VN')}₫</td>
+                                    <td className='border border-gray-300 px-4 py-2'>{new Date(discount?.startDate)?.toLocaleDateString('vi-VN')} - {new Date(discount.endDate)?.toLocaleDateString('vi-VN')}</td>
+                                    <td className='border border-gray-300 px-4 py-2'>{discount.timesUsed}</td>
+                                    <td className={`border border-gray-300 px-4 py-2 ${discount.isActive ? 'text-[green]' : 'text-[red]'}`}>
+                                        {discount.isActive ? 'Còn hiệu lực' : 'Hết hiệu lực'}
+                                    </td>
                                     <td className='border border-gray-300 px-4 py-2'>
                                         <div className='flex gap-4'>
                                             <Link 

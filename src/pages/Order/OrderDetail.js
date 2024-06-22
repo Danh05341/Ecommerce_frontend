@@ -88,10 +88,10 @@ const OrderDetail = () => {
                         <p className='mb-2'><strong>Địa chỉ:</strong> {order.address}, {order.ward}, {order.district}, {order.province}</p>
                         <p className='mb-2'><strong>Số điện thoại:</strong> {order.phone}</p>
                         <p className='mb-2'><strong>Phí vận chuyển:</strong> {order.shippingFee}₫</p>
-                        {order.discountCode && <p className='mb-2'><strong>Mã giảm giá:</strong> {order.discountCode}</p>}
+                        {(order.discountCode && order.discountAmount) && <p className='mb-2'><strong>Mã giảm giá:</strong> {order.discountCode}</p>}
+                        {order.discountAmount && <p className='mb-2'><strong>Số tiền giảm:</strong> {order.discountAmount}₫</p>}
                         <p className='mb-2'><strong>Tổng giá trị đơn hàng:</strong> {order.totalPrice}₫</p>
                         <p className='mb-2'><strong>Phương thức thanh toán:</strong> {order.paymentMethod === 'Postpaid' ? 'Thanh toán khi nhận hàng' : 'VNPAY'}</p>
-                        {order.discountAmount && <p className='mb-2'><strong>Số tiền giảm:</strong> {order.discountAmount}₫</p>}
                         <p className='mb-2'><strong>Trạng thái thanh toán:</strong> {order.status === 'paid' ? 'Đã thanh toán' : 'Chưa thanh toán' }</p>
                         <p className='mb-2'><strong>Trạng thái xử lý:</strong> {getStatusProcessing(order.proccesingStatus)}</p>
                     </div>

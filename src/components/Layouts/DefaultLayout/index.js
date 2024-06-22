@@ -7,7 +7,7 @@ const DefaultLayout = ({ children }) => {
         <>
             <Header/>
             <Navbar/>
-            <main className='bg-slate-100 min-h-[calc(100vh)]'>
+            <main className='bg-slate-100 min-h-[calc(100vh)] pb-[30px]'>
                 {children}
             </main>
             <Footer />

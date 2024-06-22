@@ -32,7 +32,7 @@ function Cart() {
     }, [productsCart])
     //
     return (
-        <div className="w-full h-[100vh] bg-white flex">
+        <div className="w-full bg-white flex pb-[40px]">
             <div className="w-[1200px] mx-auto">
                 <div className="mx-[15px] bg-white ">
                     {/* Breakcumb */}
@@ -55,7 +55,7 @@ function Cart() {
                         </div>
                         {
                             productsCart?.length > 0 ? (
-                                <div className="">
+                                <div className="flex flex-col">
                                     <div className="py-[10px] flex border-b">
                                         <div className="w-[43%] font-bold text-[16px] text-[#282828]">Sản phẩm</div>
                                         <div className="w-[19%] font-bold text-[16px] flex justify-center text-[#282828]"><span className="">Giá</span></div>
@@ -83,8 +83,8 @@ function Cart() {
                                             <div className="text-[#ff2d37] text-[18px] font-bold">{totalPrice}₫</div>
                                         </div>
                                     </div>
-                                    <Link to={'/checkout'}>
-                                        <div className="w-[360px] h-[40px] bg-[#ff2d37] rounded-[40px] cursor-pointer flex items-center justify-center border border-solid border-[#ff2d37] float-right mt-[25px] hover:bg-white hover:border-[#ff2d37] group/continue">
+                                    <Link className="flex justify-end h-[40px]" to={'/checkout'}>
+                                        <div className="w-[360px] h-[40px] bg-[#ff2d37] rounded-[40px] cursor-pointer flex items-center justify-center border border-solid border-[#ff2d37] mt-[25px] hover:bg-white hover:border-[#ff2d37] group/continue">
                                             <div className="px-[56px] py-[5px] text-[16px] text-white  select-none group-hover/continue:text-[#ff2d37]">Tiến hành thanh toán</div>
                                         </div>
                                     </Link>
