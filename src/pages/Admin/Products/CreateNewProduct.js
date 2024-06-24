@@ -297,7 +297,7 @@ function CreateNewProduct() {
         const formData = new FormData();
         formData.append('image', imageFile);
         try {
-            const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}upload`, {
+            const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}upload`, {
                 method: 'POST',
                 body: formData
             });

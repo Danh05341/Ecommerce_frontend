@@ -13,7 +13,7 @@ const SideBar = () => {
 
     useEffect(() => {
         const fetchApi = async () => {
-            const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}category`)
+            const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}category`)
             const dataRes = await fetchData.json()
             console.log(dataRes)
             setCategories(dataRes.data.filter(item => item.name !== "Giày thể thao"))

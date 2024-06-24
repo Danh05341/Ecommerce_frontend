@@ -133,7 +133,7 @@ function ProductDetail() {
                 console.log('size: ', sizeActive)
                 dispatch(addProduct({ product: product, value: value, image: currentImage, size: sizeActive }))
                 if (userData.cart_id) {
-                    fetch(`${process.env.REACT_APP_SERVER_LOCAL}cart/${userData?.cart_id}`, {
+                    fetch(`${process.env.REACT_APP_SERVER_DOMAIN}cart/${userData?.cart_id}`, {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",
