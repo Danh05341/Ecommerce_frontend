@@ -20,7 +20,9 @@ function Checkout() {
 
     const [total, setTotal] = useState(() => {
         let totalPrice = productsCart.reduce((total, product) => {
-            total += +product?.productId?.price?.replace(/\./g, '') * product?.quantity
+            // total += +product?.productId?.price?.replace(/\./g, '') * product?.quantity
+            total += product?.productId?.size?.find(item =>
+                (item.size === product?.productSize))?.price.replace(/\./g, '') * product?.quantity
             return total;
         }, 0)
         return (totalPrice + 40000).toLocaleString('vi-VN')
@@ -35,7 +37,9 @@ function Checkout() {
 
     const [totalPrice, setTotalPrice] = useState(() => {
         let totalPrice = productsCart.reduce((total, product) => {
-            total += +product?.productId?.price?.replace(/\./g, '') * product?.quantity
+            // total += +product?.productId?.price?.replace(/\./g, '') * product?.quantity
+            total += product?.productId?.size?.find(item =>
+                (item.size === product?.productSize))?.price.replace(/\./g, '') * product?.quantity
             return total;
         }, 0)
 
@@ -43,6 +47,7 @@ function Checkout() {
 
     })
     console.log('total: ', total)
+    console.log('productsCart: ', productsCart)
     const [dataForm, setDataForm] = useState({
         email: "",
         name: "",
@@ -57,10 +62,11 @@ function Checkout() {
         paymentMethod: "",
         productsOrder: productsCart?.map(product => {
             return {
+                productId: product.productId._id,
                 name: product.productId.name,
                 image: product.productId.image[product.imageCurrent],
-                // price: (product.productId.size.find(size => size.size === product.productSize)).price,
-                price: product.productId.price,
+                price: (product.productId.size.find(item => item.size === product.productSize)).price,
+                // price: product.productId.price,
                 quantity: product.quantity,
                 size: product.productSize,
                 brandId: product.productId.brand_id,
@@ -339,7 +345,7 @@ function Checkout() {
                                             <div className='absolute top-[-10px] right-[-10px] w-[20px] h-[20px] flex items-center justify-center text-white text-[13px] bg-[#2a9dcc] rounded-full'>{product.quantity}</div>
                                         </Link>
                                         <div className='text-[#333333] text-[14px] flex-1 pl-[4px]'>{product.productId.name} {product?.productSize}</div>
-                                        <div className='text-[#717171] text-[14px]'>{(product?.productId?.price?.replace(/\./g, '') * Number(product?.quantity)).toLocaleString('vi-VN')}₫</div>
+                                        <div className='text-[#717171] text-[14px]'>{(product?.productId?.size?.find(item => item.size === product?.productSize)?.price?.replace(/\./g, '') * Number(product?.quantity)).toLocaleString('vi-VN')}₫</div>
                                     </div>
                                 </div>
                             )

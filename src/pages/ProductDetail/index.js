@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import clsx from "clsx";
 import { BsFillTelephoneFill, BsCheck, BsChevronRight } from "react-icons/bs";
-import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
+import { AiFillStar, AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import { GiBeachBag } from "react-icons/gi";
 import { FiScissors } from "react-icons/fi";
 import { FaStickyNote } from "react-icons/fa";
@@ -11,13 +11,18 @@ import "./ProductDetails.scss";
 import WrapperModel from "./WrapperModel";
 import WrapperImage from "./WrapperImage";
 import { useDispatch, useSelector } from "react-redux";
-import { addProduct, productSlice } from "../../redux/cartSlice";
+import { addProduct } from "../../redux/cartSlice";
 import { toast } from 'react-toastify'
+import { addReviewAPI, fetchProductAPI, getOrderIdsUserAPI, getReviewByProductIdAPI } from "../../apis";
+
+
 function ProductDetail() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const userData = useSelector(state => state.user.data)
     const products = useSelector(state => state.cart.data)
+    const [purchasedProducts, setPurchasedProducts] = useState([]) // Danh sách ID sản phẩm đã mua
+
     //số lượng sp trong cart
     const productCount = products?.reduce((count, product) => {
         return count += product.quantity
@@ -42,6 +47,33 @@ function ProductDetail() {
     const { slug } = useParams();
 
     const [sizeActive, setSizeActive] = useState()
+
+    const [reviews, setReviews] = useState([]);
+    const [newReview, setNewReview] = useState({ rating: 0, comment: '' });
+
+    const handleChangeReview = (e) => {
+        const { name, value } = e.target;
+        setNewReview(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const handleSubmitReview = (e) => {
+        e.preventDefault();
+        if (newReview.rating && newReview.comment) {
+            const newReviewData = { ...newReview, userId: userData.user_id, productId: product._id };
+            addReviewAPI(newReviewData).then(dataRes => {
+                console.log('newreview: ', dataRes)
+                setReviews(prev => [...prev, dataRes.data]);
+
+            })
+
+        } else {
+            alert('Vui lòng điền đầy đủ thông tin đánh giá.');
+        }
+    };
+
     const handleActiveSize = (size) => {
         setSizeActive(size)
     }
@@ -52,14 +84,23 @@ function ProductDetail() {
     }
 
     useEffect(() => {
-        const getProduct = async () => {
-            const fetchData = await fetch(
-                `${process.env.REACT_APP_SERVER_LOCAL}product/${slug}`
-            );
-            const dataRes = await fetchData.json();
+
+        fetchProductAPI(slug, '').then(dataRes => {
             setProduct(dataRes.data);
-        };
-        getProduct();
+            return dataRes.data
+        }).then((data) => {
+            getReviewByProductIdAPI(data._id).then(dataRes => {
+                console.log('id: ', data._id)
+                setReviews(dataRes.data)
+            })
+        })
+            .catch(err => {
+                console.log(err);
+            })
+        getOrderIdsUserAPI(userData.user_id).then(dataRes => {
+
+            setPurchasedProducts(dataRes.data)
+        }).catch(err => console.log(err));
     }, [slug]);
 
     const handleMinus = () => {
@@ -71,7 +112,6 @@ function ProductDetail() {
             }
         });
     };
-    console.log('sizeActive: ', sizeActive)
     const handlePlus = () => {
         setValue((prev) => prev + 1);
     };
@@ -85,7 +125,7 @@ function ProductDetail() {
     }
     const handleClickBuy = (e) => {
 
-        if(sizeActive) setModalIsActive((prev) => !prev);
+        if (sizeActive) setModalIsActive((prev) => !prev);
         if (!modalIsActive) {
             if (sizeActive) {
                 console.log('value: ', value)
@@ -119,8 +159,8 @@ function ProductDetail() {
     };
     console.log('product-1: ', product)
     return (
-        <div className="product-detail">
-            <div className="product-container">
+        <div className="product-detail pb-[20px]">
+            <div className="product-container ">
                 {/* <div className="bread-crumbs">
                     <ul className="nav-list">
                         <li className="nav-item">
@@ -209,7 +249,7 @@ function ProductDetail() {
                                 <span>Hướng dẫn chọn size</span>
                             </div>
                             <div className="product-price">
-                                <span className="special-price">{product?.price}₫</span>
+                                <span className="special-price">{product?.size.find(item => (item.size === sizeActive))?.price || product?.price}₫</span>
                                 {product?.sale_price ? <span className="old-price">{product?.sale_price}₫</span> : <></>}
                             </div>
                             <div className="flex py-[20px]">
@@ -266,7 +306,7 @@ function ProductDetail() {
                     </div>
                 </div>
                 {/* mô tả sản phẩm */}
-                <div className="product-des mt-[124px]">
+                <div className="product-des mt-[124px] ">
                     <div onClick={handeActive} className="inline-block">
                         <span
                             data-name={"Mô tả"}
@@ -321,7 +361,76 @@ function ProductDetail() {
                         </div>
                     )}
                     {isActive === "Đánh giá" && (
-                        <div className=" border border-solid border-[#ebebeb] mt-[8px] py-[25px] px-[15px]"></div>
+                        <div className=" border border-solid border-[#ebebeb] mt-[8px] py-[25px] px-[15px]">
+                            {reviews?.length > 0 ? (
+                                reviews?.map((review, index) => (
+                                    <div key={index} className="border-b items-center border-gray-200 py-3 flex space-x-4">
+                                        <img
+                                            src={review?.image}
+                                            alt={review?.name}
+                                            className="w-16 h-16 rounded-full "
+                                        />
+                                        <div className="flex-1">
+                                            <div className="flex items-center">
+                                                <div className="text-gray-800 font-semibold">{review?.name}</div>
+                                                <div className="flex items-center space-x-1 ml-2">
+                                                    {[...Array(5)].map((_, i) => (
+                                                        <AiFillStar key={i} className={`text-xl ${i < review?.rating ? "text-yellow-500" : "text-gray-300"}`} />
+                                                    ))}
+                                                </div>
+                                            </div>
+                                            <div className="text-gray-600 mt-1">{review?.comment}</div>
+                                            <div className="text-gray-500 text-sm mt-1">
+                                                {new Date(review?.createdAt).toLocaleString()}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <p>Chưa có đánh giá nào.</p>
+                            )}
+                            {/* Hiển thị nút và form thêm đánh giá nếu người dùng đã mua sản phẩm và chưa đánh giá */}
+                            {purchasedProducts.includes(product._id) && !reviews.some(review => review.userId === userData.user_id) && (
+                                <div className="mt-4">
+                                    <h4 className="text-lg font-semibold mb-2">Thêm đánh giá của bạn</h4>
+                                    <form onSubmit={handleSubmitReview}>
+
+                                        <div className="flex items-center mb-2">
+                                            <span>Đánh giá:</span>
+                                            <div className="ml-2 flex">
+                                                {[...Array(5)].map((_, i) => (
+                                                    <AiFillStar
+                                                        key={i}
+                                                        className={`text-xl cursor-pointer ${i < newReview.rating ? "text-yellow-500" : "text-gray-300"}`}
+                                                        onClick={() => setNewReview(prev => ({ ...prev, rating: i + 1 }))}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <textarea
+                                            name="comment"
+                                            value={newReview.comment}
+                                            onChange={handleChangeReview}
+                                            placeholder="Nhập đánh giá của bạn"
+                                            className="border border-solid border-gray-300 rounded px-3 py-2 mb-2 w-full"
+                                            required
+                                        />
+                                        <button
+                                            type="submit"
+                                            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded font-semibold"
+                                        >
+                                            Gửi đánh giá
+                                        </button>
+                                    </form>
+                                </div>
+                            )}
+                            {!purchasedProducts.includes(product._id) && (
+                                <p className="mt-4 text-red-500">Bạn cần mua sản phẩm này để thêm đánh giá.</p>
+                            )}
+                            {purchasedProducts.includes(product._id) && reviews.some(review => review.userId === userData.user_id) && (
+                                <p className="mt-4 text-green-500">Bạn đã đánh giá sản phẩm này.</p>
+                            )}
+                        </div>
                     )}
                 </div>
             </div>
@@ -353,7 +462,7 @@ function ProductDetail() {
                                 <div className="flex flex-col">
                                     <span className="font-bold text-[14px]">{product?.name}</span>
                                     <span className="text-[#ff2d37] text-[18px]">
-                                        {product.price}đ
+                                        {product?.size.find(item => (item.size === sizeActive))?.price || product?.price}đ
                                     </span>
                                 </div>
                             </div>

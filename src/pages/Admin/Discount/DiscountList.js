@@ -61,7 +61,7 @@ function DiscountList() {
                                     <td className='border border-gray-300 px-4 py-2'> */}
                                     <td className='border border-gray-300 px-4 py-2'>{discount.code}</td>
                                     <td className='border border-gray-300 px-4 py-2'>{discount.amount.toLocaleString('vi-VN')}₫</td>
-                                    <td className='border border-gray-300 px-4 py-2'>{new Date(discount?.startDate)?.toLocaleDateString('vi-VN')} - {new Date(discount.endDate)?.toLocaleDateString('vi-VN')}</td>
+                                    <td className='border border-gray-300 px-4 py-2'>{new Date(discount?.startDate)?.toLocaleDateString('vi-VN')} - {new Date(discount.endDate)?.toLocaleDateString('vi-VN', { timeZone: 'UTC' })}</td>
                                     <td className='border border-gray-300 px-4 py-2'>{discount.timesUsed}</td>
                                     <td className={`border border-gray-300 px-4 py-2 ${discount.isActive ? 'text-[green]' : 'text-[red]'}`}>
                                         {discount.isActive ? 'Còn hiệu lực' : 'Hết hiệu lực'}

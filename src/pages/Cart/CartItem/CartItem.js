@@ -66,7 +66,7 @@ function CartItem({ product, quantity, imageCurrent, productSize }) {
                     "Content-Type": "application/json",
                     // 'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: JSON.stringify({ product, value: e.target.value,  setCount: true, currentImage: imageCurrent, sizeActive: productSize })
+                body: JSON.stringify({ product, value: e.target.value, setCount: true, currentImage: imageCurrent, sizeActive: productSize })
             }).then(respone => respone.json())
                 .then(respone => {
                     console.log(respone)
@@ -84,7 +84,7 @@ function CartItem({ product, quantity, imageCurrent, productSize }) {
                     "Content-Type": "application/json",
                     // 'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: JSON.stringify({ id: product._id, size: productSize, image: imageCurrent}),
+                body: JSON.stringify({ id: product._id, size: productSize, image: imageCurrent }),
             }).then(respone => respone.json())
                 .then(respone => {
                     console.log(respone)
@@ -94,13 +94,14 @@ function CartItem({ product, quantity, imageCurrent, productSize }) {
     }
     useEffect(() => {
         const calculateTotalPrice = () => {
-            let totalPrice = product?.price?.replace(/\./g, '') * value
+            // let totalPrice = product?.price?.replace(/\./g, '') * value
+            let totalPrice = product?.size?.find(item => (item.size === productSize))?.price.replace(/\./g, '') * value
             totalPrice = totalPrice?.toLocaleString('vi-VN')
             setTotalPrice(totalPrice);
         };
         calculateTotalPrice()
     }, [value])
-  
+
     return (
         <div className="py-[30px] border-b">
             <div className="flex ">
@@ -126,7 +127,7 @@ function CartItem({ product, quantity, imageCurrent, productSize }) {
                     </div>
                 </div>
                 <div className="w-[20%] px-[5px] flex items-center justify-center">
-                    <div className="text-[#ff2d37] text-[16px] font-bold">{product?.price}₫</div>
+                    <div className="text-[#ff2d37] text-[16px] font-bold">{product?.size.find(item => (item.size === productSize))?.price}₫</div>
                 </div>
                 <div className="w-[18%] px-[5px] flex items-center justify-center">
                     <div className="product-quantity ">

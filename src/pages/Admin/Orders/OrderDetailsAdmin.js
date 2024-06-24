@@ -3,11 +3,11 @@ import { FaArrowLeftLong } from 'react-icons/fa6'
 import { Link, useParams } from 'react-router-dom'
 import { getOrderDetailsAPI, updateOrderAPI } from '../../../apis'
 import { toast } from 'react-toastify'
-
+import slugify from 'slugify'
 function OrderDetails() {
     const { id } = useParams()
     const [order, setOrder] = useState()
-   
+
     const [newStatus, setNewStatus] = useState('');
     const [updating, setUpdating] = useState(false);
     const [newPaymentStatus, setNewPaymentStatus] = useState('');
@@ -25,7 +25,7 @@ function OrderDetails() {
         try {
             const updatedOrder = { ...order, proccesingStatus: newStatus };
             setOrder(updatedOrder);
-            const data = await updateOrderAPI(id, {proccesingStatus: newStatus});
+            const data = await updateOrderAPI(id, { proccesingStatus: newStatus });
             toast.success('Cập nhật trạng thái xử lí thành công')
         } catch (error) {
             console.error(error);
@@ -98,15 +98,15 @@ function OrderDetails() {
                             <p className='mb-2'><strong>Tổng giá trị đơn hàng:</strong> {order.totalPrice}₫</p>
                             <p className='mb-2'><strong>Phương thức thanh toán:</strong> {order.paymentMethod === 'Postpaid' ? 'Thanh toán khi nhận hàng' : 'VNPAY'}</p>
                             {order.discountAmount && <p className='mb-2'><strong>Số tiền giảm:</strong> {order.discountAmount}₫</p>}
-                            <p className='mb-2'><strong>Trạng thái:</strong> {order.status === 'paid' ? 'Đã thanh toán' : 'Chưa thanh toán' }</p>
+                            <p className='mb-2'><strong>Trạng thái:</strong> {order.status === 'paid' ? 'Đã thanh toán' : 'Chưa thanh toán'}</p>
                             <p className='mb-2'><strong>Trạng thái xử lý:</strong> {getStatusProcessing(order.proccesingStatus)}</p>
                         </div>
-                        <hr className='my-6 border-gray-300'/>
+                        <hr className='my-6 border-gray-300' />
                         <h2 className='text-xl font-semibold mb-4'>Danh sách sản phẩm</h2>
                         {/* Danh sách sản phẩm */}
                         {order.productsOrder.map((product, index) => (
                             <div key={index} className='flex items-center mb-4'>
-                                <img src={product.image} alt={product.name} className='w-24 h-24 object-cover rounded-md mr-4'/>
+                                <img src={product.image} alt={product.name} className='w-24 h-24 object-cover rounded-md mr-4' />
                                 <div>
                                     <p className='text-lg font-semibold'>{product.name}</p>
                                     <p><strong>Giá:</strong> {product.price}₫</p>

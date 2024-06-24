@@ -25,7 +25,9 @@ const Cart = () => {
         // Tính tổng tiền khi products thay đổi
         const calculateTotalPrice = () => {
             let totalPrice = products?.reduce((total, product) => {
-                total += +product?.productId?.price?.replace(/\./g, '') * product?.quantity
+                // total += +product?.productId?.price?.replace(/\./g, '') * product?.quantity
+                total += product?.productId?.size?.find(item =>
+                    (item.size === product?.productSize))?.price.replace(/\./g, '') * product?.quantity
                 return total;
             }, 0)
             totalPrice = totalPrice?.toLocaleString('vi-VN')
@@ -50,7 +52,7 @@ const Cart = () => {
                         <div className="h-[110px] px-[20px] text-[14px] flex flex-col">
                             <div className=" py-[12px] flex justify-between cursor-text">
                                 <span className="font-bold text-[#282828] ">Tổng tiền:</span>
-                                <span className="font-bold text-[#ff2d37] text-[18px]">{totalPrice}</span>
+                                <span className="font-bold text-[#ff2d37] text-[18px]">{totalPrice}₫</span>
                             </div>
                             <div className="bg-[#ff2d37] flex justify-center items-center border border-[#ff2d37] border-solid rounded-[4px] hover:bg-white group/checkout ">
                                 <Link to='/checkout' className="inline-block p-[7px] ">

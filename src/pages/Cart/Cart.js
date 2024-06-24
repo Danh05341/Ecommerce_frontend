@@ -13,7 +13,9 @@ function Cart() {
     useEffect(() => {
         const calculateTotalPrice = () => {
             let totalPrice = productsCart?.reduce((total, product) => {
-                total += +product?.productId?.price?.replace(/\./g, '') * product?.quantity
+                // total += +product?.productId?.price?.replace(/\./g, '') * product?.quantity
+                total += product?.productId?.size?.find(item =>
+                    (item.size === product?.productSize))?.price.replace(/\./g, '') * product?.quantity
                 return total;
             }, 0)
             totalPrice = totalPrice?.toLocaleString('vi-VN')

@@ -278,7 +278,8 @@ function ProductDetails() {
             updateProduct.brand_id &&
             updateProduct.slug &&
             updateProduct.category &&
-            updateProduct.image.length > 0
+            updateProduct.image.length > 0 &&
+            updateProduct.size.length > 0
         ) {
             updateProductAPI(product._id, updateProduct).then(dataRes => {
                 console.log('dataRes', dataRes)

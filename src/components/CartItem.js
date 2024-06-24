@@ -35,7 +35,8 @@ const CartItem = (props) => {
                         {product?.productId?.name} {product?.productSize}
                     </div>
                 </Link>
-                <span className="text-[14px] font-bold text-[#ff2d37] mt-1 cursor-text">{product?.productId?.price}</span>
+                <span className="text-[14px] font-bold text-[#ff2d37] mt-1 cursor-text">{product?.productId?.size?.find(item => (item.size === product.productSize))?.price}₫</span>
+                
                 <input type="text" value={product?.quantity} readOnly className="w-[50px]  min-h-[30px] mt-2 outline-none border border-solid border-[#eaebf3] text-[#282828] text-center" />
             </div>
             <BsTrash3Fill onClick={handleRemoveProduct} className="w-3 h-4 text-[#ff2d37] relative left-1" />

@@ -163,6 +163,12 @@ export const getOrderUserAPI = async (id, query) => {
     const dataRes = await fetchData.json()
     return dataRes
 }
+export const getOrderIdsUserAPI = async (id) => {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}order/finish/${id}`)
+    const dataRes = await fetchData.json()
+    return dataRes
+}
+
 
 // Payment
 
@@ -318,6 +324,26 @@ export const applyDiscountAPI = async (code) => {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({code: code})
+    })
+    const dataRes = await fetchData.json()
+    return dataRes;
+};
+
+// Review
+
+export const getReviewByProductIdAPI = async (productId) => {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}review/${productId}`);
+    const dataRes = await fetchData.json()
+    return dataRes
+};
+
+export const addReviewAPI = async (newReviewData) => {
+    const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}review`, {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newReviewData)
     })
     const dataRes = await fetchData.json()
     return dataRes;
