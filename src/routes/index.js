@@ -30,6 +30,7 @@ import EditDiscount from "../pages/Admin/Discount/EditDiscount"
 import CustomerList from "../pages/Admin/Customer/CustomerList"
 import CreateCustomer from "../pages/Admin/Customer/CreateCustomer"
 import EditCustomer from "../pages/Admin/Customer/EditCustomer"
+import Account from "../pages/Account/Account"
 
 
 
@@ -69,6 +70,7 @@ const privateRoutes = [
     { path: '/admin/customers/edit/:id', page: EditCustomer, layout: AdminLayout},
     
     { path: '/checkout', page: Checkout, layout: null},
+    { path: '/account/user', page: Account},
 
     // { path: '/admin/orders', page: Orders},
     // { path: '/admin/all-products', page: ProductsAll},

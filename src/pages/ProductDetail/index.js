@@ -62,7 +62,7 @@ function ProductDetail() {
     const handleSubmitReview = (e) => {
         e.preventDefault();
         if (newReview.rating && newReview.comment) {
-            const newReviewData = { ...newReview, userId: userData.user_id, productId: product._id };
+            const newReviewData = { ...newReview, userId: userData.user_id ?? userData._id, productId: product._id };
             addReviewAPI(newReviewData).then(dataRes => {
                 console.log('newreview: ', dataRes)
                 setReviews(prev => [...prev, dataRes.data]);
@@ -97,7 +97,7 @@ function ProductDetail() {
             .catch(err => {
                 console.log(err);
             })
-        getOrderIdsUserAPI(userData.user_id).then(dataRes => {
+        getOrderIdsUserAPI(userData.user_id ?? userData._id).then(dataRes => {
 
             setPurchasedProducts(dataRes.data)
         }).catch(err => console.log(err));
@@ -133,7 +133,7 @@ function ProductDetail() {
                 console.log('size: ', sizeActive)
                 dispatch(addProduct({ product: product, value: value, image: currentImage, size: sizeActive }))
                 if (userData.cart_id) {
-                    fetch(`${process.env.REACT_APP_SERVER_DOMAIN}cart/${userData?.cart_id}`, {
+                    fetch(`${process.env.REACT_APP_SERVER_LOCAL}cart/${userData?.cart_id}`, {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",
@@ -159,7 +159,7 @@ function ProductDetail() {
     };
     console.log('product-1: ', product)
     return (
-        <div className="product-detail pb-[20px]">
+        <div className="product-detail pb-[20px] mb-[-30px]">
             <div className="product-container ">
                 {/* <div className="bread-crumbs">
                     <ul className="nav-list">
@@ -390,7 +390,7 @@ function ProductDetail() {
                                 <p>Chưa có đánh giá nào.</p>
                             )}
                             {/* Hiển thị nút và form thêm đánh giá nếu người dùng đã mua sản phẩm và chưa đánh giá */}
-                            {purchasedProducts.includes(product._id) && !reviews.some(review => review.userId === userData.user_id) && (
+                            {purchasedProducts.includes(product._id) && !reviews.some(review => review.userId === (userData.user_id ?? userData._id)) && (
                                 <div className="mt-4">
                                     <h4 className="text-lg font-semibold mb-2">Thêm đánh giá của bạn</h4>
                                     <form onSubmit={handleSubmitReview}>
@@ -427,7 +427,7 @@ function ProductDetail() {
                             {!purchasedProducts.includes(product._id) && (
                                 <p className="mt-4 text-red-500">Bạn cần mua sản phẩm này để thêm đánh giá.</p>
                             )}
-                            {purchasedProducts.includes(product._id) && reviews.some(review => review.userId === userData.user_id) && (
+                            {purchasedProducts.includes(product._id) && reviews.some(review => review.userId === (userData.user_id ?? userData._id)) && (
                                 <p className="mt-4 text-green-500">Bạn đã đánh giá sản phẩm này.</p>
                             )}
                         </div>

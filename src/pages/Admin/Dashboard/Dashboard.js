@@ -159,7 +159,9 @@ function Dashboard() {
                     <Grid item sx={{textAlign: 'right', marginTop: '10px'}}>
                             <Button variant="contained" onClick={handleCustomDateFetch}>Lấy dữ liệu</Button>
                         </Grid>
-                    <Line data={chartData}/>
+                    <Bar data={chartData}/>
+                    {/* <Bar data={chartData}/> */}
+                    {/* <Bar data={chartData}/> */}
                 </Box>
             </div>
         </div>

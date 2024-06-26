@@ -34,7 +34,7 @@ function CategoryForm() {
         const formData = new FormData();
         formData.append('image', imageFile);
         try {
-            const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}upload`, {
+            const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}upload`, {
                 method: 'POST',
                 body: formData
             });

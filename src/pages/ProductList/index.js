@@ -223,7 +223,7 @@ const ProductList = () => {
     }
 
     return (
-        <div className="w-full bg-white flex">
+        <div className="w-full bg-white flex mb-[-30px]">
             <div className="w-[1200px]  m-auto">
                 <div className="mx-[15px] bg-white  ">
                     {/* Breakcumb */}
