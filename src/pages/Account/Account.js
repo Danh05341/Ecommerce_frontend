@@ -38,7 +38,7 @@ const Account = () => {
                 <div className="px-[20px] mt-[20px] flex h-[500px]">
                     <div className="w-[300px] px-[15px] ">
                         <div className="text-[20px]">TRANG TÀI KHOẢN</div>
-                        <div className="text-[14px] font-bold">Xin chào, <span className="text-[#ff2d37]">DANH LE!</span></div>
+                        <div className="text-[14px] font-bold">Xin chào, <span className="text-[#ff2d37]">{user?.firstName + ' ' + user?.lastName}!</span></div>
                         <div className="flex flex-col gap-[20px] mt-[25px] cursor-pointer">
                             <div onClick={() => setAccountState('user')} className={accountState === 'user' ? 'text-[#ff2d37]' : 'hover:text-[#ff2d37]'} to={'/account/user'}>Thông tin tài khoản</div>
                             <div onClick={() => setAccountState('changepassword')} className={accountState === 'changepassword' ? 'text-[#ff2d37]' : 'hover:text-[#ff2d37]'} to={'/account/changepassword'}>Đổi mật khẩu</div>
@@ -58,11 +58,11 @@ const Account = () => {
                                     </div>
                                     <div className='text-[14px]' >
                                         <span className="font-bold ">Email: </span>
-                                        <span className="">danh05341@gmail.com </span>
+                                        <span className="">{user.email}</span>
 
                                     </div>
                                     {
-                                        user?.addresses?.[0].phone && (
+                                        user?.addresses?.[0]?.phone && (
                                             <div className='text-[14px]' >
                                                 <span className="font-bold ">Điện thoại: </span>
                                                 {user?.addresses?.[0]?.phone}
