@@ -62,16 +62,19 @@ const Account = () => {
 
                                     </div>
                                     {
-                                        user.phone && (
+                                        user?.addresses?.[0].phone && (
                                             <div className='text-[14px]' >
                                                 <span className="font-bold ">Điện thoại: </span>
+                                                {user?.addresses?.[0]?.phone}
                                             </div>
                                         )
                                     }
                                     {
-                                        user.address && (
+                                        user?.addresses?.length > 0 && (
                                             <div className='text-[14px]' >
                                                 <span className="font-bold ">Địa chỉ: </span>
+                                                {user?.addresses?.[0]?.address}
+
                                             </div>
                                         )
                                     }

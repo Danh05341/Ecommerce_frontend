@@ -39,18 +39,15 @@ function App() {
                         if (route.layout === null) {
                             Layout = Fragment
                         }
+
                         return (
-                            <Route key={index} element={<RequireAuth />}>
-                                <Route
-                                    path={route.path}
-                                    element={
-                                        <Layout>
-                                            <Page />
-                                        </Layout>
-                                    }
-                                />
-                            </Route>
-                        )
+
+                            <Route
+                                key={index}
+                                element={<RequireAuth element={<Layout><Page /></Layout>} requiredRole={route.requiredRole} />}
+                                path={route.path}
+                            />
+                        );
                     })
                 }
             </Routes>

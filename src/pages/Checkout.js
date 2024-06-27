@@ -5,11 +5,13 @@ import { Link, useNavigate } from 'react-router-dom'
 import { FaRegMoneyBillAlt } from "react-icons/fa";
 import { IoChevronBack } from "react-icons/io5";
 import { useSelector } from 'react-redux';
-import { createOrderAPI, createPaymentUrl, getAllProvince, getBrandById, applyDiscountAPI } from '../apis';
+import { createOrderAPI, createPaymentUrl, getAllProvince, getBrandById, applyDiscountAPI, getUserByIdAPI } from '../apis';
 import { toast } from 'react-toastify'
 function Checkout() {
     const productsCart = useSelector(state => state.cart.data)
     const userData = useSelector(state => state.user.data)
+    const [user, setUser] = useState([])
+
     const navigate = useNavigate()
     const [provinceAll, setProvinceAll] = useState([])
     const [provinces, setProvinces] = useState([])
@@ -17,7 +19,7 @@ function Checkout() {
     const [wards, setWards] = useState([])
     const [discountValue, setDiscountValue] = useState('')
     const [displayDiscount, setDisplayDiscount] = useState(false)
-
+    const [addresses, setAddresses] = useState([]);
     const [total, setTotal] = useState(() => {
         let totalPrice = productsCart.reduce((total, product) => {
             // total += +product?.productId?.price?.replace(/\./g, '') * product?.quantity
@@ -35,6 +37,8 @@ function Checkout() {
         return countProduct
     })
 
+
+    console.log('addresses: ', addresses)
     const [totalPrice, setTotalPrice] = useState(() => {
         let totalPrice = productsCart.reduce((total, product) => {
             // total += +product?.productId?.price?.replace(/\./g, '') * product?.quantity
@@ -187,10 +191,35 @@ function Checkout() {
             toast.warning('Vui lòng điền đầy đủ thông tin để đặt hàng')
         }
     }
+    const handleSelectAddress = (e) => {
+        console.log('e.target: ', e.target.value)
+        const selectedAddress = addresses.find(address => address._id === e.target.value);
 
+        console.log('selectedAddress: ', selectedAddress)
+
+        if (selectedAddress) {
+            setDataForm(prev => ({
+                ...prev,
+                email: user.email,
+                name: selectedAddress.fullName,
+                phone: selectedAddress.phone,
+                address: selectedAddress.address.split(',')[0],
+                city: selectedAddress.city,
+                district: selectedAddress.district,
+                ward: selectedAddress.ward,
+            }));
+        }
+
+    };
     useEffect(() => {
         getAllProvince().then(dataRes => {
             setProvinceAll(dataRes.data)
+        }).catch(err => {
+            console.log('error', err)
+        })
+        getUserByIdAPI(userData.user_id ?? userData._id).then(dataRes => {
+            setAddresses(dataRes.data.addresses)
+            setUser(dataRes.data)
         }).catch(err => {
             console.log('error', err)
         })
@@ -205,6 +234,26 @@ function Checkout() {
                         <div className='text-[18px] font-bold '>
                             Thông tin nhận hàng
                         </div>
+                        {/* Hiển thị nếu có addresses  */}
+                        {
+                            addresses?.length > 0 && (
+                                <div className='py-[5px]'>
+                                    <label htmlFor='savedAddresses' className='px-[11px] text-[#999]'>Chọn địa chỉ đã lưu</label>
+                                    <select
+                                        name="savedAddresses" id="savedAddresses"
+                                        onChange={handleSelectAddress}
+                                        className='w-full h-[40px] border border-solid border-[#d9d9d9] bg-white px-[11px] rounded focus-within:outline-blue-300'
+                                    >
+                                        <option value="">---</option>
+                                        {
+                                            addresses?.map(address => (
+                                                <option key={address._id} value={address._id}>{address.address}</option>
+                                            ))
+                                        }
+                                    </select>
+                                </div>
+                            )
+                        }
                         <div className='py-[5px] '>
                             <label htmlFor='email' className='px-[11px] text-[#999]'>Email</label>
                             <input

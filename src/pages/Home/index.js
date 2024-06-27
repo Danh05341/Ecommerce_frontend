@@ -20,7 +20,7 @@ const Home = () => {
 	
     useEffect(() => {
         const getProductsHot = async() => {
-            const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}product`)
+            const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}product`)
             const dataRes = await fetchData.json()
 			setHotProduct(dataRes)
             // dispatch(setDataProduct(dataRes))

@@ -53,7 +53,7 @@ const publicRoutes = [
 ]
 
 const privateRoutes = [
-    { path: '/admin/dashboard', page: Dashboard, layout: AdminLayout},
+    { path: '/admin/dashboard', page: Dashboard, layout: AdminLayout, requiredRole: 'admin'},
     { path: '/admin/orders', page: Orders, layout: AdminLayout},
     { path: '/admin/products', page: Products, layout: AdminLayout},
     { path: '/admin/products/:id', page: ProductDetails, layout: AdminLayout},

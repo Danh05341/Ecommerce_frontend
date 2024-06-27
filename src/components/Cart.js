@@ -13,7 +13,7 @@ const Cart = () => {
     const [totalPrice, setTotalPrice] = useState()
     useEffect(() => {
         const getProduct = async() => {
-            const fetchData = await fetch(`${process.env.REACT_APP_SERVER_LOCAL}cart/${userData.cart_id}`)
+            const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}cart/${userData.cart_id}`)
             const dataRes = await fetchData.json()
             dispatch(setDataProduct(dataRes?.data?.items))
         }
