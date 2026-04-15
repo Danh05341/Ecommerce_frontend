@@ -35,26 +35,26 @@ const Home = () => {
 			{/*Section Category Banner */}
 			<Category />
 			{/* Sản phẩm bán chạy */}
-			<section className='flex w-full '>
-				<div className="w-[1200px] m-auto ">
+			<section className='flex w-full home-section'>
+				<div className="max-w-[1200px] m-auto home-container">
 					<div className="mx-[15px] bg-white shadow-lg ">
 						<div className='w-full text-center p-[20px]'>
 							<span className="text-[28px] text-[#282828] uppercase font-[400] cursor-pointer hover:text-[#ff2d37]">Sản phẩm bán chạy</span>
 						</div>
-						<div className="flex px-[15px] gap-[15px] pb-[30px]  overflow-auto">
+						<div className="flex px-[15px] gap-[15px] pb-[30px]  overflow-auto home-products-row">
 							<ProductCard products={hotProduct?.data?.filter((product)=>product.category !== "Sneaker nổi bật" && product.category !== "Slip-on nổi bật")}/>
 						</div>
 					</div>
 				</div>
 			</section>
 			{/* Sneaker */}
-			<section className='flex w-full mt-[40px] '>
-				<div className="w-[1200px] m-auto ">
+			<section className='flex w-full mt-[40px] home-section'>
+				<div className="max-w-[1200px] m-auto home-container">
 					<div className="mx-[15px] bg-white flex flex-col shadow-lg">
 						{/* top-section */}
-						<div className='flex'>
-							<img src={sneaker} alt='sneaker' className='max-w-[470px]'></img>
-							<div className='pl-[70px] pt-[28px] pr-[40px]'>
+						<div className='flex home-feature-top'>
+							<img src={sneaker} alt='sneaker' className='max-w-[470px] home-feature-image'></img>
+							<div className='pl-[70px] pt-[28px] pr-[40px] home-feature-copy'>
 								<div className='w-full mb-[27px]'>
 									<span className="text-[28px] text-[#282828] uppercase font-[400] cursor-pointer hover:text-[#ff2d37]">Sneaker năng động</span>
 								</div>
@@ -68,19 +68,19 @@ const Home = () => {
 							</div>
 						</div>
 						{/* bot-section */}
-						<div className="flex px-[15px] gap-[15px] pb-[30px] mt-[15px]">
+						<div className="flex px-[15px] gap-[15px] pb-[30px] mt-[15px] home-products-row">
 							<ProductCard products={hotProduct?.data?.filter((product)=>product.category === "Sneaker nổi bật")}/>
 						</div>
 					</div>
 				</div>
 			</section>
 			{/* Slip on thanh lịch */}
-			<section className='flex w-full mt-[40px]'>
-				<div className="w-[1200px] m-auto ">
+			<section className='flex w-full mt-[40px] home-section'>
+				<div className="max-w-[1200px] m-auto home-container">
 					<div className="mx-[15px] bg-white flex flex-col shadow-lg">
 						{/* top-seaction */}
-						<div className='flex'>
-							<div className='pr-[70px] pt-[28px] pl-[40px]'>
+						<div className='flex home-feature-top home-feature-top--reverse'>
+							<div className='pr-[70px] pt-[28px] pl-[40px] home-feature-copy'>
 								<div className='w-full mb-[27px]'>
 									<span className="text-[28px] text-[#282828] uppercase font-[400] cursor-pointer hover:text-[#ff2d37]">SLIP-ON THANH LỊCH</span>
 								</div>
@@ -93,25 +93,25 @@ const Home = () => {
 								</div>
 							</div>
 
-							<img src={slipon} alt='slipon' className='max-w-[470px]'></img>
+							<img src={slipon} alt='slipon' className='max-w-[470px] home-feature-image'></img>
 						</div>
 						{/* bot-section */}
-						<div className="flex px-[15px] gap-[15px] pb-[30px] mt-[15px]">
+						<div className="flex px-[15px] gap-[15px] pb-[30px] mt-[15px] home-products-row">
 							<ProductCard products={hotProduct?.data?.filter((product)=>product.category === "Slip-on nổi bật")}/>
 						</div>
 					</div>
 				</div>
 			</section>
 			{/* Danh mục tất cả sản phẩm */}
-			<section className='flex w-full mt-[40px]'>
-				<div className="w-[1200px] m-auto ">
+			<section className='flex w-full mt-[40px] home-section'>
+				<div className="max-w-[1200px] m-auto home-container">
 					<div className="mx-[15px] bg-white flex flex-col shadow-lg">
 						{/* banner */}
 						<img src={category} alt='category' className='w-full' />
 						{/* body */}
-						<div className='my-[15px] flex'>
+						<div className='my-[15px] flex home-category-body'>
 							{/* left section */}
-							<div className='w-[282px] px-[15px]'>
+							<div className='w-[282px] px-[15px] home-category-sidebar'>
 								<p className='uppercase text-[28px] mb-[24px]'>Danh mục</p>
 								{/* SideBar */}
 								<div className=' '>
@@ -119,12 +119,12 @@ const Home = () => {
 								</div>
 							</div>
 							{/* right section */}
-							<div className='w-[888px] flex flex-col justify-between'>
-								<div className="flex flex-wrap  px-[15px] gap-[15px] flex-1">
+							<div className='w-[888px] flex flex-col justify-between home-category-products'>
+								<div className="px-[15px] flex-1 home-products-grid">
 									<ProductCard products={hotProduct?.data}/>
 										
 								</div>
-								<div className='flex mt-[15px]'>
+								<div className='flex mt-[15px] home-category-cta'>
 									<a className='text-white m-auto inline-block cursor-pointer px-[25px] w-[124px]  h-[35px] bg-[#ff2d37]'>
 										<span className='h-[35px] leading-[35px] text-[14px] font-bold'>Xem tất cả</span>
 										<BsChevronRight/>

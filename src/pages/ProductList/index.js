@@ -333,7 +333,7 @@ const ProductList = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex flex-wrap gap-x-[15px] gap-y-[20px]  w-[870px] mt-[20px]">
+                            <div className="product-grid w-[870px] mt-[20px]">
                                 <ProductCard products={product} />
                             </div>
 

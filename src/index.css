@@ -15,3 +15,236 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.home-products-grid,
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: 15px;
+  row-gap: 20px;
+}
+
+.home-products-grid .home-product-card,
+.product-grid .home-product-card {
+  width: 100%;
+  height: auto;
+  min-width: 0;
+  max-width: none;
+}
+
+@media screen and (max-width: 1024px) {
+  .home-products-grid,
+  .product-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .home-feature-top {
+    flex-direction: column;
+  }
+
+  .home-feature-top--reverse {
+    flex-direction: column;
+  }
+
+  .home-feature-image {
+    max-width: 100% !important;
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .home-feature-copy {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+
+
+  .footer-links-col {
+    padding: 0 8px;
+  }
+}
+
+@media screen and (max-width: 1170px) {
+  .home-products-row {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+  }
+  .home-container {
+    overflow-x: auto;
+    overflow: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+  }
+
+  .footer-services {
+    height: auto !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .footer-services-item-wrapper {
+    justify-content: center;
+    align-items: start;
+  }
+
+  .footer-services-item-container {
+    width: calc(50% - 8px);
+    display: flex;
+    justify-content: center;
+  }
+
+  .footer-services-item {
+    width: calc(50% - 8px);
+    min-width: 240px;
+    justify-content: flex-start;
+  }
+
+  .footer-links {
+    height: auto !important;
+    padding: 24px 16px;
+    align-items: flex-start;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 24px !important;
+  }
+
+  .footer-links-col {
+    padding: 0 16px;
+  }
+
+  .footer-copyright {
+    padding-left: 16px;
+    padding-right: 16px;
+    text-align: center;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .home-products-grid,
+  .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .site-navbar-desktop {
+    display: none !important;
+  }
+
+  .site-navbar-mobile {
+    display: block !important;
+  }
+
+  .site-mobile-menu {
+    padding: 8px 0 12px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+  }
+
+  .site-mobile-menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 14px;
+  }
+
+  .site-mobile-menu-toggle {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .site-mobile-submenu {
+    padding: 4px 0 8px 0;
+    background: rgba(0, 0, 0, 0.08);
+  }
+
+  .site-mobile-submenu-item {
+    display: block;
+    padding: 10px 24px;
+    font-weight: 600;
+    text-transform: none;
+    font-size: 14px;
+  }
+
+  .home-section {
+    display: block;
+  }
+
+  .home-category-body {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .home-category-sidebar,
+  .home-category-products {
+    width: 100% !important;
+  }
+
+  .footer-links-col {
+    padding: 0;
+    width: calc(50% - 12px);
+    min-width: 220px;
+  }
+}
+
+/* Header: switch to mobile layout on tablet+mobile */
+@media screen and (max-width: 1024px) {
+  .site-header {
+    height: auto !important;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .site-header-desktop {
+    display: none !important;
+  }
+
+  .site-header-mobile {
+    display: block;
+  }
+
+  .site-navbar-desktop {
+    display: flex;
+  }
+
+  .site-navbar-mobile {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 1025px) {
+  .site-header-desktop {
+    display: flex;
+  }
+
+  .site-header-mobile {
+    display: none;
+  }
+
+  .site-navbar-desktop {
+    display: flex;
+  }
+
+  .site-navbar-mobile {
+    display: none !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .footer-services-item,
+  .footer-links-col {
+    width: 100%;
+    min-width: 0;
+  }
+}

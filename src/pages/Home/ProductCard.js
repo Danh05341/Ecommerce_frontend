@@ -8,18 +8,25 @@ const ProductCard = (props) => {
                 props?.products ? (
                     props.products.map((product, index) => {
                         return (
-                            <div key={index} className="flex flex-col justify-between relative  gap-x-[15px] min-w-[203px] flex-1 max-w-[216px] h-[318px] border border-dashed border-[#ebebeb]">
-                                {/* <div className='flex flex-col flex-1 justify-between items-center'> */}
-                                <Link to={"/" + product.slug} className='flex-1'>
-                                    <div className='border border-[rgb(0, 0, 0)]'>
-                                        <img src={product.image[0]} alt='product' className='w-[216px] h-[216px]overflow-hidden cursor-pointer' />
+                            <div key={index} className="home-product-card flex flex-col relative gap-x-[15px] w-[216px] flex-shrink-0 min-w-[203px] max-w-[216px] h-[318px] border border-dashed border-[#ebebeb]">
+                                <div className="flex min-h-0 flex-1 flex-col">
+                                    <Link to={"/" + product.slug} className="block shrink-0">
+                                        <div className='border border-[rgb(0, 0, 0)] w-full aspect-square overflow-hidden'>
+                                            <img src={product.image[0]} alt='product' className='w-full h-full object-cover cursor-pointer' />
+                                        </div>
+                                    </Link>
+                                    <div className="mt-4 flex min-h-0 flex-1 flex-col justify-start px-1">
+                                        <Link
+                                            to={"/" + product.slug}
+                                            className="block w-full text-center"
+                                        >
+                                            <span className="line-clamp-2 inline-block max-w-full text-center text-[14px] leading-[20px] text-[#282828] hover:text-[#ff2d37]">
+                                                {product.name}
+                                            </span>
+                                        </Link>
                                     </div>
-                                </Link>
-                                <Link to={"/" + product.slug} className='flex-1 mt-4 text-center inline-block'>
-                                    <span className='text-[14px]  inline-block  text-[#282828]  cursor-pointer hover:text-[#ff2d37] '>{product.name}</span>
-                                </Link>
-                                {/* </div> */}
-                                <div className='flex  justify-between items-center h-[45px] px-[10px] border-t border-dashed border-[#ebebeb]'>
+                                </div>
+                                <div className='mt-auto flex shrink-0 justify-between items-center h-[45px] px-[10px] border-t border-dashed border-[#ebebeb]'>
                                     <div className="flex flex-col relative">
                                         <span className="text-[#ff2d37] text-[14px] font-[700] top-[5px]">{product.price}₫</span>
                                         {
